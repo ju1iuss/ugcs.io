@@ -1,8 +1,6 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-
-
 const isProtectedRoute = (req: Request) => {
   const url = new URL(req.url);
   return url.pathname.startsWith('/dashboard') || 
