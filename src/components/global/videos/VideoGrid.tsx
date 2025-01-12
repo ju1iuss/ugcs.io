@@ -6,9 +6,10 @@ import { cn } from '@/lib/utils';
 
 interface VideoGridProps {
   videos: Video[];
+  onRatingChange?: (videoId: number, newRating: 'good' | 'bad' | null) => void; // Add onRatingChange prop
 }
 
-export function VideoGrid({ videos }: VideoGridProps) {
+export function VideoGrid({ videos, onRatingChange }: VideoGridProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -31,11 +32,14 @@ export function VideoGrid({ videos }: VideoGridProps) {
         <div className="flex overflow-x-auto pb-4 gap-4 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           {videos.map((video) => (
             <div key={video.id} className="flex-none w-[160px]"> {/* Fixed width for 9:16 ratio */}
-              <VideoCard video={video} />
+              <VideoCard 
+                video={video} 
+                onRatingChange={onRatingChange} // Pass onRatingChange to VideoCard
+              />
             </div>
           ))}
         </div>
       </div>
     </div>
   );
-} 
+}
