@@ -1,6 +1,8 @@
 import { clerkMiddleware } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
+
+
 const isProtectedRoute = (req: Request) => {
   const url = new URL(req.url);
   return url.pathname.startsWith('/dashboard') || 
@@ -24,7 +26,6 @@ export const config = {
     '/api/payment/:path*',
     '/callback/:path*',
     
-    // Skip static files and Next.js internals
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
