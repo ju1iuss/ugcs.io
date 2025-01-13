@@ -14,10 +14,12 @@ import ScriptInput from './ScriptInput'
 import { useAuth } from "@clerk/nextjs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Loader2 } from "lucide-react"
+import { Video } from '@/types/video';
 
 interface MultiStepFormProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
+  onAddVideo?: (video: Video) => void
 }
 
 interface FormData {
@@ -28,7 +30,7 @@ interface FormData {
 
 const TOTAL_STEPS = 3
 
-export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormProps) {
+export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: MultiStepFormProps) {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     avatar: '',
@@ -62,17 +64,30 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
 
   const handleSubmit = async () => {
     if (!userId) return;
+    setIsGenerating(true);
 
-    setIsGenerating(true)
+    const tempVideo: Video = {
+      id: Date.now(),
+      video_url: null,
+      status: 'Generating',
+      thumbnail: null,
+      created_time: new Date().toISOString(),
+      last_modified_time: new Date().toISOString(),
+      last_modified_by: userId,
+      rating: null
+    };
+
+    onAddVideo?.(tempVideo);
 
     const payload = {
       script: formData.script,
       styleId: formData.style,
       avatarId: formData.avatar,
       userId: userId
-    }
+    };
 
     try {
+      // Initial generation request
       const response = await fetch('https://api.altan.ai/galaxia/hook/0jctFE', {
         method: 'POST',
         headers: {
@@ -83,30 +98,42 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
 
       if (!response.ok) throw new Error('Failed to generate');
 
+      // Wait 10 seconds before first poll
+      setTimeout(async () => {
+        try {
+          const pollResponse = await fetch('https://api.altan.ai/galaxia/hook/mdqQXB', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: tempVideo.id })
+          });
+          
+          const data = await pollResponse.json();
+          
+          // If we get video data back, update the video in the dashboard
+          if (data.video) {
+            onAddVideo?.(data.video);
+          }
+        } catch (error) {
+          console.error('Error polling video status:', error);
+        }
+      }, 10000);
+
       setStep(1);
       setFormData({ avatar: '', style: '', script: '' });
       onOpenChange(false);
     } catch (error) {
       console.error('Error generating:', error);
     } finally {
-      setIsGenerating(false)
+      setIsGenerating(false);
     }
-  }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent 
-        className="sm:max-w-[500px] max-h-[50vh] p-0 overflow-hidden
-          data-[state=open]:animate-in data-[state=closed]:animate-out 
-          data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 
-          data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 
-          duration-200 ease-in-out"
-      >
-        <Card className="border-0">
-          <CardContent 
-            className="p-2"
-          >
-            <div className="flex justify-center mb-2">
+      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
+        <Card className="border-0 shadow-none">
+          <CardContent className="p-0">
+            <div className="flex justify-center mb-2 pt-4">
               {[...Array(TOTAL_STEPS)].map((_, i) => (
                 <div
                   key={i}
@@ -117,9 +144,7 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
               ))}
             </div>
 
-            <ScrollArea 
-              className="h-[28vh] pr-2"
-            >
+            <ScrollArea className="h-[30vh] px-6">
               <div className="space-y-2">
                 {step === 1 && (
                   <AvatarSelection 
@@ -149,16 +174,34 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
               </div>
             </ScrollArea>
 
-            <div className="flex justify-between mt-2 pt-2 border-t">
-              {step > 1 && (
-                <Button onClick={prevStep} variant="outline" size="sm">
+            <div className="flex justify-between mt-2 pt-2 px-6 pb-4 border-t">
+              {step === 1 ? (
+                <Button 
+                  onClick={() => handleOpenChange(false)} 
+                  variant="outline" 
+                  size="sm"
+                >
+                  Close
+                </Button>
+              ) : (
+                <Button 
+                  onClick={prevStep} 
+                  variant="outline" 
+                  size="sm"
+                >
                   Previous
                 </Button>
               )}
+              
+              {step === TOTAL_STEPS && (
+                <p className="text-xs text-gray-500 self-center mx-4">
+                  Generation takes about 2-3 minutes.
+                </p>
+              )}
+              
               {step === TOTAL_STEPS ? (
                 <Button 
                   onClick={handleSubmit} 
-                  className="ml-auto"
                   size="sm"
                   disabled={!formData.script.trim() || formData.script.trim().split(/\s+/).filter(Boolean).length < 8 || isGenerating}
                 >
@@ -175,12 +218,6 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
                 <div className="ml-auto" />
               )}
             </div>
-
-            {step === TOTAL_STEPS && (
-              <p className="text-xs text-gray-500 mt-1 text-center">
-                Generation takes about 2-3 minutes.
-              </p>
-            )}
           </CardContent>
         </Card>
       </DialogContent>

@@ -6,6 +6,7 @@ interface Style {
   id: string
   src: string
   avatarId: string  // To link style with specific avatar
+  name?: string
 }
 
 // Define component props
@@ -24,10 +25,25 @@ const styles: Record<string, Style[]> = {
   ],
   // Add styles for other avatars
   '2': [
-    // styles for avatar 2
+    { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/d13bbbd2-8482-42f6-b495-ee63f00c1ff2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/d565fd78-668f-4d59-bc47-94cf7a77d41e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '3', avatarId: '1', src: 'https://api.altan.ai/platform/media/d7b77d53-1e19-4e8b-911b-0046c93782cf?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+  
   ],
   '3': [
-    // styles for avatar 3
+    { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/d0900d55-45cb-438e-996f-3014eff93994?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    
+  ],
+  '4': [
+    { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/79497d6b-bc52-4fc3-99df-9f38a2cc84a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/e94ae315-1eb7-4834-becd-c0c38958e74d?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    
+  ],
+  '5': [
+    { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/4b817dbd-40a6-4078-a814-56ee49fc3372?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/d7b77d53-1e19-4e8b-911b-0046c93782cf?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    
   ],
   // etc...
 }
@@ -61,7 +77,7 @@ export default function StyleSelection({ selectedAvatar, selectedStyle, onSelect
               <img 
                 src={style.src} 
                 alt={`Style ${style.id}`} 
-                className="w-[90px] h-[160px] rounded-lg object-cover" 
+                className="w-[120px] h-[200px] rounded-lg object-cover"
               />
             </Label>
           </div>

@@ -20,12 +20,12 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
           
         </div>
         <div className="flex flex-col">
-          <span className="text-sm font-medium text-green-600">Video Credits</span>
+          <span className="text-sm font-medium text-black-600">Video Credits</span>
           <a 
             href="https://buy.stripe.com/test_00g4j28r362t1GwfYZ" 
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-green-600 hover:text-green-700"
+            className="text-xs text-green-800 hover:text-green-700"
           >
             Upgrade
           </a>
@@ -34,11 +34,13 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
       {isLoading ? (
         <div className="h-4 w-6 bg-green-200 rounded animate-pulse" />
       ) : (
-        <span className="text-sm font-semibold text-green-600">
+        <span className="text-sm font-semibold text-green-800">
           {typeof credits === 'string' ? parseInt(credits) : credits}
         </span>
       )}
+      
     </div>
+    
   )
 }
 

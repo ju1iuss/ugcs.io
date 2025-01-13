@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/card'
 import { Link as LinkIcon } from 'lucide-react'
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useState } from 'react'
+import AnimatedLogoCloud from '@/components/global/logoCloud';
 
 export default function Home() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -35,15 +36,24 @@ export default function Home() {
       </div>
 
       {/* Hero Section */}
-      <section className="text-center py-24 max-w-4xl mx-auto">
-        <h1 className="text-6xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
-        Keine Creator? Kein Problem. UGC-Videos KI generiert.
+      <section className="text-center pt-24 pb-12 max-w-4xl mx-auto">
+        <h1 className="text-7xl font-semibold text-gray-900 mb-8 tracking-tighter">
+          Keine Creator? Kein Problem.{' '}
+          <span className="relative inline-block">
+            <span className="absolute inset-1 bg-blue-600/40" />
+            <span className="relative">UGC Videos</span>
+          </span>
+          <span className="relative inline-block">
+            <span className="absolute inset-1 bg-blue-600/40" />
+            <span className="relative">KI generiert</span>
+          </span>
+          {' '} 
         </h1>
         
-        <p className="text-xl text-gray-600 mb-12">
-        Deutschlands realistischste KI-Avatar-Videos, mit integriertem Editing und einfachem Prozess.
+        <p className="text-md text-gray-600 mb-12">
+          Deutschlands realistischste KI-Avatar-Videos, mit integriertem Editing und einfachem Prozess.
         </p>
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-4 mb-16">
           <Link href="/dashboard">
             <Button 
               className="rounded-full text-lg py-6 px-8"
@@ -64,6 +74,42 @@ export default function Home() {
       </section>
       
 
+      {/* Videos Display Section */}
+      <section className="relative h-[60vh] flex justify-center items-start mb-0">
+        <div className="relative w-[260px] aspect-[9/16] -rotate-6 translate-x-12 z-10">
+          <video
+            className="w-full h-full object-cover rounded-2xl shadow-xl"
+            autoPlay
+            muted
+            loop
+            playsInline
+            src="https://storage.googleapis.com/nca-toolkit-bucket-julius/a6d2143c-63be-4514-b600-572f2b5315d5_captioned.mp4"
+          />
+        </div>
+        
+        <div className="relative w-[260px] aspect-[9/16] z-20">
+          <video
+            className="w-full h-full object-cover rounded-2xl shadow-xl"
+            autoPlay
+            muted
+            loop
+            playsInline
+            src="https://storage.googleapis.com/nca-toolkit-bucket-julius/a6d2143c-63be-4514-b600-572f2b5315d5_captioned.mp4"
+          />
+        </div>
+        
+        <div className="relative w-[260px] aspect-[9/16] rotate-6 -translate-x-12 z-10">
+          <video
+            className="w-full h-full object-cover rounded-2xl shadow-xl"
+            autoPlay
+            muted
+            loop
+            playsInline
+            src="https://storage.googleapis.com/nca-toolkit-bucket-julius/a6d2143c-63be-4514-b600-572f2b5315d5_captioned.mp4"
+          />
+        </div>
+      </section>
+
       {/* Video Dialog */}
       <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
         <DialogContent className="max-w-[520px] p-0 overflow-hidden">
@@ -80,29 +126,14 @@ export default function Home() {
         </DialogContent>
       </Dialog>
 
-      {/* TikTok Videos Grid */}
-      <section className="flex justify-center gap-4 px-4 mb-24">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="relative w-48 h-80 rounded-2xl overflow-hidden shadow-lg transform rotate-[-2deg] hover:rotate-0 transition-transform">
-            <Image
-              src={`/placeholder.svg?height=320&width=192`}
-              alt={`TikTok video ${i}`}
-              width={192}
-              height={320}
-              className="object-cover"
-            />
-            <div className="absolute inset-0 flex items-center justify-center">
-              <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center">
-                <div className="w-0 h-0 border-l-[12px] border-l-white border-y-[8px] border-y-transparent ml-1"></div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </section>
+      {/* Logo Cloud Section - adjusted positioning */}
+      <div className="-mt-20">
+        <AnimatedLogoCloud />
+      </div>
 
       {/* Alternatives Section */}
-      <section className="px-4 py-16 max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-12">Alternatives are expensive.</h2>
+      <section className="px-4 py-8 max-w-4xl mx-auto text-center">
+        
         <div className="grid md:grid-cols-3 gap-6">
           <Card className="p-6 bg-red-50">
             <div className="flex justify-between mb-4">

@@ -1,5 +1,5 @@
 import { Video } from '@/types/video';
-import { Play, ThumbsUp, ThumbsDown, Download, Copy, Pause, Share, MoreVertical, Trash } from 'lucide-react';
+import { Play, ThumbsUp, ThumbsDown, Download, Copy, Pause, Share, MoreVertical, Trash, Loader2 } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { updateVideoRating, deleteVideo } from '@/lib/api';
 import { cn } from '@/lib/utils';
@@ -34,10 +34,14 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
   const [duration, setDuration] = useState(0);
   const [showAnimation, setShowAnimation] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const isGenerating = video.status === "Generating";
   const isFinished = video.status === "Finished";
   const [currentRating, setCurrentRating] = useState<'good' | 'bad' | null>(video.rating);
   const [isRating, setIsRating] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
+  const [generationProgress, setGenerationProgress] = useState(0);
+  const progressInterval = useRef<NodeJS.Timeout>();
+  const isLoading = video.status === "Generating" || video.status === "Loading";
 
   // Reset animation after it plays
   useEffect(() => {
@@ -48,6 +52,35 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
       return () => clearTimeout(timer);
     }
   }, [showAnimation]);
+
+  // Remove the separate useEffects and combine into one
+  useEffect(() => {
+    if (isLoading) {
+      // Reset progress when starting
+      setGenerationProgress(0);
+      
+      const duration = 120000; // 2 minutes in milliseconds
+      const steps = 100;
+      const stepDuration = duration / steps;
+
+      progressInterval.current = setInterval(() => {
+        setGenerationProgress(prev => {
+          if (prev >= 100) {
+            clearInterval(progressInterval.current);
+            return 100;
+          }
+          return prev + 1;
+        });
+      }, stepDuration);
+
+      // Cleanup on unmount or when loading state changes
+      return () => {
+        if (progressInterval.current) {
+          clearInterval(progressInterval.current);
+        }
+      };
+    }
+  }, [isLoading]); // Only depend on isLoading state
 
   const handlePlay = () => {
     if (!video.video_url || !isFinished || !videoRef.current) return;
@@ -130,69 +163,85 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
   };
 
   return (
-    
     <div className="space-y-3">
-      
-      {/* Video Section */}
-      <div 
-        className="relative aspect-[9/16] rounded-lg overflow-hidden bg-white dark:bg-gray-800 shadow-sm"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <video
-          ref={videoRef}
-          src={video.video_url || ''}
-          className="w-full h-full object-cover"
-          poster={video.thumbnail || undefined}
-          onTimeUpdate={handleTimeUpdate}
-          onEnded={() => setIsPlaying(false)}
-          playsInline
-        />
-            
-        {/* Play/Pause Overlay */}
-        {isFinished && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            {(!isPlaying || (isPlaying && isHovered)) && (
-              <button 
-                onClick={handlePlay}
-                className="hover:scale-110 transition-transform duration-200"
-              >
-                {isPlaying ? (
-                  <Pause className="w-8 h-8 text-white/90" />
-                ) : (
-                  <Play className="w-8 h-8 text-white/90" />
-                )}
-              </button>
-            )}
+      <div className="relative">
+        {/* Show loader for both Generating and Loading states */}
+        {isLoading && (
+          <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 rounded-lg z-30">
+            <div className="flex flex-col items-center gap-2">
+              <Loader2 className="w-8 h-8 text-white animate-spin" />
+              <span className="text-sm font-medium text-white">
+                {generationProgress}%
+              </span>
+            </div>
           </div>
         )}
 
-        {/* Timeline Overlay - only show when playing */}
-        {isPlaying && (
-          <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/50 to-transparent">
-            <div 
-              className="w-full h-1 bg-white/30 rounded cursor-pointer"
-              onClick={handleTimelineClick}
-            >
+        {/* Video Section - Enhanced shadows */}
+        <div 
+          className={cn(
+            "relative aspect-[9/16] rounded-lg overflow-hidden bg-white dark:bg-gray-800",
+            "shadow-xl",
+            isLoading && "brightness-75"
+          )}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          <video
+            ref={videoRef}
+            src={video.video_url || ''}
+            className="w-full h-full object-cover"
+            poster={video.thumbnail || undefined}
+            onTimeUpdate={handleTimeUpdate}
+            onEnded={() => setIsPlaying(false)}
+            playsInline
+          />
+            
+          {/* Play/Pause Overlay */}
+          {isFinished && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              {(!isPlaying || (isPlaying && isHovered)) && (
+                <button 
+                  onClick={handlePlay}
+                  className="hover:scale-110 transition-transform duration-200"
+                >
+                  {isPlaying ? (
+                    <Pause className="w-8 h-8 text-white/90" />
+                  ) : (
+                    <Play className="w-8 h-8 text-white/90" />
+                  )}
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Timeline Overlay - only show when playing */}
+          {isPlaying && (
+            <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/50 to-transparent">
               <div 
-                className="h-full bg-white rounded"
-                style={{ 
-                  width: `${(currentTime / duration) * 100}%`,
-                  transition: 'width 0.1s linear'
-                }}
-              />
+                className="w-full h-1 bg-white/30 rounded cursor-pointer"
+                onClick={handleTimelineClick}
+              >
+                <div 
+                  className="h-full bg-white rounded"
+                  style={{ 
+                    width: `${(currentTime / duration) * 100}%`,
+                    transition: 'width 0.1s linear'
+                  }}
+                />
+              </div>
+              <div className="flex justify-between text-xs text-white mt-1">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
             </div>
-            <div className="flex justify-between text-xs text-white mt-1">
-              <span>{formatTime(currentTime)}</span>
-              <span>{formatTime(duration)}</span>
-            </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Controls Section */}
-      <div className="flex justify-between items-center px-1">
-        <div className="flex gap-4">
+      {/* Actions Section - Outside of loading overlay */}
+      <div className="flex items-center justify-between px-1">
+        <div className="flex items-center gap-2">
           <button 
             onClick={() => handleRating('good')}
             disabled={isRating}
@@ -235,85 +284,87 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
           </button>
         </div>
         
-        {/* Replace the download/copy buttons with dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-              <MoreVertical className="w-5 h-5" />
-            </button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={handleCopyUrl}
-              disabled={!video.video_url}
-            >
-              <Copy className="w-4 h-4" />
-              <span>Copy Link</span>
-            </DropdownMenuItem>
-            
-            <DropdownMenuItem
-              className="flex items-center gap-2 cursor-pointer"
-              asChild
-              disabled={!video.video_url}
-            >
-              <a
-                href={video.video_url || '#'}
-                download
-                onClick={(e) => !video.video_url && e.preventDefault()}
-              >
-                <Download className="w-4 h-4" />
-                <span>Download</span>
-              </a>
-            </DropdownMenuItem>
-            
-            <DropdownMenuItem
-              className="flex items-center gap-2 cursor-pointer"
-              onClick={() => {
-                if (video.video_url) {
-                  navigator.share({
-                    title: 'Share Video',
-                    url: video.video_url
-                  });
-                }
-              }}
-              disabled={!video.video_url}
-            >
-              <Share className="w-4 h-4" />
-              <span>Share</span>
-            </DropdownMenuItem>
-            
-            <AlertDialog>
+        {/* Only show dropdown menu if not loading */}
+        {!isLoading && (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
+                <MoreVertical className="w-5 h-5" />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem
-                className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-600"
-                onSelect={(e) => e.preventDefault()} // Prevent closing dropdown on trigger click
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={handleCopyUrl}
+                disabled={!video.video_url}
               >
-                <AlertDialogTrigger className="flex items-center gap-2 w-full">
-                  <Trash className="w-4 h-4" />
-                  <span>Delete</span>
-                </AlertDialogTrigger>
+                <Copy className="w-4 h-4" />
+                <span>Copy Link</span>
               </DropdownMenuItem>
               
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Delete Video</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Are you sure you want to delete this video? This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction
-                    onClick={handleDelete}
-                    className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </DropdownMenuContent>
-        </DropdownMenu>
+              <DropdownMenuItem
+                className="flex items-center gap-2 cursor-pointer"
+                asChild
+                disabled={!video.video_url}
+              >
+                <a
+                  href={video.video_url || '#'}
+                  download
+                  onClick={(e) => !video.video_url && e.preventDefault()}
+                >
+                  <Download className="w-4 h-4" />
+                  <span>Download</span>
+                </a>
+              </DropdownMenuItem>
+              
+              <DropdownMenuItem
+                className="flex items-center gap-2 cursor-pointer"
+                onClick={() => {
+                  if (video.video_url) {
+                    navigator.share({
+                      title: 'Share Video',
+                      url: video.video_url
+                    });
+                  }
+                }}
+                disabled={!video.video_url}
+              >
+                <Share className="w-4 h-4" />
+                <span>Share</span>
+              </DropdownMenuItem>
+              
+              <AlertDialog>
+                <DropdownMenuItem
+                  className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-600"
+                  onSelect={(e) => e.preventDefault()} // Prevent closing dropdown on trigger click
+                >
+                  <AlertDialogTrigger className="flex items-center gap-2 w-full">
+                    <Trash className="w-4 h-4" />
+                    <span>Delete</span>
+                  </AlertDialogTrigger>
+                </DropdownMenuItem>
+                
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Video</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      Are you sure you want to delete this video? This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDelete}
+                      className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        )}
       </div>
     </div>
   );

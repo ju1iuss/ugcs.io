@@ -1,7 +1,7 @@
 "use client";
 
 import { useUser } from '@clerk/nextjs';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { VideoGrid } from '@/components/global/videos/VideoGrid';
 import { fetchUserVideos } from '@/lib/api';
 import { Video } from '@/types/video';
@@ -20,6 +20,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [progress, setProgress] = useState(0);
+  const pollIntervals = useRef<{ [key: number]: NodeJS.Timeout }>({});
 
   useEffect(() => {
     if (loading && isLoaded) {
@@ -42,6 +43,59 @@ export default function DashboardPage() {
     }
   }, [loading, isLoaded]);
 
+  const pollVideoStatus = async (videoId: number) => {
+    try {
+      const response = await fetch('https://api.altan.ai/galaxia/hook/mdqQXB', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: videoId })
+      });
+      
+      const data = await response.json();
+      
+      if (data.video) {
+        setVideos(currentVideos => 
+          currentVideos.map(video => 
+            video.id === videoId 
+              ? { 
+                  ...video,
+                  ...data.video,
+                }
+              : video
+          )
+        );
+
+        if (data.video.status === "Finished") {
+          if (pollIntervals.current[videoId]) {
+            clearInterval(pollIntervals.current[videoId]);
+            delete pollIntervals.current[videoId];
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error polling video status:', error);
+    }
+  };
+
+  const startPollingVideos = (records: Video[]) => {
+    Object.values(pollIntervals.current).forEach(clearInterval);
+    pollIntervals.current = {};
+
+    records.forEach(record => {
+      if (record.status === "Processing" || record.status === "Loading") {
+        pollIntervals.current[record.id] = setInterval(() => {
+          pollVideoStatus(record.id);
+        }, 10000);
+      }
+    });
+  };
+
+  useEffect(() => {
+    return () => {
+      Object.values(pollIntervals.current).forEach(clearInterval);
+    };
+  }, []);
+
   useEffect(() => {
     async function loadVideos() {
       if (!isLoaded || !user?.id) return;
@@ -53,8 +107,11 @@ export default function DashboardPage() {
         const filteredVideos = response.records
           .filter(video => video.status !== "Not submitted")
           .sort((a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime());
+        
         setVideos(filteredVideos);
         setCredits(response.credits);
+        
+        startPollingVideos(filteredVideos);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
         setError(`Failed to load videos: ${errorMessage}`);
@@ -76,8 +133,19 @@ export default function DashboardPage() {
     );
   };
 
+  const handleAddVideo = (newVideo: Video) => {
+    setVideos(prev => {
+      const updated = [newVideo, ...prev];
+      if (newVideo.status === "Loading" || newVideo.status === "Processing") {
+        pollIntervals.current[newVideo.id] = setInterval(() => {
+          pollVideoStatus(newVideo.id);
+        }, 10000);
+      }
+      return updated;
+    });
+  };
+
   const renderContent = () => {
-    // Combine all initial loading states
     if (loading || !isLoaded || !user) return (
       <div className="h-[50vh] flex flex-col items-center justify-center p-4">
         <h2 className="text-xl font-semibold text-gray-700 mb-4 animate-fade-in">
@@ -107,8 +175,9 @@ export default function DashboardPage() {
     return (
       <div className="p-6">
         <VideoGrid 
-          videos={videos} 
-          onRatingChange={handleRatingChange as any} // Type assertion added to bypass TS error
+          videos={videos}
+          onRatingChange={handleRatingChange}
+          onAddVideo={handleAddVideo}
         />
       </div>
     );
@@ -117,7 +186,7 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-[#f3f5f8]">
       <SidebarProvider>
-        <AppSidebar credits={credits} />
+        <AppSidebar credits={credits} onAddVideo={handleAddVideo} />
         <main className="flex-1 overflow-x-hidden">
           {renderContent()}
         </main>

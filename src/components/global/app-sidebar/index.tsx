@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 import { usePathname } from 'next/navigation';
+import { Video } from '@/types/video';
 
 const items = [
   {
@@ -50,9 +51,10 @@ const items = [
 
 interface AppSidebarProps {
   credits?: number | string;
+  onAddVideo?: (video: Video) => void;
 }
 
-export function AppSidebar({ credits = 0 }: AppSidebarProps) {
+export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
   const pathname = usePathname();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -101,10 +103,10 @@ export function AppSidebar({ credits = 0 }: AppSidebarProps) {
                     >
                       <a href={item.url}>
                         <item.icon className={cn(
-                          pathname === item.url && "text-green-600"
+                          pathname === item.url && "text-green-800"
                         )} />
                         <span className={cn(
-                          pathname === item.url && "text-green-600"
+                          pathname === item.url && "text-green-800"
                         )}>
                           {item.title}
                         </span>
@@ -129,10 +131,10 @@ export function AppSidebar({ credits = 0 }: AppSidebarProps) {
                   >
                     <a href="/inspiration">
                       <Sparkles className={cn(
-                        pathname === '/inspiration' && "text-green-600"
+                        pathname === '/inspiration' && "text-green-800"
                       )} />
                       <span className={cn(
-                        pathname === '/inspiration' && "text-green-600"
+                        pathname === '/inspiration' && "text-green-800"
                       )}>
                         Inspiration
                       </span>
@@ -206,7 +208,11 @@ export function AppSidebar({ credits = 0 }: AppSidebarProps) {
         </SidebarFooter>
       </Sidebar>
 
-      <MultiStepForm isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
+      <MultiStepForm 
+        isOpen={isModalOpen} 
+        onOpenChange={setIsModalOpen}
+        onAddVideo={onAddVideo}
+      />
     </>
   );
 }
