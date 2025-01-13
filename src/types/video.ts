@@ -11,5 +11,6 @@ export interface Video {
 
 export interface VideoResponse {
   total: number;
-  records: Video[];
+  records: any[];
+  credits: string;
 } 

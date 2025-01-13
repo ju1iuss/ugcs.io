@@ -1,51 +1,84 @@
+"use client";
+
 import Image from 'next/image'
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
+import { Link as LinkIcon } from 'lucide-react'
+import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { useState } from 'react'
 
 export default function Home() {
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white max-w-7xl mx-auto px-4">
       {/* Header */}
-      <header className="flex items-center justify-between px-6 py-4">
-        <div className="flex items-center space-x-2">
-          <div className="h-6 w-6 bg-black rounded"></div>
-          <span className="font-medium">ReelFarm</span>
-        </div>
-        <nav className="flex space-x-6">
-          <Link href="#" className="text-gray-600 hover:text-gray-900">
-            Product
-          </Link>
-          <Link href="#" className="text-gray-600 hover:text-gray-900">
-            Pricing
-          </Link>
-        </nav>
-      </header>
+      <div className="border-b border-gray-200 w-screen -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)]">
+        <header className="max-w-5xl mx-auto flex items-center justify-between py-4">
+          <div className="flex items-center space-x-2">
+            <div className="h-8 w-8 bg-black rounded-lg flex items-center justify-center">
+              <LinkIcon className="h-4 w-4 text-white" />
+            </div>
+            <span className="font-semibold">Ugcs.io</span>
+          </div>
+            
+          <nav className="flex space-x-8">
+            <Link href="#" className="text-gray-600 hover:text-gray-900">
+              Product
+            </Link>
+            <Link href="#" className="text-gray-600 hover:text-gray-900">
+              Pricing
+            </Link>
+          </nav>
+        </header>
+      </div>
 
       {/* Hero Section */}
-      
-      <section className="text-center px-4 py-16 max-w-4xl mx-auto">
-        
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          Automate TikToks that drive traffic to your website
+      <section className="text-center py-24 max-w-4xl mx-auto">
+        <h1 className="text-6xl md:text-7xl font-bold text-gray-900 mb-6 leading-tight">
+        Keine Creator? Kein Problem. UGC-Videos KI generiert.
         </h1>
         
-        <p className="text-lg text-gray-600 mb-8">
-          It's like a gen z marketing team, but way cheaper
+        <p className="text-xl text-gray-600 mb-12">
+        Deutschlands realistischste KI-Avatar-Videos, mit integriertem Editing und einfachem Prozess.
         </p>
         <div className="flex justify-center gap-4">
-        <HoverBorderGradient className="flex items-center">
-       <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24" fill="none">
-         <path d="M12 4v16m0-16L6 10m6-6l6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-       </svg>
-           <Link href="/dashboard">Start Now</Link>
-        </HoverBorderGradient>
-
-
+          <Link href="/dashboard">
+            <Button 
+              className="rounded-full text-lg py-6 px-8"
+              size="lg"
+            >
+              Start Now
+            </Button>
+          </Link>
+          <Button 
+            variant="outline"
+            className="rounded-full text-lg py-6 px-8"
+            size="lg"
+            onClick={() => setIsVideoOpen(true)}
+          >
+            18Sek Demo
+          </Button>
         </div>
       </section>
       
+
+      {/* Video Dialog */}
+      <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
+        <DialogContent className="max-w-[520px] p-0 overflow-hidden">
+          <div className="relative aspect-[4/3]">
+            <video 
+              className="w-full h-full object-cover"
+              autoPlay
+              controls
+              src="https://api.altan.ai/platform/media/eb89a4df-b150-4138-b35f-956d728785d2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* TikTok Videos Grid */}
       <section className="flex justify-center gap-4 px-4 mb-24">

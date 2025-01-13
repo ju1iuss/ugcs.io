@@ -4,7 +4,7 @@ import { QuickCreateButton } from "@/components/ui/QuickCreateButton";
 import { useState } from "react";
 import MultiStepForm from "@/components/global/form/MultiStepForm";
 import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
-
+import Credits from "@/components/global/credits";
 
 import {
     useSidebar,
@@ -50,7 +50,11 @@ const items = [
   },
 ];
 
-export function AppSidebar() {
+interface AppSidebarProps {
+  credits?: number | string;
+}
+
+export function AppSidebar({ credits = 0 }: AppSidebarProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { signOut } = useClerk();
 
@@ -111,17 +115,16 @@ export function AppSidebar() {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter> 
-       
-        <Button
-              variant="outline"
-              onClick={() => signOut()}
-              className="w-full"
-            >
-              Sign out
-            </Button>
-            
-            
-
+          <div className="px-4 mb-2">
+            <Credits credits={credits} />
+          </div>
+          <Button
+            variant="outline"
+            onClick={() => signOut()}
+            className="w-full"
+          >
+            Sign out
+          </Button>
         </SidebarFooter>
       </Sidebar>
 
