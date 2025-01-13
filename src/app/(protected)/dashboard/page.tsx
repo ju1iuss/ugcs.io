@@ -54,7 +54,7 @@ export default function DashboardPage() {
           .filter(video => video.status !== "Not submitted")
           .sort((a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime());
         setVideos(filteredVideos);
-        setCredits(credits);
+        setCredits(response.credits);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
         setError(`Failed to load videos: ${errorMessage}`);
@@ -83,8 +83,8 @@ export default function DashboardPage() {
         <h2 className="text-xl font-semibold text-gray-700 mb-4 animate-fade-in">
           Creating your dashboard...
         </h2>
-        <div className="w-full max-w-md animate-fade-in">
-          <Progress value={progress} className="h-2" />
+        <div className="w-full max-w-xl animate-fade-in">
+          <Progress value={progress} className="h-1" />
         </div>
       </div>
     );

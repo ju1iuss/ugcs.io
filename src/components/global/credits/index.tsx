@@ -1,5 +1,6 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
+import { Coins } from 'lucide-react'
 
 interface CreditsProps {
   credits?: number | string;
@@ -10,17 +11,30 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
   const isLoading = credits === "0";
 
   return (
-    <div className={cn("flex justify-between items-center p-3 rounded-lg bg-blue-50 border border-blue-100", className)}>
-      <div className="flex flex-col">
-        <span className="text-sm font-medium">Video Credits</span>
-        <a href="#" className="text-xs text-blue-500 hover:text-blue-600">
-          Upgrade
-        </a>
+    <div className={cn(
+      "flex justify-between items-center p-3 rounded-lg border-l-2 border-green-500 bg-gray-100", 
+      className
+    )}>
+      <div className="flex items-center gap-3">
+        <div className="flex-shrink-0">
+          
+        </div>
+        <div className="flex flex-col">
+          <span className="text-sm font-medium text-green-600">Video Credits</span>
+          <a 
+            href="https://buy.stripe.com/test_00g4j28r362t1GwfYZ" 
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-green-600 hover:text-green-700"
+          >
+            Upgrade
+          </a>
+        </div>
       </div>
       {isLoading ? (
-        <div className="h-4 w-6 bg-blue-200 rounded animate-pulse" />
+        <div className="h-4 w-6 bg-green-200 rounded animate-pulse" />
       ) : (
-        <span className="text-sm font-semibold">
+        <span className="text-sm font-semibold text-green-600">
           {typeof credits === 'string' ? parseInt(credits) : credits}
         </span>
       )}

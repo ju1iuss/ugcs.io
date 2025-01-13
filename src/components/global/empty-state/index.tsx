@@ -1,11 +1,24 @@
 import { Video as VideoIcon, ImageIcon, Users, Sparkles, Link as LinkIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useUser } from '@clerk/nextjs';
 
 interface EmptyStateProps {
   onCreateClick: () => void;
 }
 
 export function EmptyState({ onCreateClick }: EmptyStateProps) {
+  const { user } = useUser();
+  
+  const getStripeUrl = () => {
+    const baseUrl = 'https://buy.stripe.com/test_00g4j28r362t1GwfYZ';
+    const email = user?.emailAddresses?.[0]?.emailAddress;
+    
+    if (!email) return baseUrl;
+    
+    const encodedEmail = encodeURIComponent(email);
+    return `${baseUrl}?prefilled_email=${encodedEmail}`;
+  };
+
   return (
     <div className="p-8 max-w-4xl mx-auto">
       <div className="text-center mb-12 flex flex-col items-center">
@@ -43,14 +56,14 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
             colors: { bg: "bg-green-100/70", text: "text-green-600/70" }
           },
           {
-            title: "UGC Avatar Generator",
-            description: "Auto-magically generate and save viral hooks for your videos",
+            title: "Let AI hold your brands products",
+            description: "Make even better Ads with AI holding your products, ultra realistic.",
             icon: Users,
             colors: { bg: "bg-orange-100/70", text: "text-orange-600/70" }
           },
           {
-            title: "Hook Generator",
-            description: "Auto-magically generate and save viral hooks for your videos",
+            title: "Auto Editing",
+            description: "Receive automatic editing of your videos, with subtitles, cuts, and more.",
             icon: Sparkles,
             colors: { bg: "bg-purple-100/70", text: "text-purple-600/70" }
           }
@@ -78,16 +91,22 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
       <div className="mt-8 bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 bg-blue-100 rounded flex items-center justify-center">
-            <span className="text-blue-600 font-semibold">S</span>
+            <span className="text-blue-600 font-semibold">:(</span>
           </div>
           <div>
-            <div className="font-medium">Subscription required</div>
-            <div className="text-sm text-gray-600">Estimated 2-3 minutes</div>
+            <div className="font-medium">You have 0 Credits</div>
+            <div className="text-sm text-gray-600">Get new credits to generate more videos</div>
           </div>
         </div>
-        <Button variant="link" className="text-blue-600">
-          Upgrade now →
-        </Button>
+        <a 
+          href={getStripeUrl()}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <Button variant="link" className="text-blue-600">
+            Upgrade now →
+          </Button>
+        </a>
       </div>
     </div>
   );

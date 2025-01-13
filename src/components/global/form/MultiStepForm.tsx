@@ -13,6 +13,7 @@ import StyleSelection from './StyleSelection'
 import ScriptInput from './ScriptInput'
 import { useAuth } from "@clerk/nextjs"
 import { ScrollArea } from "@/components/ui/scroll-area"
+import { Loader2 } from "lucide-react"
 
 interface MultiStepFormProps {
   isOpen: boolean
@@ -35,6 +36,7 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
     script: ''
   })
   const { userId } = useAuth()
+  const [isGenerating, setIsGenerating] = useState(false)
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -61,6 +63,8 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
   const handleSubmit = async () => {
     if (!userId) return;
 
+    setIsGenerating(true)
+
     const payload = {
       script: formData.script,
       styleId: formData.style,
@@ -84,6 +88,8 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
       onOpenChange(false);
     } catch (error) {
       console.error('Error generating:', error);
+    } finally {
+      setIsGenerating(false)
     }
   }
 
@@ -154,9 +160,16 @@ export default function MultiStepForm({ isOpen, onOpenChange }: MultiStepFormPro
                   onClick={handleSubmit} 
                   className="ml-auto"
                   size="sm"
-                  disabled={!formData.script.trim() || formData.script.trim().split(/\s+/).filter(Boolean).length < 8}
+                  disabled={!formData.script.trim() || formData.script.trim().split(/\s+/).filter(Boolean).length < 8 || isGenerating}
                 >
-                  Generate
+                  {isGenerating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Generating...
+                    </>
+                  ) : (
+                    'Generate'
+                  )}
                 </Button>
               ) : (
                 <div className="ml-auto" />
