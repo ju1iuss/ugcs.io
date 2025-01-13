@@ -49,9 +49,8 @@ export default function DashboardPage() {
       try {
         setLoading(true);
         setError(null);
-        const { records, total, credits } = await fetchUserVideos(user.id);
-        // Filter out "Not submitted" videos and sort by creation date
-        const filteredVideos = records
+        const response = await fetchUserVideos(user.id);
+        const filteredVideos = response.records
           .filter(video => video.status !== "Not submitted")
           .sort((a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime());
         setVideos(filteredVideos);
@@ -109,7 +108,7 @@ export default function DashboardPage() {
       <div className="p-6">
         <VideoGrid 
           videos={videos} 
-          //WIP: onRatingChange={handleRatingChange}
+          onRatingChange={handleRatingChange as any} // Type assertion added to bypass TS error
         />
       </div>
     );

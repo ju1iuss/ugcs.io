@@ -24,7 +24,6 @@ export const config = {
     '/api/payment/:path*',
     '/callback/:path*',
     
-    // Skip static files and Next.js internals
     '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };
