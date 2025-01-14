@@ -98,15 +98,15 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
                       asChild
                       className={cn(
                         "w-full px-4",
-                        pathname === item.url && "bg-gray-100 font-medium border-l-2 border-green-500"
+                        pathname === item.url && "bg-purple-50 font-medium border-l-2 border-purple-500"
                       )}
                     >
                       <a href={item.url}>
                         <item.icon className={cn(
-                          pathname === item.url && "text-green-800"
+                          pathname === item.url && "text-purple-600"
                         )} />
                         <span className={cn(
-                          pathname === item.url && "text-green-800"
+                          pathname === item.url && "text-purple-600"
                         )}>
                           {item.title}
                         </span>
@@ -148,6 +148,9 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
         <SidebarFooter> 
           <div className="px-4 space-y-3">
             <Credits credits={credits} />
+            <p className="text-xs text-gray-500 text-center">
+        1 Credit = 1 Video Sekunde
+      </p>
             
             <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
               <DropdownMenuTrigger asChild>

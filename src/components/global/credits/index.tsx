@@ -12,7 +12,7 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
 
   return (
     <div className={cn(
-      "flex justify-between items-center p-3 rounded-lg border-l-2 border-green-500 bg-gray-100", 
+      "flex justify-between items-center p-3 rounded-lg border-l-2 border-purple-500 bg-purple-50", 
       className
     )}>
       <div className="flex items-center gap-3">
@@ -25,21 +25,23 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
             href="https://buy.stripe.com/test_00g4j28r362t1GwfYZ" 
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-green-800 hover:text-green-700"
+            className="text-xs text-purple-600 hover:text-purple-700"
           >
             Upgrade
           </a>
         </div>
       </div>
       {isLoading ? (
-        <div className="h-4 w-6 bg-green-200 rounded animate-pulse" />
+        <div className="h-4 w-6 bg-purple-200 rounded animate-pulse" />
       ) : (
-        <span className="text-sm font-semibold text-green-800">
+        <span className="text-sm font-semibold text-purple-600">
           {typeof credits === 'string' ? parseInt(credits) : credits}
         </span>
       )}
       
+      
     </div>
+    
     
   )
 }

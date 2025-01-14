@@ -8,6 +8,8 @@ import { Link as LinkIcon } from 'lucide-react'
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useState } from 'react'
 import AnimatedLogoCloud from '@/components/global/logoCloud';
+import { VideoGallery } from '@/components/global/video-gallery';
+import { Problems } from '@/components/global/problems';
 
 export default function Home() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
@@ -37,78 +39,135 @@ export default function Home() {
 
       {/* Hero Section */}
       <section className="text-center pt-24 pb-12 max-w-4xl mx-auto">
-        <h1 className="text-7xl font-semibold text-gray-900 mb-8 tracking-tighter">
+       
+
+        <h1 className="text-7xl font-semibold text-gray-900 mb-12 tracking-tighter">
           Keine Creator? Kein Problem.{' '}
-          <span className="relative inline-block">
-            <span className="absolute inset-1 bg-blue-600/40" />
+          <span className="relative inline-block mt-0">
+            <span className="absolute inset-0 bg-purple-500/30" />
             <span className="relative">UGC Videos</span>
           </span>
-          <span className="relative inline-block">
-            <span className="absolute inset-1 bg-blue-600/40" />
+          <span className="relative inline-block mt-2">
+            <span className="absolute inset-0 bg-green-500/30" />
             <span className="relative">KI generiert</span>
           </span>
           {' '} 
         </h1>
         
-        <p className="text-md text-gray-600 mb-12">
-          Deutschlands realistischste KI-Avatar-Videos, mit integriertem Editing und einfachem Prozess.
+        <p className="text-md text-gray-800 mb-12">
+          Deutschlands realistischste KI-Avatar-Videos. Einfacher, schneller und besser gehts nicht.
         </p>
-        <div className="flex justify-center gap-4 mb-16">
+        <div className="flex justify-center gap-4 mb-4">
           <Link href="/dashboard">
             <Button 
-              className="rounded-full text-lg py-6 px-8"
+              className="rounded-md text-md py-6 px-8"
               size="lg"
             >
-              Start Now
+              Jetzt Starten
             </Button>
+            
           </Link>
           <Button 
             variant="outline"
-            className="rounded-full text-lg py-6 px-8"
+            className="rounded-md text-md py-6 px-6"
             size="lg"
             onClick={() => setIsVideoOpen(true)}
           >
-            18Sek Demo
+            Demo anschauen (20Sek)
           </Button>
         </div>
+        <p className="text-xs text-gray-400">
+          Free Trial - Keine Kreditkarte notwendig
+        </p>
+        
       </section>
       
 
       {/* Videos Display Section */}
-      <section className="relative h-[60vh] flex justify-center items-start mb-0">
-        <div className="relative w-[260px] aspect-[9/16] -rotate-6 translate-x-12 z-10">
-          <video
-            className="w-full h-full object-cover rounded-2xl shadow-xl"
-            autoPlay
-            muted
-            loop
-            playsInline
-            src="https://storage.googleapis.com/nca-toolkit-bucket-julius/a6d2143c-63be-4514-b600-572f2b5315d5_captioned.mp4"
-          />
+      <VideoGallery />
+
+      {/* Problems Section */}
+      <Problems />
+
+      {/* Gray Background Section */}
+      <div className="w-screen -mx-[calc((100vw-100%)/2)] bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          {/* Alternatives Section */}
+          <section className="py-24 max-w-4xl mx-auto text-center">
+            <div className="grid md:grid-cols-3 gap-6">
+              <Card className="p-6 bg-red-50">
+                <div className="flex justify-between mb-4">
+                  <h3 className="font-semibold">UGC Agencies</h3>
+                  <span className="text-red-500">×</span>
+                </div>
+                <p className="text-sm text-red-600">
+                  Expensive, $60-120 per video, anywhere between $4000 to $6000 a month
+                </p>
+              </Card>
+              <Card className="p-6 bg-red-50">
+                <div className="flex justify-between mb-4">
+                  <h3 className="font-semibold">Doing it yourself</h3>
+                  <span className="text-red-500">×</span>
+                </div>
+                <p className="text-sm text-red-600">
+                  Researching, planning, filming, recording, editing, publishing, re-purposing
+                </p>
+              </Card>
+              <Card className="p-6 bg-green-50">
+                <div className="flex justify-between mb-4">
+                  <h3 className="font-semibold">ReelFarm</h3>
+                  <span className="text-green-500">✓</span>
+                </div>
+                <p className="text-sm text-green-600">
+                  Automatically creating & publishing videos to all platforms, for a monthly subscription
+                </p>
+              </Card>
+            </div>
+          </section>
+
+          {/* Features Section */}
+          <section className="py-24 max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-12">Features</h2>
+            <div className="grid md:grid-cols-3 gap-6">
+              {[
+                {
+                  title: "Create UGC videos",
+                  description: "Create & publish UGC videos promoting your product demo",
+                  available: true
+                },
+                {
+                  title: "Create slideshow videos",
+                  description: "Create & publish image slideshow videos to TikTok",
+                  available: false
+                },
+                {
+                  title: "Automated Campaigns",
+                  description: "Automatically create & auto-publish UGC videos to your TikTok account",
+                  available: true
+                },
+                {
+                  title: "UGC Avatar Generator",
+                  description: "Auto-magically generate and save viral hooks for your videos",
+                  available: false
+                },
+                {
+                  title: "Hook Generator",
+                  description: "Auto-magically generate and save viral hooks for your videos",
+                  available: false
+                }
+              ].map((feature, i) => (
+                <Card key={i} className="p-6">
+                  <h3 className="font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-sm text-gray-600">{feature.description}</p>
+                  {!feature.available && (
+                    <div className="mt-2 text-sm text-gray-400">Not Available Yet</div>
+                  )}
+                </Card>
+              ))}
+            </div>
+          </section>
         </div>
-        
-        <div className="relative w-[260px] aspect-[9/16] z-20">
-          <video
-            className="w-full h-full object-cover rounded-2xl shadow-xl"
-            autoPlay
-            muted
-            loop
-            playsInline
-            src="https://storage.googleapis.com/nca-toolkit-bucket-julius/a6d2143c-63be-4514-b600-572f2b5315d5_captioned.mp4"
-          />
-        </div>
-        
-        <div className="relative w-[260px] aspect-[9/16] rotate-6 -translate-x-12 z-10">
-          <video
-            className="w-full h-full object-cover rounded-2xl shadow-xl"
-            autoPlay
-            muted
-            loop
-            playsInline
-            src="https://storage.googleapis.com/nca-toolkit-bucket-julius/a6d2143c-63be-4514-b600-572f2b5315d5_captioned.mp4"
-          />
-        </div>
-      </section>
+      </div>
 
       {/* Video Dialog */}
       <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
@@ -125,87 +184,6 @@ export default function Home() {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Logo Cloud Section - adjusted positioning */}
-      <div className="-mt-20">
-        <AnimatedLogoCloud />
-      </div>
-
-      {/* Alternatives Section */}
-      <section className="px-4 py-8 max-w-4xl mx-auto text-center">
-        
-        <div className="grid md:grid-cols-3 gap-6">
-          <Card className="p-6 bg-red-50">
-            <div className="flex justify-between mb-4">
-              <h3 className="font-semibold">UGC Agencies</h3>
-              <span className="text-red-500">×</span>
-            </div>
-            <p className="text-sm text-red-600">
-              Expensive, $60-120 per video, anywhere between $4000 to $6000 a month
-            </p>
-          </Card>
-          <Card className="p-6 bg-red-50">
-            <div className="flex justify-between mb-4">
-              <h3 className="font-semibold">Doing it yourself</h3>
-              <span className="text-red-500">×</span>
-            </div>
-            <p className="text-sm text-red-600">
-              Researching, planning, filming, recording, editing, publishing, re-purposing
-            </p>
-          </Card>
-          <Card className="p-6 bg-green-50">
-            <div className="flex justify-between mb-4">
-              <h3 className="font-semibold">ReelFarm</h3>
-              <span className="text-green-500">✓</span>
-            </div>
-            <p className="text-sm text-green-600">
-              Automatically creating & publishing videos to all platforms, for a monthly subscription
-            </p>
-          </Card>
-        </div>
-      </section>
-
-      {/* Features Section */}
-      <section className="px-4 py-16 max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-12">Features</h2>
-        <div className="grid md:grid-cols-3 gap-6">
-          {[
-            {
-              title: "Create UGC videos",
-              description: "Create & publish UGC videos promoting your product demo",
-              available: true
-            },
-            {
-              title: "Create slideshow videos",
-              description: "Create & publish image slideshow videos to TikTok",
-              available: false
-            },
-            {
-              title: "Automated Campaigns",
-              description: "Automatically create & auto-publish UGC videos to your TikTok account",
-              available: true
-            },
-            {
-              title: "UGC Avatar Generator",
-              description: "Auto-magically generate and save viral hooks for your videos",
-              available: false
-            },
-            {
-              title: "Hook Generator",
-              description: "Auto-magically generate and save viral hooks for your videos",
-              available: false
-            }
-          ].map((feature, i) => (
-            <Card key={i} className="p-6">
-              <h3 className="font-semibold mb-2">{feature.title}</h3>
-              <p className="text-sm text-gray-600">{feature.description}</p>
-              {!feature.available && (
-                <div className="mt-2 text-sm text-gray-400">Not Available Yet</div>
-              )}
-            </Card>
-          ))}
-        </div>
-      </section>
 
       {/* Pricing Section */}
       <section className="px-4 py-16 max-w-4xl mx-auto text-center">
@@ -298,33 +276,36 @@ export default function Home() {
         <div className="max-w-4xl mx-auto grid grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
-              <div className="h-6 w-6 bg-black rounded"></div>
+              <div className="h-8 w-8 bg-black rounded-lg flex items-center justify-center">
+                <LinkIcon className="h-4 w-4 text-white" />
+              </div>
+              <span className="font-semibold">Ugcs.io</span>
             </div>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Product</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li><Link href="#">Features</Link></li>
-              <li><Link href="#">Pricing</Link></li>
+              <li><Link href="/#demo">Demo</Link></li>
+              <li><Link href="/#pricing">Pricing</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li><Link href="#">About</Link></li>
-              <li><Link href="#">Contact</Link></li>
+              <li><Link href="/about">About</Link></li>
+              <li><Link href="/contact">Contact</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li><Link href="#">Privacy Policy</Link></li>
-              <li><Link href="#">Terms of Service</Link></li>
+              <li><Link href="/privacy">Privacy Policy</Link></li>
+              <li><Link href="/terms">Terms of Service</Link></li>
             </ul>
           </div>
         </div>
         <div className="max-w-4xl mx-auto mt-12 text-center text-sm text-gray-600">
-          © 2023 ReelFarm. All rights reserved.
+          @ 2025 Forever. All rights reserved.
         </div>
       </footer>
     </div>
