@@ -20,7 +20,7 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [progress, setProgress] = useState(0);
-  const pollIntervals = useRef<{ [key: number]: NodeJS.Timeout }>({});
+  const pollIntervals = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
   useEffect(() => {
     if (loading && isLoaded) {
@@ -43,48 +43,121 @@ export default function DashboardPage() {
     }
   }, [loading, isLoaded]);
 
-  const pollVideoStatus = async (videoId: number, correlationId?: string) => {
+  const pollGeneratingStatus = async (correlationId: string) => {
     try {
+      console.log('Polling generating status for:', correlationId);
+      
       const response = await fetch('https://api.altan.ai/galaxia/hook/rxhQo5', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
-          id: videoId,
-          correlation_id: correlationId
-        })
+        body: JSON.stringify({ correlation_id: correlationId })
+      });
+      
+      const data = await response.json();
+      console.log('Received data:', data);
+      
+      if (data.video) {
+        const videoData = typeof data.video === 'string' 
+          ? JSON.parse(data.video) 
+          : data.video;
+
+        console.log('Parsed video data:', videoData);
+
+        if (pollIntervals.current[correlationId]) {
+          clearInterval(pollIntervals.current[correlationId]);
+          delete pollIntervals.current[correlationId];
+        }
+
+        setVideos(currentVideos => {
+          return currentVideos.map(video => {
+            if (video.correlationId === correlationId) {
+              const updatedVideo = {
+                ...video,
+                id: Number(videoData.id),
+                status: videoData.status,
+                thumbnail: videoData.thumbnail,
+                video_url: videoData.video_url,
+                created_time: videoData.created_time,
+                last_modified_time: videoData.last_modified_time
+              };
+              console.log('Updating video:', updatedVideo);
+              return updatedVideo;
+            }
+            return video;
+          });
+        });
+
+        if (videoData.status === "Loading") {
+          startLoadingPolling(Number(videoData.id));
+        }
+      }
+    } catch (error) {
+      console.error('Error polling generating status:', error);
+    }
+  };
+
+  const pollLoadingStatus = async (videoId: number) => {
+    try {
+      const response = await fetch('https://api.altan.ai/galaxia/hook/mdqQXB', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: videoId })
       });
       
       const data = await response.json();
       
       if (data.video) {
-        const videoData = typeof data.video === 'string' ? JSON.parse(data.video) : data.video;
-        
         setVideos(currentVideos => 
-          currentVideos.map(video => {
-            if (video.id === videoId || video.correlationId === videoData.corelation_id) {
-              return {
-                ...video,
-                ...videoData,
-                id: videoData.id || video.id,
-                thumbnail: videoData.thumbnail || video.thumbnail,
-                status: videoData.status,
-                correlationId: videoData.corelation_id
-              };
-            }
-            return video;
-          })
+          currentVideos.map(video => 
+            video.id === videoId 
+              ? { ...video, ...data.video }
+              : video
+          )
         );
 
-        if (videoData.status === "Finished") {
-          if (pollIntervals.current[videoId]) {
-            clearInterval(pollIntervals.current[videoId]);
-            delete pollIntervals.current[videoId];
-          }
+        if (data.video.status === "Finished") {
+          clearLoadingPolling(videoId);
         }
       }
     } catch (error) {
-      console.error('Error polling video status:', error);
+      console.error('Error polling loading status:', error);
     }
+  };
+
+  const startGeneratingPolling = (correlationId: string) => {
+    if (pollIntervals.current[correlationId]) {
+      clearInterval(pollIntervals.current[correlationId]);
+    }
+    
+    pollIntervals.current[correlationId] = setInterval(() => {
+      pollGeneratingStatus(correlationId);
+    }, 5000);
+  };
+
+  const startLoadingPolling = (videoId: number) => {
+    if (pollIntervals.current[`loading-${videoId}`]) {
+      clearInterval(pollIntervals.current[`loading-${videoId}`]);
+    }
+    
+    pollIntervals.current[`loading-${videoId}`] = setInterval(() => {
+      pollLoadingStatus(videoId);
+    }, 5000);
+  };
+
+  const clearLoadingPolling = (videoId: number) => {
+    if (pollIntervals.current[`loading-${videoId}`]) {
+      clearInterval(pollIntervals.current[`loading-${videoId}`]);
+      delete pollIntervals.current[`loading-${videoId}`];
+    }
+  };
+
+  const handleAddVideo = (newVideo: Video) => {
+    setVideos(prev => [newVideo, ...prev]);
+    
+    if (newVideo.correlationId) {
+      startGeneratingPolling(newVideo.correlationId);
+    }
+    setIsModalOpen(false);
   };
 
   const startPollingVideos = (records: Video[]) => {
@@ -92,10 +165,10 @@ export default function DashboardPage() {
     pollIntervals.current = {};
 
     records.forEach(record => {
-      if (record.status === "Generating" || record.status === "Loading" || record.status === "Processing") {
-        pollIntervals.current[record.id] = setInterval(() => {
-          pollVideoStatus(record.id, record.correlationId);
-        }, 10000);
+      if (record.status === "Generating" && record.correlationId) {
+        startGeneratingPolling(record.correlationId);
+      } else if (record.status === "Loading" || record.status === "Processing") {
+        startLoadingPolling(record.id);
       }
     });
   };
@@ -141,19 +214,6 @@ export default function DashboardPage() {
           : video
       )
     );
-  };
-
-  const handleAddVideo = (newVideo: Video) => {
-    setVideos(prev => {
-      const updated = [newVideo, ...prev];
-      if (newVideo.correlationId || newVideo.status === "Loading" || newVideo.status === "Processing") {
-        pollIntervals.current[newVideo.id] = setInterval(() => {
-          pollVideoStatus(newVideo.id, newVideo.correlationId);
-        }, 10000);
-      }
-      return updated;
-    });
-    setIsModalOpen(false);
   };
 
   const handleDeleteVideo = (videoId: number) => {
