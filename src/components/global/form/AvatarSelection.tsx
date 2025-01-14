@@ -37,12 +37,12 @@ const avatars: Avatar[] = [
     name: 'Hannah'
   },
   { 
-    id: '4', 
+    id: '5', 
     src: 'https://api.altan.ai/platform/media/79497d6b-bc52-4fc3-99df-9f38a2cc84a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
     name: 'Sophie'
   },
   { 
-    id: '5', 
+    id: '6', 
     src: 'https://api.altan.ai/platform/media/6eb32482-9037-4858-8abd-f2ce8d09df1f?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
     name: 'Noah'
   },

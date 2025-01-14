@@ -66,6 +66,8 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: Mult
     if (!userId) return;
     setIsGenerating(true);
 
+    const correlationId = `temp-${Date.now()}`;
+
     const tempVideo: Video = {
       id: Date.now(),
       video_url: null,
@@ -74,20 +76,21 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: Mult
       created_time: new Date().toISOString(),
       last_modified_time: new Date().toISOString(),
       last_modified_by: userId,
-      rating: null
+      rating: null,
+      correlationId
     };
 
     onAddVideo?.(tempVideo);
 
     const payload = {
-      script: formData.script,
-      styleId: formData.style,
-      avatarId: formData.avatar,
-      userId: userId
+      text: formData.script,
+      style: formData.style,
+      avatar: formData.avatar,
+      user_id: userId,
+      correlation_id: correlationId
     };
 
     try {
-      // Initial generation request
       const response = await fetch('https://api.altan.ai/galaxia/hook/0jctFE', {
         method: 'POST',
         headers: {
@@ -97,26 +100,6 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: Mult
       });
 
       if (!response.ok) throw new Error('Failed to generate');
-
-      // Wait 10 seconds before first poll
-      setTimeout(async () => {
-        try {
-          const pollResponse = await fetch('https://api.altan.ai/galaxia/hook/mdqQXB', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: tempVideo.id })
-          });
-          
-          const data = await pollResponse.json();
-          
-          // If we get video data back, update the video in the dashboard
-          if (data.video) {
-            onAddVideo?.(data.video);
-          }
-        } catch (error) {
-          console.error('Error polling video status:', error);
-        }
-      }, 10000);
 
       setStep(1);
       setFormData({ avatar: '', style: '', script: '' });

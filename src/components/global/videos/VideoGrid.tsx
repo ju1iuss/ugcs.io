@@ -6,11 +6,12 @@ import { cn } from '@/lib/utils';
 
 interface VideoGridProps {
   videos: Video[];
-  onRatingChange?: (videoId: number, newRating: 'good' | 'bad' | null) => void;
-  onAddVideo?: (video: Video) => void;
+  onRatingChange: (videoId: number, newRating: 'good' | 'bad' | null) => void;
+  onAddVideo: (video: Video) => void;
+  onDelete: (videoId: number) => void;
 }
 
-export function VideoGrid({ videos, onRatingChange, onAddVideo }: VideoGridProps) {
+export function VideoGrid({ videos, onRatingChange, onAddVideo, onDelete }: VideoGridProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -36,6 +37,7 @@ export function VideoGrid({ videos, onRatingChange, onAddVideo }: VideoGridProps
               <VideoCard 
                 video={video} 
                 onRatingChange={onRatingChange} // Pass onRatingChange to VideoCard
+                onDelete={onDelete} // Pass onDelete to VideoCard
               />
             </div>
           ))}

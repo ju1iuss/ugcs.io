@@ -35,14 +35,14 @@ const styles: Record<string, Style[]> = {
     { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/d0900d55-45cb-438e-996f-3014eff93994?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     
   ],
-  '4': [
+  '5': [
     { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/79497d6b-bc52-4fc3-99df-9f38a2cc84a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/e94ae315-1eb7-4834-becd-c0c38958e74d?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     
   ],
-  '5': [
+  '6': [
     { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/4b817dbd-40a6-4078-a814-56ee49fc3372?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
-    { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/d7b77d53-1e19-4e8b-911b-0046c93782cf?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/6eb32482-9037-4858-8abd-f2ce8d09df1f?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     
   ],
   // etc...

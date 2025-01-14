@@ -1,6 +1,6 @@
-import { Video as VideoIcon, ImageIcon, Users, Sparkles, Link as LinkIcon } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useUser } from '@clerk/nextjs';
+import { Button } from "@/components/ui/button"
+import { useUser } from "@clerk/nextjs"
+import { ImageIcon, LinkIcon, Sparkles, Users, VideoIcon } from "lucide-react"
 
 interface EmptyStateProps {
   onCreateClick: () => void;

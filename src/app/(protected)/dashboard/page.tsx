@@ -43,29 +43,39 @@ export default function DashboardPage() {
     }
   }, [loading, isLoaded]);
 
-  const pollVideoStatus = async (videoId: number) => {
+  const pollVideoStatus = async (videoId: number, correlationId?: string) => {
     try {
-      const response = await fetch('https://api.altan.ai/galaxia/hook/mdqQXB', {
+      const response = await fetch('https://api.altan.ai/galaxia/hook/rxhQo5', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: videoId })
+        body: JSON.stringify({ 
+          id: videoId,
+          correlation_id: correlationId
+        })
       });
       
       const data = await response.json();
       
       if (data.video) {
+        const videoData = typeof data.video === 'string' ? JSON.parse(data.video) : data.video;
+        
         setVideos(currentVideos => 
-          currentVideos.map(video => 
-            video.id === videoId 
-              ? { 
-                  ...video,
-                  ...data.video,
-                }
-              : video
-          )
+          currentVideos.map(video => {
+            if (video.id === videoId || video.correlationId === videoData.corelation_id) {
+              return {
+                ...video,
+                ...videoData,
+                id: videoData.id || video.id,
+                thumbnail: videoData.thumbnail || video.thumbnail,
+                status: videoData.status,
+                correlationId: videoData.corelation_id
+              };
+            }
+            return video;
+          })
         );
 
-        if (data.video.status === "Finished") {
+        if (videoData.status === "Finished") {
           if (pollIntervals.current[videoId]) {
             clearInterval(pollIntervals.current[videoId]);
             delete pollIntervals.current[videoId];
@@ -82,9 +92,9 @@ export default function DashboardPage() {
     pollIntervals.current = {};
 
     records.forEach(record => {
-      if (record.status === "Processing" || record.status === "Loading") {
+      if (record.status === "Generating" || record.status === "Loading" || record.status === "Processing") {
         pollIntervals.current[record.id] = setInterval(() => {
-          pollVideoStatus(record.id);
+          pollVideoStatus(record.id, record.correlationId);
         }, 10000);
       }
     });
@@ -136,13 +146,20 @@ export default function DashboardPage() {
   const handleAddVideo = (newVideo: Video) => {
     setVideos(prev => {
       const updated = [newVideo, ...prev];
-      if (newVideo.status === "Loading" || newVideo.status === "Processing") {
+      if (newVideo.correlationId || newVideo.status === "Loading" || newVideo.status === "Processing") {
         pollIntervals.current[newVideo.id] = setInterval(() => {
-          pollVideoStatus(newVideo.id);
+          pollVideoStatus(newVideo.id, newVideo.correlationId);
         }, 10000);
       }
       return updated;
     });
+    setIsModalOpen(false);
+  };
+
+  const handleDeleteVideo = (videoId: number) => {
+    setVideos(currentVideos => 
+      currentVideos.filter(video => video.id !== videoId)
+    );
   };
 
   const renderContent = () => {
@@ -178,6 +195,7 @@ export default function DashboardPage() {
           videos={videos}
           onRatingChange={handleRatingChange}
           onAddVideo={handleAddVideo}
+          onDelete={handleDeleteVideo}
         />
       </div>
     );
@@ -192,7 +210,11 @@ export default function DashboardPage() {
         </main>
       </SidebarProvider>
 
-      <MultiStepForm isOpen={isModalOpen} onOpenChange={setIsModalOpen} />
+      <MultiStepForm 
+        isOpen={isModalOpen} 
+        onOpenChange={setIsModalOpen}
+        onAddVideo={handleAddVideo}
+      />
     </div>
   );
 }

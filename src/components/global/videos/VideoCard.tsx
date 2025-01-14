@@ -153,12 +153,14 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
 
   const handleDelete = async () => {
     try {
-      await deleteVideo(video.id);
-      // Only call onDelete if the API call was successful
+      // Call onDelete first for immediate UI update
       onDelete?.(video.id);
+      
+      // Then make the API call
+      await deleteVideo(video.id);
     } catch (error) {
       console.error('Failed to delete video:', error);
-      // You might want to show an error toast here
+      // Optionally: You could add logic here to revert the UI change if the API call fails
     }
   };
 
