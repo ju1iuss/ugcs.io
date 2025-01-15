@@ -52,7 +52,7 @@ export function VideoGallery() {
               onClick={() => handleVideoClick(index)}
             >
               <video
-                ref={el => videoRefs.current[index] = el}
+                ref={(el) => { videoRefs.current[index] = el }}
                 className="w-full aspect-[9/16] object-cover rounded-xl shadow-lg"
                 loop
                 muted={playingIndex !== index}
