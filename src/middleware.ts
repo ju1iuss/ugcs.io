@@ -21,9 +21,10 @@ export const config = {
   matcher: [
     // Protected routes
     '/dashboard/:path*',
+    '/contact/:path*',
+    '/pricing/:path*',
     '/api/payment/:path*',
     '/callback/:path*',
     
-    '/((?!_next/static|_next/image|favicon.ico).*)',
   ],
 };

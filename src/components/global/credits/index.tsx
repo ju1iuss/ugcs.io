@@ -1,6 +1,7 @@
 import React from 'react'
 import { cn } from '@/lib/utils'
 import { Coins } from 'lucide-react'
+import Link from 'next/link';
 
 interface CreditsProps {
   credits?: number | string;
@@ -21,14 +22,12 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
         </div>
         <div className="flex flex-col">
           <span className="text-sm font-medium text-black-600">Video Credits</span>
-          <a 
-            href="https://buy.stripe.com/test_00g4j28r362t1GwfYZ" 
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link 
+            href="/pricing"
             className="text-xs text-purple-600 hover:text-purple-700"
           >
             Upgrade
-          </a>
+          </Link>
         </div>
       </div>
       {isLoading ? (
