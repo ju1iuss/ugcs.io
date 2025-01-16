@@ -21,11 +21,33 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
+      
+
       <div className="text-center mb-12 flex flex-col items-center">
         <div className="h-12 w-12 bg-black rounded-lg flex items-center justify-center mb-4">
           <LinkIcon className="h-6 w-6 text-white" />
         </div>
         <h1 className="text-2xl font-semibold">Welcome to Ugcs.io</h1>
+      </div>
+      
+      <div className="mb-8 bg-purple-50 border border-purple-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-4">
+          <div className="h-8 w-8 bg-purple-100 rounded flex items-center justify-center">
+            <span className="text-purple-600 font-semibold">!</span>
+          </div>
+          <div>
+            <div className="font-medium">Wichtig: Die App ist in der Early Stage Phase.</div>
+            <div className="text-sm text-gray-600">
+              Falls du schon Videos generiert hast aber diesen Screen bekommst,{' '}
+              <button 
+                onClick={() => window.location.reload()}
+                className="text-purple-600 hover:text-purple-700 hover:underline font-medium"
+              >
+                klick hier.
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
       
       <div className="grid md:grid-cols-2 gap-6">
@@ -88,10 +110,10 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
         ))}
       </div>
 
-      <div className="mt-8 bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
+      <div className="mt-8 bg-purple-50 border border-purple-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
-          <div className="h-8 w-8 bg-blue-100 rounded flex items-center justify-center">
-            <span className="text-blue-600 font-semibold">S</span>
+          <div className="h-8 w-8 bg-purple-100 rounded flex items-center justify-center gap-4">
+            <span className="text-purple-600 font-semibold">S</span>
           </div>
           <div>
             <div className="font-medium">Du hast nicht mehr viele Credits</div>
@@ -102,7 +124,7 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
           href="/pricing"
           className="no-underline"
         >
-          <Button variant="link" className="text-blue-600">
+          <Button variant="link" className="text-purple-600">
             Jetzt Upgraden →
           </Button>
         </a>
