@@ -30,6 +30,7 @@ import {
 import { cn } from "@/lib/utils";
 import { usePathname } from 'next/navigation';
 import { Video } from '@/types/video';
+import { CreditDrawer } from "../pricing/credit-drawer";
 
 const items = [
   {
@@ -38,12 +39,12 @@ const items = [
     icon: Home,
   },
   {
-    title: "Settings",
+    title: "Einstellungen",
     url: "/settings",
     icon: Settings,
   },
   {
-    title: "Affiliates",
+    title: "Affiliates (soon)",
     url: "#",
     icon: Calendar,
   },
@@ -85,11 +86,13 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
               <QuickCreateButton
                 onCreateClick={() => setIsModalOpen(true)}
                 className="w-full h-9 text-sm"
+               
               />
+              
             </div>
          
 
-            <SidebarGroupLabel className="px-6">Application</SidebarGroupLabel>
+            <SidebarGroupLabel className="px-6">App</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="px-2">
                 {items.map((item) => (
@@ -98,15 +101,16 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
                       asChild
                       className={cn(
                         "w-full px-4",
-                        pathname === item.url && "bg-purple-50 font-medium border-l-2 border-purple-500"
+                        pathname === item.url && "bg-accent"
                       )}
                     >
                       <a href={item.url}>
                         <item.icon className={cn(
-                          pathname === item.url && "text-purple-600"
+                          "h-4 w-4",
+                          pathname === item.url && "text-foreground"
                         )} />
                         <span className={cn(
-                          pathname === item.url && "text-purple-600"
+                          pathname === item.url && "font-medium"
                         )}>
                           {item.title}
                         </span>
@@ -126,15 +130,16 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
                     asChild
                     className={cn(
                       "w-full px-4",
-                      pathname === '/inspiration' && "bg-gray-100 font-medium border-l-2 border-green-500"
+                      pathname === '/inspiration' && "bg-accent"
                     )}
                   >
                     <a href="/inspiration">
                       <Sparkles className={cn(
-                        pathname === '/inspiration' && "text-green-800"
+                        "h-4 w-4",
+                        pathname === '/inspiration' && "text-foreground"
                       )} />
                       <span className={cn(
-                        pathname === '/inspiration' && "text-green-800"
+                        pathname === '/inspiration' && "font-medium"
                       )}>
                         Inspiration
                       </span>
@@ -148,9 +153,12 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
         <SidebarFooter> 
           <div className="px-4 space-y-3">
             <Credits credits={credits} />
-            <p className="text-xs text-gray-500 text-center">
+            <p className="text-xs text-gray-500 text-center italic">
         1 Credit = 1 Video Sekunde
       </p>
+      <div className="flex justify-center">
+        
+      </div>
             
             <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
               <DropdownMenuTrigger asChild>
@@ -213,6 +221,7 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
 
       <MultiStepForm 
         isOpen={isModalOpen} 
+        credits={credits}
         onOpenChange={setIsModalOpen}
         onAddVideo={onAddVideo}
       />

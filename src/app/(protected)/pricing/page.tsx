@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Check } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import { CreditDrawer } from "@/components/global/pricing/credit-drawer"
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
@@ -163,11 +164,15 @@ export default function PricingPage() {
 
       <div className="text-center mt-8">
         <p className="text-sm text-gray-600">
-          Brauchst du mehr Credits?{' '}
-          <Link href="/contact" className="font-semibold text-purple-600 hover:text-purple-500">
-            Kontaktiere uns für ein Enterprise Angebot →
+          Brauchst du einfach nur mehr Credits?{' '}
+          <Link href="/dashboard" className="font-semibold text-purple-600 hover:text-purple-500">
+            Klicke hier →
           </Link>
         </p>
+      </div>
+
+      <div className="flex justify-center mt-8">
+        
       </div>
     </div>
   );

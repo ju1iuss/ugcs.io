@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from '@/components/global/empty-state';
 import MultiStepForm from "@/components/global/form/MultiStepForm";
 import { Progress } from "@/components/ui/progress";
+import MorphingText from '@/components/ui/morphing-text';
+import { AnimatedText } from "@/components/ui/animated-text";
 
 export default function DashboardPage() {
   const { user, isLoaded } = useUser();
@@ -21,6 +23,19 @@ export default function DashboardPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [progress, setProgress] = useState(0);
   const pollIntervals = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const [loadingStep, setLoadingStep] = useState(0);
+
+  useEffect(() => {
+    if (loading && isLoaded) {
+      setLoadingStep(0);
+      const steps = [
+        setTimeout(() => setLoadingStep(1), 1000),
+        setTimeout(() => setLoadingStep(2), 2000),
+      ];
+
+      return () => steps.forEach(clearTimeout);
+    }
+  }, [loading, isLoaded]);
 
   useEffect(() => {
     if (loading && isLoaded) {
@@ -129,9 +144,11 @@ export default function DashboardPage() {
       clearInterval(pollIntervals.current[correlationId]);
     }
     
-    pollIntervals.current[correlationId] = setInterval(() => {
-      pollGeneratingStatus(correlationId);
-    }, 5000);
+    setTimeout(() => {
+      pollIntervals.current[correlationId] = setInterval(() => {
+        pollGeneratingStatus(correlationId);
+      }, 5000);
+    }, 5000); //WIP Change time to delay first polling function
   };
 
   const startLoadingPolling = (videoId: number) => {
@@ -192,9 +209,13 @@ export default function DashboardPage() {
           .sort((a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime());
         
         setVideos(filteredVideos);
-        setCredits(response.credits);
+        setCredits(response.credits.toString());
+        console.log('Credits loaded:', response.credits);
         
         startPollingVideos(filteredVideos);
+        
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
         setError(`Failed to load videos: ${errorMessage}`);
@@ -225,8 +246,14 @@ export default function DashboardPage() {
   const renderContent = () => {
     if (loading || !isLoaded || !user) return (
       <div className="h-[50vh] flex flex-col items-center justify-center p-4">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4 animate-fade-in">
-          Creating your dashboard...
+        <h2 className="text-xl font-semibold text-gray-700 mb-4">
+          <AnimatedText 
+            text={
+              loadingStep === 0 ? "Sammeln deiner Videos..." :
+              loadingStep === 1 ? "Zusammenstellen des Layouts..." :
+              "Erstellen deines Dashboards..."
+            }
+          />
         </h2>
         <div className="w-full max-w-xl animate-fade-in">
           <Progress value={progress} className="h-1" />
@@ -274,6 +301,7 @@ export default function DashboardPage() {
         isOpen={isModalOpen} 
         onOpenChange={setIsModalOpen}
         onAddVideo={handleAddVideo}
+        credits={parseInt(credits)}
       />
     </div>
   );

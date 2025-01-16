@@ -19,7 +19,7 @@ export function QuickCreateButton({ onCreateClick, className }: QuickCreateButto
       )}
     >
       <Plus className="h-4 w-4" />
-      <span className="font-medium">Quick Create</span>
+      <span className="font-medium">Neues Video</span>
     </Button>
   )
 } 

@@ -91,20 +91,19 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
       <div className="mt-8 bg-blue-50 border border-blue-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 bg-blue-100 rounded flex items-center justify-center">
-            <span className="text-blue-600 font-semibold">:(</span>
+            <span className="text-blue-600 font-semibold">S</span>
           </div>
           <div>
-            <div className="font-medium">You have 0 Credits</div>
-            <div className="text-sm text-gray-600">Get new credits to generate more videos</div>
+            <div className="font-medium">Du hast nicht mehr viele Credits</div>
+            <div className="text-sm text-gray-600">Hol dir mehr Credits um mehr Videos zu erstellen</div>
           </div>
         </div>
         <a 
-          href={getStripeUrl()}
-          target="_blank"
-          rel="noopener noreferrer"
+          href="/pricing"
+          className="no-underline"
         >
           <Button variant="link" className="text-blue-600">
-            Upgrade now →
+            Jetzt Upgraden →
           </Button>
         </a>
       </div>

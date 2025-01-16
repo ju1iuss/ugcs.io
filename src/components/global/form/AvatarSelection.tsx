@@ -52,7 +52,7 @@ const avatars: Avatar[] = [
 export default function AvatarSelection({ selectedAvatar, onSelect }: AvatarSelectionProps) {
   return (
     <div className="w-full px-6">
-      <h2 className="text-xl font-semibold mb-6 text-center">Select an Avatar</h2>
+      <h2 className="text-xl font-semibold mb-6 text-center">Wähle einen Avatar</h2>
       
       <RadioGroup 
         value={selectedAvatar} 

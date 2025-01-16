@@ -13,7 +13,7 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
 
   return (
     <div className={cn(
-      "flex justify-between items-center p-3 rounded-lg border-l-2 border-purple-500 bg-purple-50", 
+      "flex justify-between items-center p-3 rounded-lg border border-purple-500 bg-purple-50",
       className
     )}>
       <div className="flex items-center gap-3">
@@ -37,12 +37,8 @@ const Credits = ({ credits = "0", className }: CreditsProps) => {
           {typeof credits === 'string' ? parseInt(credits) : credits}
         </span>
       )}
-      
-      
     </div>
-    
-    
-  )
+  );
 }
 
 export default Credits

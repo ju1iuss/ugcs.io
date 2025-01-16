@@ -15,11 +15,13 @@ import { useAuth } from "@clerk/nextjs"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Loader2 } from "lucide-react"
 import { Video } from '@/types/video';
+import { MultiStepLoader } from "@/components/ui/multi-step-loader";
 
 interface MultiStepFormProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   onAddVideo?: (video: Video) => void
+  credits: number | string
 }
 
 interface FormData {
@@ -30,7 +32,7 @@ interface FormData {
 
 const TOTAL_STEPS = 3
 
-export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: MultiStepFormProps) {
+export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credits }: MultiStepFormProps) {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     avatar: '',
@@ -39,6 +41,13 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: Mult
   })
   const { userId } = useAuth()
   const [isGenerating, setIsGenerating] = useState(false)
+  const [showLoader, setShowLoader] = useState(false)
+
+  const loadingStates = [
+    { text: "Video wird generiert..." },
+    { text: "KI arbeitet..." },
+    { text: "Fast fertig..." }
+  ]
 
   const updateFormData = (field: keyof FormData, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }))
@@ -65,9 +74,9 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: Mult
   const handleSubmit = async () => {
     if (!userId) return;
     setIsGenerating(true);
+    setShowLoader(true);
 
     const correlationId = `temp-${Date.now()}`;
-
     const tempVideo: Video = {
       id: Date.now(),
       video_url: null,
@@ -101,110 +110,121 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo }: Mult
 
       if (!response.ok) throw new Error('Failed to generate');
 
+      await new Promise(resolve => setTimeout(resolve, 3000));
+
       setStep(1);
       setFormData({ avatar: '', style: '', script: '' });
       onOpenChange(false);
     } catch (error) {
       console.error('Error generating:', error);
     } finally {
+      setShowLoader(false);
       setIsGenerating(false);
     }
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
-        <Card className="border-0 shadow-none">
-          <CardContent className="p-0">
-            <div className="flex justify-center mb-2 pt-4">
-              {[...Array(TOTAL_STEPS)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`w-1 h-1 rounded-full mx-0.5 transition-all duration-300 ${
-                    i + 1 <= step ? 'bg-primary scale-110' : 'bg-gray-200'
-                  }`}
-                />
-              ))}
-            </div>
+    <>
+      <Dialog open={isOpen} onOpenChange={handleOpenChange}>
+        <DialogContent className="sm:max-w-[700px] p-0 overflow-hidden">
+          <Card className="border-0 shadow-none">
+            <CardContent className="p-0">
+              <div className="flex justify-center mb-2 pt-4">
+                {[...Array(TOTAL_STEPS)].map((_, i) => (
+                  <div
+                    key={i}
+                    className={`w-1 h-1 rounded-full mx-0.5 transition-all duration-300 ${
+                      i + 1 <= step ? 'bg-primary scale-110' : 'bg-gray-200'
+                    }`}
+                  />
+                ))}
+              </div>
 
-            <ScrollArea className="h-[30vh] px-6">
-              <div className="space-y-2">
-                {step === 1 && (
-                  <AvatarSelection 
-                    selectedAvatar={formData.avatar}
-                    onSelect={(avatar) => {
-                      updateFormData('avatar', avatar)
-                      nextStep()
-                    }}
-                  />
+              <ScrollArea className="h-[30vh] px-6">
+                <div className="space-y-2">
+                  {step === 1 && (
+                    <AvatarSelection 
+                      selectedAvatar={formData.avatar}
+                      onSelect={(avatar) => {
+                        updateFormData('avatar', avatar)
+                        nextStep()
+                      }}
+                    />
+                  )}
+                  {step === 2 && (
+                    <StyleSelection
+                      selectedAvatar={formData.avatar}
+                      selectedStyle={formData.style}
+                      onSelect={(style) => {
+                        updateFormData('style', style)
+                        nextStep()
+                      }}
+                    />
+                  )}
+                  {step === 3 && (
+                    <ScriptInput
+                      script={formData.script}
+                      onScriptChange={(script) => updateFormData('script', script)}
+                      credits={Number(credits)}
+                    />
+                  )}
+                </div>
+              </ScrollArea>
+
+              <div className="flex justify-between mt-2 pt-2 px-6 pb-4 border-t">
+                {step === 1 ? (
+                  <Button 
+                    onClick={() => handleOpenChange(false)} 
+                    variant="outline" 
+                    size="sm"
+                  >
+                    Schließen
+                  </Button>
+                ) : (
+                  <Button 
+                    onClick={prevStep} 
+                    variant="outline" 
+                    size="sm"
+                  >
+                    Zurück
+                  </Button>
                 )}
-                {step === 2 && (
-                  <StyleSelection
-                    selectedAvatar={formData.avatar}
-                    selectedStyle={formData.style}
-                    onSelect={(style) => {
-                      updateFormData('style', style)
-                      nextStep()
-                    }}
-                  />
+                
+                {step === TOTAL_STEPS && (
+                  <p className="text-xs text-gray-500 self-center mx-4">
+                    Wartezeit: Ungefähr 2-3 Minuten.
+                  </p>
                 )}
-                {step === 3 && (
-                  <ScriptInput
-                    script={formData.script}
-                    onScriptChange={(script) => updateFormData('script', script)}
-                  />
+                
+                {step === TOTAL_STEPS ? (
+                  <Button 
+                    onClick={handleSubmit} 
+                    size="sm"
+                    disabled={
+                      !formData.script.trim() || 
+                      formData.script.trim().split(/\s+/).filter(Boolean).length < 8 || 
+                      isGenerating ||
+                      (formData.script.trim().split(/\s+/).filter(Boolean).length * 0.3) > Number(credits)
+                    }
+                  >
+                    {isGenerating ? 'Generieren...' : 'Generieren'}
+                  </Button>
+                ) : (
+                  <div className="ml-auto" />
                 )}
               </div>
-            </ScrollArea>
+            </CardContent>
+          </Card>
+        </DialogContent>
+      </Dialog>
 
-            <div className="flex justify-between mt-2 pt-2 px-6 pb-4 border-t">
-              {step === 1 ? (
-                <Button 
-                  onClick={() => handleOpenChange(false)} 
-                  variant="outline" 
-                  size="sm"
-                >
-                  Close
-                </Button>
-              ) : (
-                <Button 
-                  onClick={prevStep} 
-                  variant="outline" 
-                  size="sm"
-                >
-                  Previous
-                </Button>
-              )}
-              
-              {step === TOTAL_STEPS && (
-                <p className="text-xs text-gray-500 self-center mx-4">
-                  Generation takes about 2-3 minutes.
-                </p>
-              )}
-              
-              {step === TOTAL_STEPS ? (
-                <Button 
-                  onClick={handleSubmit} 
-                  size="sm"
-                  disabled={!formData.script.trim() || formData.script.trim().split(/\s+/).filter(Boolean).length < 8 || isGenerating}
-                >
-                  {isGenerating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Generating...
-                    </>
-                  ) : (
-                    'Generate'
-                  )}
-                </Button>
-              ) : (
-                <div className="ml-auto" />
-              )}
-            </div>
-          </CardContent>
-        </Card>
-      </DialogContent>
-    </Dialog>
+      <MultiStepLoader
+        loadingStates={loadingStates}
+        loading={showLoader}
+        duration={1000}
+        loop={false}
+      />
+    </>
   )
 }
 

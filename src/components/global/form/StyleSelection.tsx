@@ -53,7 +53,7 @@ export default function StyleSelection({ selectedAvatar, selectedStyle, onSelect
 
   return (
     <div className="w-full px-2">
-      <h2 className="text-xl font-semibold mb-6 text-center">Select a Style</h2>
+      <h2 className="text-xl font-semibold mb-6 text-center">Wähle einen Look</h2>
       <RadioGroup 
         value={selectedStyle} 
         onValueChange={onSelect} 
