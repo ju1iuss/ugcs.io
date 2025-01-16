@@ -72,7 +72,7 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credit
   }
 
   const handleSubmit = async () => {
-    if (!userId) return;
+    if (!userId || formData.script.length > 600) return;
     setIsGenerating(true);
     setShowLoader(true);
 
@@ -204,7 +204,8 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credit
                       !formData.script.trim() || 
                       formData.script.trim().split(/\s+/).filter(Boolean).length < 8 || 
                       isGenerating ||
-                      (formData.script.trim().split(/\s+/).filter(Boolean).length * 0.3) > Number(credits)
+                      formData.script.length > 600 ||
+                      (formData.script.trim().split(/\s+/).filter(Boolean).length * 0.4) > Number(credits)
                     }
                   >
                     {isGenerating ? 'Generieren...' : 'Generieren'}

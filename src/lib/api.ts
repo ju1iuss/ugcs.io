@@ -6,7 +6,7 @@ export async function fetchUserVideos(userId: string): Promise<VideoResponse> {
     
     // Add timeout promise
     const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Request timeout')), 2000); // 2 second timeout
+      setTimeout(() => reject(new Error('Request timeout')), 4000); // 4 second timeout
     });
 
     const fetchPromise = fetch(

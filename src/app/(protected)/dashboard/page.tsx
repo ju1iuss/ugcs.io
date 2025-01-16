@@ -198,25 +198,36 @@ export default function DashboardPage() {
 
   useEffect(() => {
     async function loadVideos() {
-      if (!isLoaded || !user?.id) return;
+      if (!isLoaded || !user?.id) {
+        console.log('Dashboard: User not loaded or no ID', { isLoaded, userId: user?.id });
+        return;
+      }
       
       try {
         setLoading(true);
-        setError(null);
+        console.log('Dashboard: Fetching user videos and credits...');
         const response = await fetchUserVideos(user.id);
-        const filteredVideos = response.records
+        console.log('Dashboard: Raw API Response:', response);
+
+        // Direct access since the response is flat
+        const creditsValue = response.credits;
+        console.log('Dashboard: Extracted credits value:', creditsValue);
+        
+        const videos = response.records || [];
+        console.log('Dashboard: Extracted videos:', videos);
+
+        const sortedVideos = videos
           .filter(video => video.status !== "Not submitted")
           .sort((a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime());
         
-        setVideos(filteredVideos);
-        setCredits(response.credits.toString());
-        console.log('Credits loaded:', response.credits);
+        setVideos(sortedVideos);
+        setCredits(creditsValue?.toString() || "0");
+        console.log('Dashboard: Credits set to:', creditsValue);
         
-        startPollingVideos(filteredVideos);
-        
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        startPollingVideos(sortedVideos);
         
       } catch (err) {
+        console.error('Dashboard: Error fetching data:', err);
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
         setError(`Failed to load videos: ${errorMessage}`);
       } finally {
