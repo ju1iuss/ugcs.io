@@ -31,6 +31,7 @@ import { cn } from "@/lib/utils";
 import { usePathname } from 'next/navigation';
 import { Video } from '@/types/video';
 import { CreditDrawer } from "../pricing/credit-drawer";
+import Link from "next/link";
 
 const items = [
   {
@@ -96,27 +97,24 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
             <SidebarGroupContent>
               <SidebarMenu className="px-2">
                 {items.map((item) => (
-                  <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton 
-                      asChild
-                      className={cn(
-                        "w-full px-4",
-                        pathname === item.url && "bg-accent"
-                      )}
-                    >
-                      <a href={item.url}>
-                        <item.icon className={cn(
-                          "h-4 w-4",
-                          pathname === item.url && "text-foreground"
-                        )} />
-                        <span className={cn(
-                          pathname === item.url && "font-medium"
-                        )}>
-                          {item.title}
-                        </span>
-                      </a>
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
+                  <Link
+                    key={item.url}
+                    href={item.url}
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
+                      pathname === item.url ? "bg-gray-200 text-gray-900" : "hover:bg-gray-100"
+                    )}
+                  >
+                    <item.icon className={cn(
+                      "h-4 w-4",
+                      pathname === item.url && "text-foreground"
+                    )} />
+                    <span className={cn(
+                      pathname === item.url && "font-medium"
+                    )}>
+                      {item.title}
+                    </span>
+                  </Link>
                 ))}
               </SidebarMenu>
             </SidebarGroupContent>
@@ -125,27 +123,23 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
             <SidebarGroupLabel className="px-6">Community</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="px-2">
-                <SidebarMenuItem>
-                  <SidebarMenuButton 
-                    asChild
-                    className={cn(
-                      "w-full px-4",
-                      pathname === '/inspiration' && "bg-accent"
-                    )}
-                  >
-                    <a href="/inspiration">
-                      <Sparkles className={cn(
-                        "h-4 w-4",
-                        pathname === '/inspiration' && "text-foreground"
-                      )} />
-                      <span className={cn(
-                        pathname === '/inspiration' && "font-medium"
-                      )}>
-                        Inspiration
-                      </span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                <Link
+                  href="/inspiration"
+                  className={cn(
+                    "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
+                    pathname === '/inspiration' ? "bg-gray-200 text-gray-900" : "hover:bg-gray-100"
+                  )}
+                >
+                  <Sparkles className={cn(
+                    "h-4 w-4",
+                    pathname === '/inspiration' && "text-foreground"
+                  )} />
+                  <span className={cn(
+                    pathname === '/inspiration' && "font-medium"
+                  )}>
+                    Inspiration
+                  </span>
+                </Link>
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>

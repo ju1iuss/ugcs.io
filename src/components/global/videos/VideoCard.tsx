@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
 
 interface VideoCardProps {
   video: Video;
@@ -59,7 +60,7 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
       // Reset progress when starting
       setGenerationProgress(0);
       
-      const duration = 120000; // 2 minutes in milliseconds
+      const duration = 180000; // 3 minutes in milliseconds
       const steps = 100;
       const stepDuration = duration / steps;
 
@@ -145,9 +146,11 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
     try {
       await navigator.clipboard.writeText(video.video_url);
       setCopySuccess(true);
-      setTimeout(() => setCopySuccess(false), 2000); // Reset after 2 seconds
+      toast.success("Link copied to clipboard");
+      setTimeout(() => setCopySuccess(false), 2000);
     } catch (err) {
       console.error('Failed to copy URL:', err);
+      toast.error("Failed to copy link");
     }
   };
 
@@ -176,6 +179,10 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
                 {generationProgress}%
               </span>
             </div>
+            <p className="text-xs text-white italic text-center pt-2">
+              ca. 2-3 Minuten <br />
+              Du kriegst eine Mail <br /> wenn es fertig ist.
+            </p>
           </div>
         )}
 
@@ -296,27 +303,52 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
               <DropdownMenuItem
-                className="flex items-center gap-2 cursor-pointer"
+                className={cn(
+                  "flex items-center gap-2 cursor-pointer",
+                  copySuccess && "text-green-600"
+                )}
                 onClick={handleCopyUrl}
                 disabled={!video.video_url}
               >
-                <Copy className="w-4 h-4" />
-                <span>Copy Link</span>
+                <Copy className={cn("w-4 h-4", copySuccess && "animate-ping-once")} />
+                <span>{copySuccess ? "Copied!" : "Copy Link"}</span>
               </DropdownMenuItem>
               
               <DropdownMenuItem
                 className="flex items-center gap-2 cursor-pointer"
-                asChild
                 disabled={!video.video_url}
+                onClick={async (e) => {
+                  e.preventDefault();
+                  if (!video.video_url) return;
+
+                  try {
+                    // Fetch the video as a blob
+                    const response = await fetch(video.video_url);
+                    const blob = await response.blob();
+                    
+                    // Create a blob URL and trigger download
+                    const blobUrl = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = blobUrl;
+                    link.download = 'video.mp4';
+                    document.body.appendChild(link);
+                    link.click();
+                    
+                    // Cleanup
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(blobUrl);
+                    
+                    toast.success("Download started");
+                  } catch (error) {
+                    console.error('Download failed:', error);
+                    toast.error("Download failed");
+                  }
+                }}
               >
-                <a
-                  href={video.video_url || '#'}
-                  download
-                  onClick={(e) => !video.video_url && e.preventDefault()}
-                >
+                <div className="flex items-center gap-2 w-full">
                   <Download className="w-4 h-4" />
                   <span>Download</span>
-                </a>
+                </div>
               </DropdownMenuItem>
               
               <DropdownMenuItem
