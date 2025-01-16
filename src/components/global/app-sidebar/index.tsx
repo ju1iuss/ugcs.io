@@ -3,7 +3,7 @@
 import { QuickCreateButton } from "@/components/ui/QuickCreateButton";
 import { useState } from "react";
 import MultiStepForm from "@/components/global/form/MultiStepForm";
-import { Calendar, Home, Inbox, Search, Settings, ChevronUp, ChevronDown, Sparkles } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, ChevronUp, ChevronDown, Sparkles, Package } from "lucide-react";
 import Credits from "@/components/global/credits";
 
 import {
@@ -45,9 +45,9 @@ const items = [
     icon: Settings,
   },
   {
-    title: "Affiliates (soon)",
+    title: "Custom Avatars (soon)",
     url: "#",
-    icon: Calendar,
+    icon: Package,
   },
 ];
 
@@ -189,23 +189,31 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
                 className="w-56"
                 sideOffset={8}
               >
-                <DropdownMenuItem className="flex items-center gap-2 py-2.5">
-                  <span className="text-sm">Upgrade to Pro</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2 py-2.5">
-                  <span className="text-sm">Account</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2 py-2.5">
-                  <span className="text-sm">Billing</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem className="flex items-center gap-2 py-2.5">
-                  <span className="text-sm">Notifications</span>
-                </DropdownMenuItem>
+                <Link href="/pricing">
+                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
+                    <span className="text-sm">Auf Pro upgraden</span>
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/settings">
+                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
+                    <span className="text-sm">Konto</span>
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/settings">
+                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
+                    <span className="text-sm">Abrechnung</span>
+                  </DropdownMenuItem>
+                </Link>
+                <Link href="/settings">
+                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
+                    <span className="text-sm">Benachrichtigungen</span>
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem 
                   className="flex items-center gap-2 py-2.5 text-red-600 focus:text-red-600"
                   onClick={() => signOut()}
                 >
-                  <span className="text-sm">Log out</span>
+                  <span className="text-sm">Abmelden</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

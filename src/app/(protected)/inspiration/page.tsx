@@ -10,28 +10,27 @@ import { fetchUserVideos } from '@/lib/api';
 
 // Flat array of scripts
 const scripts = [
-  "I've been using this product for 2 weeks now and I'm absolutely amazed by the results!",
-  "Let me show you my honest review of this game-changing product...",
-  "This is hands down the best purchase I've made this year, here's why...",
-  "Quick tip: Here's how you can get the most out of this product in just 5 minutes",
-  "The one feature nobody talks about but everyone should know...",
-  "Let me show you three hidden features that will save you hours",
+  "Kennt ihr schon dieses KI Tool, mit dem ihr YouGC Ads innerhalb von nur 3 Minuten und ohne viel Kosten erstellen könnt? Kommentiere jetzt Video und Ich schicke dir den Namen.",
+  "3 Gründe warum deine brand YouGC Ads benutzten sollte. Erstens Sie kosten nur 5€ pro video, zweitens du hast Resultate innerhalb von 3 Minuten und drittens du kannst so viele Hooks testen wie du willst.",
+  "POV: Du gibst jetzt nurnoch 5€ pro YouGC Video aus und erstellst 1000 Videos pro Monat. Kommentiere Video um zu erfahren wie.",
+  "3 No-Goes im E-commerce: Erstens: Du benutzt kein YouGC. Zweitens: Du zahlst mehr als 10 Euro pro Video. Drittens: Es braucht mehr als 10 Minuten dass Du dein YouGC Video zu erhälst.",
+  "Stell dir vor du machst 10 Tausend Euro pro Monat an YouGC äd Revenue seitdem du dich nie mehr um Creator & Content kümmern musst."
   // Add more scripts as needed
 ];
 
 // Add videos array
 const videos = [
   {
-    url: "https://storage.googleapis.com/nca-toolkit-bucket-julius/5ee33cd4-807f-4b79-889c-73609bee7193_captioned.mp4",
+    url: "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
   },
   {
-    url: "https://storage.googleapis.com/nca-toolkit-bucket-julius/5ee33cd4-807f-4b79-889c-73609bee7193_captioned.mp4",
+    url: "https://storage.googleapis.com/nca-toolkit-bucket-julius/56bffbd5-a6a0-4f9b-8d16-448ca95af322_output_0.mp4",
   },
   {
-    url: "https://storage.googleapis.com/nca-toolkit-bucket-julius/5ee33cd4-807f-4b79-889c-73609bee7193_captioned.mp4",
+    url: "https://storage.googleapis.com/nca-toolkit-bucket-julius/6dfeb2bd-ae22-45a5-adc0-1fb8d183c894_output_0.mp4",
   },
   {
-    url: "https://storage.googleapis.com/nca-toolkit-bucket-julius/5ee33cd4-807f-4b79-889c-73609bee7193_captioned.mp4",
+    url: "https://storage.googleapis.com/nca-toolkit-bucket-julius/8911b01e-8b86-422a-8dd1-083ba5a92829_output_0.mp4",
   },
 ];
 

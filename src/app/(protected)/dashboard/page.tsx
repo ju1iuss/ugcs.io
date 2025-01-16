@@ -13,6 +13,7 @@ import MultiStepForm from "@/components/global/form/MultiStepForm";
 import { Progress } from "@/components/ui/progress";
 import MorphingText from '@/components/ui/morphing-text';
 import { AnimatedText } from "@/components/ui/animated-text";
+import { Card } from "@/components/ui/card";
 
 export default function DashboardPage() {
   const { user, isLoaded } = useUser();
@@ -288,7 +289,26 @@ export default function DashboardPage() {
     }
 
     return (
-      <div className="p-6">
+      <div className="p-6 space-y-6">
+        <Card className="relative overflow-hidden bg-purple-50/80 border border-purple-400 shadow-sm">
+          <div className="relative z-10 p-4">
+            <div className="space-y-1">
+              <h1 className="text-lg font-medium text-gray-900">
+                Willkommen zurück, {user.firstName || 'Creator'}!
+              </h1>
+              <p className="text-sm text-gray-900">
+                Du hast <span className="font-medium text-purple-700">{credits} Credits</span> verfügbar
+              </p>
+            </div>
+          </div>
+          <div 
+            className="absolute inset-0 bg-gradient-to-r from-purple-100/50 via-purple-50/25 to-transparent" 
+            style={{ 
+              maskImage: 'radial-gradient(circle at 100% 100%, transparent 25%, black 75%)'
+            }} 
+          />
+        </Card>
+
         <VideoGrid 
           videos={videos}
           onRatingChange={handleRatingChange}
