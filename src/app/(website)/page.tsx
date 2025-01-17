@@ -13,6 +13,7 @@ import { Problems } from '@/components/global/problems';
 
 export default function Home() {
   const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [isYearly, setIsYearly] = useState(false);
 
   return (
     <div className="min-h-screen bg-white max-w-7xl mx-auto px-4">
@@ -30,7 +31,7 @@ export default function Home() {
             <Link href="#" className="text-gray-600 hover:text-gray-900">
               Product
             </Link>
-            <Link href="#" className="text-gray-600 hover:text-gray-900">
+            <Link href="#pricing" className="text-gray-600 hover:text-gray-900">
               Pricing
             </Link>
           </nav>
@@ -186,88 +187,169 @@ export default function Home() {
       </Dialog>
 
       {/* Pricing Section */}
-      <section className="px-4 py-16 max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl font-bold mb-12">Choose your plan</h2>
+      <section id="pricing" className="px-4 py-16 max-w-4xl mx-auto text-center">
+        <div className="text-purple-600 mb-2">Pricing</div>
+        <h2 className="text-4xl font-bold mb-4">Wähle deinen Plan</h2>
+        <p className="text-gray-600 mb-8">
+          Starte kostenlos und upgrade wenn du mehr brauchst. Keine versteckten Kosten.
+        </p>
+        
+        {/* Toggle Switch */}
+        <div className="flex items-center justify-center gap-4 mb-8">
+          <span className={`${isYearly ? 'text-gray-600' : 'text-gray-900'}`}>Monatlich</span>
+          <label className="relative inline-flex items-center cursor-pointer">
+            <input 
+              type="checkbox" 
+              checked={isYearly}
+              onChange={(e) => setIsYearly(e.target.checked)}
+              className="sr-only peer" 
+            />
+            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:bg-purple-600 peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all cursor-pointer"></div>
+          </label>
+          <span className={`${isYearly ? 'text-gray-900' : 'text-gray-600'}`}>
+            Jährlich <span className="text-purple-600">(2 Monate gespart)</span>
+          </span>
+        </div>
+
         <div className="grid md:grid-cols-3 gap-6">
-          {[
-            {
-              name: "Starter",
-              price: "19",
-              videos: "10",
-              popular: false,
-              features: [
-                "10 videos per month",
-                "5 UGC avatars",
-                "Generate unlimited viral hooks",
-                "Publish to TikTok",
-                "Schedule/automate videos"
-              ]
-            },
-            {
-              name: "Growth",
-              price: "49",
-              videos: "50",
-              popular: true,
-              features: [
-                "50 videos per month",
-                "All 50+ UGC avatars",
-                "Generate unlimited viral hooks",
-                "Publish to TikTok",
-                "Schedule/automate videos"
-              ]
-            },
-            {
-              name: "Scale",
-              price: "95",
-              videos: "150",
-              popular: false,
-              features: [
-                "150 videos per month",
-                "All 50+ UGC avatars",
-                "Generate unlimited viral hooks",
-                "Publish to TikTok",
-                "Schedule/automate videos"
-              ]
-            }
-          ].map((plan, i) => (
-            <Card 
-              key={i} 
-              className={`p-6 relative ${plan.popular ? 'border-2 border-blue-500' : ''}`}
-            >
-              {plan.popular && (
-                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-blue-500 text-white px-3 py-1 rounded-full text-sm">
-                    Most Popular
-                  </span>
-                </div>
-              )}
-              <h3 className="font-semibold text-xl mb-2">{plan.name}</h3>
-              <div className="mb-4">
-                <span className="text-4xl font-bold">${plan.price}</span>
-                <span className="text-gray-600">/month</span>
-              </div>
-              <div className="text-sm text-gray-600 mb-6">
-                {plan.videos} videos per month
-              </div>
-              <ul className="text-sm text-gray-600 space-y-3 mb-6">
-                {plan.features.map((feature, j) => (
-                  <li key={j} className="flex items-center justify-center gap-2">
-                    <svg className="w-4 h-4 text-green-500" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    </svg>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <Button 
-                className={`w-full ${
-                  plan.popular ? 'bg-blue-500 hover:bg-blue-600 text-white' : 'bg-gray-100 hover:bg-gray-200'
-                }`}
-              >
-                Buy Now
+          {/* Free Plan */}
+          <div className="rounded-lg border bg-white p-8">
+            <h3 className="font-semibold text-xl mb-2">Free</h3>
+            <p className="text-gray-600 mb-4">Perfekt zum Testen</p>
+            <div className="mb-6">
+              <span className="text-4xl font-bold">€0</span>
+              <span className="text-gray-600">/einmalig</span>
+            </div>
+            <ul className="space-y-4 mb-8">
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                15 Video Sekunden
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Basis Avatare
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Community Support
+              </li>
+            </ul>
+            <Link href="/dashboard">
+              <Button variant="outline" className="w-full">
+                Kostenlos Starten
               </Button>
-            </Card>
-          ))}
+            </Link>
+          </div>
+
+          {/* Starter Plan */}
+          <div className="rounded-lg border-2 border-purple-600 bg-white p-8 relative">
+            <div className="absolute -top-3 right-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm">
+              Beliebt
+            </div>
+            <h3 className="font-semibold text-xl mb-2">Starter</h3>
+            <p className="text-gray-600 mb-4">
+              {isYearly ? 'Jährlicher Plan für Beginner' : 'Monatlicher Plan für Beginner'}
+            </p>
+            <div className="mb-6">
+              <span className="text-4xl font-bold">€{isYearly ? '280' : '28'}</span>
+              <span className="text-gray-600">/{isYearly ? 'jahr' : 'monat'}</span>
+            </div>
+            <ul className="space-y-4 mb-8">
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {isYearly ? '2400 Video Sekunden (200/Monat)' : '200 Video Sekunden pro Monat'}
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Alle Avatare (soon)
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Priority Support
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Unbegrenzte Projekte
+              </li>
+            </ul>
+            <Link href="/pricing">
+              <Button className="w-full bg-purple-600 hover:bg-purple-700">
+                {isYearly ? 'Jahresplan Starten' : 'Monatsplan Starten'}
+              </Button>
+            </Link>
+          </div>
+
+          {/* Pro Plan */}
+          <div className="rounded-lg border bg-white p-8">
+            <h3 className="font-semibold text-xl mb-2">Pro</h3>
+            <p className="text-gray-600 mb-4">
+              {isYearly ? 'Jährlicher Plan für Agenturen' : 'Monatlicher Plan für Agenturen'}
+            </p>
+            <div className="mb-6">
+              <span className="text-4xl font-bold">€{isYearly ? '640' : '64'}</span>
+              <span className="text-gray-600">/{isYearly ? 'jahr' : 'monat'}</span>
+            </div>
+            <ul className="space-y-4 mb-8">
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {isYearly ? '9600 Video Sekunden (800/Monat)' : '800 Video Sekunden pro Monat'}
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Alle Avatare (soon)
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Premium Support
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                API Zugang
+              </li>
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                Custom Branding
+              </li>
+            </ul>
+            <Link href="/pricing">
+              <Button variant="outline" className="w-full">
+                Kontaktiere uns
+              </Button>
+            </Link>
+          </div>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-gray-600">
+            Brauchst du einfach nur mehr Credits? {' '}
+            <Link href="/credits" className="text-purple-600 hover:underline">
+              Klicke hier →
+            </Link>
+          </p>
         </div>
       </section>
 
