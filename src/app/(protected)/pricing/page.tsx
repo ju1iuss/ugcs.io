@@ -15,8 +15,8 @@ export default function PricingPage() {
   const starterPrice = isYearly ? "280" : "28";
   const proPrice = isYearly ? "640" : "64";
   const starterLink = isYearly 
-    ? `https://buy.stripe.com/bIY6pOeJR1B71XieUV?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}`
-    : `https://buy.stripe.com/3cs15uatBgw1cBWeUU?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}`;
+    ? `https://buy.stripe.com/bIY6pOeJR1B71XieUV?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}&client_reference_id=${user?.id}`
+    : `https://buy.stripe.com/3cs15uatBgw1cBWeUU?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}&client_reference_id=${user?.id}`;
 
   const getVideoText = (seconds: number) => 
     isYearly ? `${seconds * 12} Video Sekunden (${seconds}/Monat)` : `${seconds} Video Sekunden pro Monat`;
