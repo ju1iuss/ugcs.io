@@ -54,9 +54,10 @@ export default function TermsOfService() {
     <h2>11. Kontakt</h2>
     <p>Bei Fragen oder Anliegen können Sie uns unter folgender Adresse kontaktieren:</p>
     <address>
-      Forever Julius Kopp und Svenja Fröhlich Kopp GbR<br />
-      Musterstraße 1<br />
-      12345 Musterstadt<br />
+      Forever <br />
+      Julius Kopp und Svenja Fröhlich Kopp GbR<br />
+      Hauptstraße 106a<br />
+      76706 Dettenheim<br />
       Deutschland<br />
       E-Mail: kontakt@ugcs.io
     </address>

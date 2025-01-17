@@ -9,17 +9,18 @@ export default function PrivacyPolicy() {
   <div className="prose prose-gray max-w-none">
     <h2>1. Allgemeine Hinweise</h2>
     <p>
-      Der Schutz Ihrer persönlichen Daten ist uns, der Forever Julius Kopp und Svenja Fröhlich Kopp GbR ("wir", "uns"), ein besonderes Anliegen. Diese Datenschutzerklärung informiert Sie über die Art, den Umfang und Zweck der Verarbeitung personenbezogener Daten auf unserer Website UGCS.io.
+      Der Schutz Ihrer persönlichen Daten ist uns, der Julius Kopp und Svenja Fröhlich Kopp GbR ("wir", "uns"), ein besonderes Anliegen. Diese Datenschutzerklärung informiert Sie über die Art, den Umfang und Zweck der Verarbeitung personenbezogener Daten auf unserer Website UGCS.io.
     </p>
 
     <h2>2. Verantwortlicher</h2>
     <p>
       Verantwortlicher im Sinne der Datenschutzgesetze ist:<br />
-      Forever Julius Kopp und Svenja Fröhlich Kopp GbR<br />
-      Musterstraße 1<br />
-      12345 Musterstadt<br />
+      Forever <br />
+      Julius Kopp und Svenja Fröhlich Kopp GbR<br />
+      Hauptstraße 106a<br />
+      76706 Dettenheim<br />
       Deutschland<br />
-      E-Mail: datenschutz@ugcs.io
+      E-Mail: kontakt@ugcs.io
     </p>
 
     <h2>3. Erhobene Daten</h2>
@@ -93,11 +94,12 @@ export default function PrivacyPolicy() {
     <h2>11. Kontakt</h2>
     <p>
       Bei Fragen zur Verarbeitung Ihrer personenbezogenen Daten oder zur Ausübung Ihrer Rechte können Sie uns unter folgender Adresse kontaktieren:<br />
-      Forever Julius Kopp und Svenja Fröhlich Kopp GbR<br />
-      Musterstraße 1<br />
-      12345 Musterstadt<br />
+      Forever <br />
+      Julius Kopp und Svenja Fröhlich Kopp GbR<br />
+      Hauptstraße 106a<br />
+      76706 Dettenheim<br />
       Deutschland<br />
-      E-Mail: datenschutz@ugcs.io
+      E-Mail: kontakt@ugcs.io
     </p>
   </div>
 </div>
