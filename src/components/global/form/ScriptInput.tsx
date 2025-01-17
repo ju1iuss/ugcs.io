@@ -11,10 +11,10 @@ interface ScriptInputProps {
 
 const exampleScripts = [
   "Kennt ihr schon dieses KI Tool, mit dem ihr YouGC Ads innerhalb von nur 3 Minuten und ohne viel Kosten erstellen könnt? Kommentiere jetzt Video und Ich schicke dir den Namen.",
-  "3 Gründe warum deine brand YouGC Ads benutzten sollte. Erstens Sie kosten nur 5€ pro video, zweitens du hast Resultate innerhalb von 3 Minuten und drittens du kannst so viele Hooks testen wie du willst.",
-  "POV: Du gibst jetzt nurnoch 5€ pro YouGC Video aus und erstellst 1000 Videos pro Monat. Kommentiere Video um zu erfahren wie.",
+  "3 Gründe warum deine Brand YouGC Ads benutzten sollte. Erstens Sie kosten nur 5€ pro video, zweitens du hast Resultate innerhalb von 3 Minuten und drittens du kannst so viele Hooks testen wie du willst.",
+  "Überleg dir mal das: Du gibst jetzt nurnoch 5€ pro YouGC Video aus und erstellst 1000 Videos pro Monat. Kommentiere Video um zu erfahren wie.",
   "3 No-Goes im E-commerce: Erstens: Du benutzt kein YouGC. Zweitens: Du zahlst mehr als 10 Euro pro Video. Drittens: Es braucht mehr als 10 Minuten dass Du dein YouGC Video zu erhälst.",
-  "Stell dir vor du machst 10 Tausend Euro pro Monat an YouGC äd Revenue seitdem du dich nie mehr um Creator & Content kümmern musst."
+  "Stell dir vor du machst 10 Tausend Euro pro Monat an YouGC Ad-Revenue seitdem du dich nie mehr um Creator & Content kümmern musst."
 ];
 
 export default function ScriptInput({ script, onScriptChange, credits }: ScriptInputProps) {
