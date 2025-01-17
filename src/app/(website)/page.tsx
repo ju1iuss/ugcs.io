@@ -177,7 +177,7 @@ export default function Home() {
               className="w-full h-full object-cover"
               autoPlay
               controls
-              src="https://api.altan.ai/platform/media/eb89a4df-b150-4138-b35f-956d728785d2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+              src="https://api.altan.ai/platform/media/73adf8a2-9382-4171-be25-18b306146388?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
             >
               Your browser does not support the video tag.
             </video>
