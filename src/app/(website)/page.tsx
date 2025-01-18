@@ -7,8 +7,7 @@ import { Card } from '@/components/ui/card'
 import { Link as LinkIcon } from 'lucide-react'
 import { Dialog, DialogContent } from "@/components/ui/dialog"
 import { useState } from 'react'
-import AnimatedLogoCloud from '@/components/global/logoCloud';
-import { VideoGallery } from '@/components/global/video-gallery';
+import HeroVideoDialog from "@/components/ui/hero-video-dialog";
 import { Problems } from '@/components/global/problems';
 
 export default function Home() {
@@ -16,7 +15,7 @@ export default function Home() {
   const [isYearly, setIsYearly] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white max-w-7xl mx-auto px-4">
+    <div className="min-h-screen bg-white max-w-7xl mx-auto px-4 scroll-smooth">
       {/* Header */}
       <div className="border-b border-gray-200 w-screen -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)]">
         <header className="max-w-5xl mx-auto flex items-center justify-between py-4">
@@ -31,7 +30,14 @@ export default function Home() {
             <Link href="#" className="text-gray-600 hover:text-gray-900">
               Product
             </Link>
-            <Link href="#pricing" className="text-gray-600 hover:text-gray-900">
+            <Link 
+              href="#pricing" 
+              className="text-gray-600 hover:text-gray-900 scroll-smooth"
+              onClick={(e) => {
+                e.preventDefault();
+                document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+              }}
+            >
               Pricing
             </Link>
           </nav>
@@ -84,109 +90,30 @@ export default function Home() {
       </section>
       
 
-      {/* Videos Display Section */}
-      <VideoGallery />
+      {/* Hero Video Section */}
+      <div className="relative pb-24">
+        <HeroVideoDialog
+          className="dark:hidden block aspect-[4/3] w-full max-w-4xl mx-auto"
+          animationStyle="top-in-bottom-out"
+          videoSrc="https://api.altan.ai/platform/media/73adf8a2-9382-4171-be25-18b306146388?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+          thumbnailSrc="https://api.altan.ai/platform/media/eaf52df7-e535-454d-b1e6-9d635ddbfb3f?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+          thumbnailAlt="Hero Video"
+     
+        />
+        <HeroVideoDialog
+          className="hidden dark:block aspect-[4/3] w-full max-w-4xl mx-auto"
+          animationStyle="top-in-bottom-out"
+          videoSrc="https://api.altan.ai/platform/media/73adf8a2-9382-4171-be25-18b306146388?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+          thumbnailSrc="https://api.altan.ai/platform/media/eaf52df7-e535-454d-b1e6-9d635ddbfb3f?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+          thumbnailAlt="Hero Video"
+         
+        />
+      </div>
 
       {/* Problems Section */}
       <Problems />
 
-      {/* Gray Background Section */}
-      <div className="w-screen -mx-[calc((100vw-100%)/2)] bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4">
-          {/* Alternatives Section */}
-          <section className="py-24 max-w-4xl mx-auto text-center">
-            <div className="grid md:grid-cols-3 gap-6">
-              <Card className="p-6 bg-red-50">
-                <div className="flex justify-between mb-4">
-                  <h3 className="font-semibold">UGC Agencies</h3>
-                  <span className="text-red-500">×</span>
-                </div>
-                <p className="text-sm text-red-600">
-                  Expensive, $60-120 per video, anywhere between $4000 to $6000 a month
-                </p>
-              </Card>
-              <Card className="p-6 bg-red-50">
-                <div className="flex justify-between mb-4">
-                  <h3 className="font-semibold">Doing it yourself</h3>
-                  <span className="text-red-500">×</span>
-                </div>
-                <p className="text-sm text-red-600">
-                  Researching, planning, filming, recording, editing, publishing, re-purposing
-                </p>
-              </Card>
-              <Card className="p-6 bg-green-50">
-                <div className="flex justify-between mb-4">
-                  <h3 className="font-semibold">ReelFarm</h3>
-                  <span className="text-green-500">✓</span>
-                </div>
-                <p className="text-sm text-green-600">
-                  Automatically creating & publishing videos to all platforms, for a monthly subscription
-                </p>
-              </Card>
-            </div>
-          </section>
-
-          {/* Features Section */}
-          <section className="py-24 max-w-4xl mx-auto text-center">
-            <h2 className="text-3xl font-bold mb-12">Features</h2>
-            <div className="grid md:grid-cols-3 gap-6">
-              {[
-                {
-                  title: "Create UGC videos",
-                  description: "Create & publish UGC videos promoting your product demo",
-                  available: true
-                },
-                {
-                  title: "Create slideshow videos",
-                  description: "Create & publish image slideshow videos to TikTok",
-                  available: false
-                },
-                {
-                  title: "Automated Campaigns",
-                  description: "Automatically create & auto-publish UGC videos to your TikTok account",
-                  available: true
-                },
-                {
-                  title: "UGC Avatar Generator",
-                  description: "Auto-magically generate and save viral hooks for your videos",
-                  available: false
-                },
-                {
-                  title: "Hook Generator",
-                  description: "Auto-magically generate and save viral hooks for your videos",
-                  available: false
-                }
-              ].map((feature, i) => (
-                <Card key={i} className="p-6">
-                  <h3 className="font-semibold mb-2">{feature.title}</h3>
-                  <p className="text-sm text-gray-600">{feature.description}</p>
-                  {!feature.available && (
-                    <div className="mt-2 text-sm text-gray-400">Not Available Yet</div>
-                  )}
-                </Card>
-              ))}
-            </div>
-          </section>
-        </div>
-      </div>
-
-      {/* Video Dialog */}
-      <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
-        <DialogContent className="max-w-[520px] p-0 overflow-hidden">
-          <div className="relative aspect-[4/3]">
-            <video 
-              className="w-full h-full object-cover"
-              autoPlay
-              controls
-              src="https://api.altan.ai/platform/media/73adf8a2-9382-4171-be25-18b306146388?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
-            >
-              Your browser does not support the video tag.
-            </video>
-          </div>
-        </DialogContent>
-      </Dialog>
-
-      {/* Pricing Section */}
+      {/* Remove the Alternatives and Features sections and go straight to Pricing */}
       <section id="pricing" className="px-4 py-16 max-w-4xl mx-auto text-center">
         <div className="text-purple-600 mb-2">Pricing</div>
         <h2 className="text-4xl font-bold mb-4">Wähle deinen Plan</h2>
@@ -372,17 +299,17 @@ export default function Home() {
             </ul>
           </div>
           <div>
-            <h4 className="font-semibold mb-4">Company</h4>
+            <h4 className="font-semibold mb-4">Unternehmen</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li><Link href="/about">About</Link></li>
-              <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/about">Über uns</Link></li>
+              <li><Link href="/contact">Kontakt</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="font-semibold mb-4">Legal</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li><Link href="/privacy">Privacy Policy</Link></li>
-              <li><Link href="/terms">Terms of Service</Link></li>
+              <li><Link href="/privacy">Datenschutzerklärung</Link></li>
+              <li><Link href="/terms">Nutzungsbedingungen</Link></li>
             </ul>
           </div>
         </div>
