@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Check } from "lucide-react";
+import { Check, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { CreditDrawer } from "@/components/global/pricing/credit-drawer"
@@ -12,24 +12,47 @@ export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
   const { user } = useUser();
 
-  const starterPrice = isYearly ? "280" : "28";
-  const proPrice = isYearly ? "640" : "64";
+  const starterPrice = isYearly ? "15.17" : "19";
+  const creatorPrice = isYearly ? "39.17" : "49";
+  const agencyPrice = isYearly ? "87.17" : "109";
+
+  const urlParams = `?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}&client_reference_id=${user?.id}`;
+
   const starterLink = isYearly 
-    ? `https://buy.stripe.com/bIY6pOeJR1B71XieUV?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}&client_reference_id=${user?.id}`
-    : `https://buy.stripe.com/3cs15uatBgw1cBWeUU?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}&client_reference_id=${user?.id}`;
+    ? `https://buy.stripe.com/4gw8xW1X5frX31m3ci${urlParams}`
+    : `https://buy.stripe.com/4gw29y59h5Rn0Te8wA${urlParams}`;
+
+  const creatorLink = isYearly
+    ? `https://buy.stripe.com/dR615u59h2Fb45qbIN${urlParams}`
+    : `https://buy.stripe.com/3cs5lKbxF2FbbxS9AC${urlParams}`;
+
+  const agencyLink = isYearly
+    ? `https://buy.stripe.com/3cs7tSeJRa7D45q7sA${urlParams}`
+    : `https://buy.stripe.com/dR63dC6dl7ZvbxSaEL${urlParams}`;
 
   const getVideoText = (seconds: number) => 
-    isYearly ? `${seconds * 12} Video Sekunden (${seconds}/Monat)` : `${seconds} Video Sekunden pro Monat`;
+    isYearly ? `${seconds} Video Sekunden pro Monat` : `${seconds} Video Sekunden pro Monat`;
 
   return (
-    <div className="py-8 px-4">
+    <div className="py-8 px-4 relative">
+      {/* Close Button */}
+      <div className="absolute right-4 top-4">
+        <Link href="/dashboard">
+          <Button variant="ghost" size="icon">
+            <X className="h-6 w-6" />
+          </Button>
+        </Link>
+      </div>
+
       <div className="text-center mb-8">
         <h2 className="text-sm font-semibold leading-7 text-purple-600">Pricing</h2>
         <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
           Wähle deinen Plan
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600">
-          Starte kostenlos und upgrade wenn du mehr brauchst. Keine versteckten Kosten.
+        Einfacher & schneller Zahlungs Prozess. Keine versteckten Kosten.
+
+
         </p>
 
         {/* Billing Toggle */}
@@ -55,18 +78,35 @@ export default function PricingPage() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
-        {/* Free Plan */}
+        {/* Starter Plan */}
         <Card className="relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow">
-          <h3 className="text-base font-semibold leading-7">Free</h3>
-          <p className="mt-2 text-sm leading-6 text-gray-600">Perfekt zum Testen</p>
+          {/* Sale Badge */}
+          {!isYearly && (
+            <div className="absolute -top-3 right-4 bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
+              34% Rabatt
+            </div>
+          )}
+          <h3 className="text-base font-semibold leading-7">Starter</h3>
+          <p className="text-sm leading-6 text-gray-600">Perfekt zum Starten</p>
           <p className="mt-4 flex items-baseline gap-x-1">
-            <span className="text-3xl font-bold tracking-tight">€0</span>
-            <span className="text-sm font-semibold leading-6 text-gray-600">/einmalig</span>
+            <span className="text-3xl font-bold tracking-tight">€{starterPrice}</span>
+            <span className="text-sm font-semibold leading-6 text-gray-600">/monat</span>
           </p>
+          {!isYearly && (
+            <div className="mb-4 text-sm">
+              <span className="line-through text-gray-400 mr-2">€29/mo</span>
+              <span className="text-green-600 font-medium">LinkedIn Sale!</span>
+            </div>
+          )}
+          {isYearly && (
+            <div className="mb-4 text-xs text-gray-600">
+              <div>€182/Jahr (20% gespart)</div>
+            </div>
+          )}
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              15 Video Sekunden
+              70 Video Sekunden (ca. 5 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
@@ -74,70 +114,48 @@ export default function PricingPage() {
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              Community Support
-            </li>
-          </ul>
-          <Link href="/dashboard">
-            <Button className="mt-6 w-full" size="sm">
-              Kostenlos Starten
-            </Button>
-          </Link>
-        </Card>
-
-        {/* Starter Plan */}
-        <Card className="relative p-6 bg-purple-50 ring-2 ring-purple-600 hover:shadow-lg transition-shadow">
-          <div className="absolute -top-3 right-6">
-            <span className="inline-flex items-center rounded-full bg-purple-100 px-2 py-0.5 text-xs font-medium text-purple-800">
-              Beliebt
-            </span>
-          </div>
-          <h3 className="text-base font-semibold leading-7">Starter</h3>
-          <p className="mt-2 text-sm leading-6 text-gray-600">
-            {isYearly ? 'Jährlicher Plan für Beginner' : 'Monatlicher Plan für Beginner'}
-          </p>
-          <p className="mt-4 flex items-baseline gap-x-1">
-            <span className="text-3xl font-bold tracking-tight">€{starterPrice}</span>
-            <span className="text-sm font-semibold leading-6 text-gray-600">/{isYearly ? 'jahr' : 'monat'}</span>
-          </p>
-          <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
-            <li className="flex gap-x-3">
-              <Check className="h-5 w-4 flex-none text-purple-600" />
-              {getVideoText(200)}
+              HD Videos
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              Alle Avatare (soon)
+              Verfügbar in 47 Sprachen
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              Priority Support
+              Sound Effects
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              Unbegrenzte Projekte
+              Exportieren ohne Wasserzeichen
             </li>
           </ul>
           <a href={starterLink} target="_blank" rel="noopener noreferrer">
-            <Button className="mt-6 w-full bg-purple-600 hover:bg-purple-700" size="sm">
-              {isYearly ? 'Jahresplan Starten' : 'Monatsplan Starten'}
+            <Button className="mt-6 w-full" variant="outline" size="sm">
+              Jetzt Starten
             </Button>
           </a>
         </Card>
 
-        {/* Pro Plan */}
-        <Card className="relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow">
-          <h3 className="text-base font-semibold leading-7">Pro</h3>
-          <p className="mt-2 text-sm leading-6 text-gray-600">
-            {isYearly ? 'Jährlicher Plan für Agenturen' : 'Monatlicher Plan für Agenturen'}
-          </p>
+        {/* Creator Plan */}
+        <Card className="relative p-6 border-2 border-purple-600 bg-white hover:shadow-lg transition-shadow">
+          <div className="absolute -top-3 right-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm">
+            Beliebt
+          </div>
+          <h3 className="text-base font-semibold leading-7">Creator</h3>
+          <p className="text-sm leading-6 text-gray-600">Für Content Creator</p>
           <p className="mt-4 flex items-baseline gap-x-1">
-            <span className="text-3xl font-bold tracking-tight">€{proPrice}</span>
-            <span className="text-sm font-semibold leading-6 text-gray-600">/{isYearly ? 'jahr' : 'monat'}</span>
+            <span className="text-3xl font-bold tracking-tight">€{creatorPrice}</span>
+            <span className="text-sm font-semibold leading-6 text-gray-600">/monat</span>
           </p>
+          {isYearly && (
+            <div className="mb-4 text-xs text-gray-600">
+              <div>€470/Jahr (20% gespart)</div>
+            </div>
+          )}
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              {getVideoText(800)}
+              200 Video Sekunden (ca. 12 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
@@ -145,36 +163,127 @@ export default function PricingPage() {
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              Premium Support
+              HD Videos
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              API Zugang
+              Verfügbar in 47 Sprachen
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              Custom Branding
+              Sound Effects
+            </li>
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              Exportieren ohne Wasserzeichen
+            </li>
+            <li className="flex gap-x-3 text-gray-400">
+              <Check className="h-5 w-4 flex-none" />
+              AI Skript Generation (soon)
+            </li>
+            <li className="flex gap-x-3 text-gray-400">
+              <Check className="h-5 w-4 flex-none" />
+              Untertitel (soon)
             </li>
           </ul>
-          <Link href="/contact">
-            <Button className="mt-6 w-full" size="sm">
-              Kontaktiere uns
+          <a href={creatorLink} target="_blank" rel="noopener noreferrer">
+            <Button className="mt-6 w-full bg-purple-600 hover:bg-purple-700" size="sm">
+              Jetzt Starten
             </Button>
-          </Link>
+          </a>
+        </Card>
+
+        {/* Agency Plan */}
+        <Card className="relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow">
+          <h3 className="text-base font-semibold leading-7">Agentur</h3>
+          <p className="text-sm leading-6 text-gray-600">Für Agenturen & Teams</p>
+          <p className="mt-4 flex items-baseline gap-x-1">
+            <span className="text-3xl font-bold tracking-tight">€{agencyPrice}</span>
+            <span className="text-sm font-semibold leading-6 text-gray-600">/monat</span>
+          </p>
+          {isYearly && (
+            <div className="mb-4 text-xs text-gray-600">
+              <div>€1046/Jahr (20% gespart)</div>
+            </div>
+          )}
+          <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              600 Video Sekunden (ca. 25 Videos)
+            </li>
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              Alle Avatare (soon)
+            </li>
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              HD Videos
+            </li>
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              Verfügbar in 47 Sprachen
+            </li>
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              Sound Effects
+            </li>
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              Exportieren ohne Wasserzeichen
+            </li>
+            <li className="flex gap-x-3 text-gray-400">
+              <Check className="h-5 w-4 flex-none" />
+              AI Script Generation (soon)
+            </li>
+            <li className="flex gap-x-3 text-gray-400">
+              <Check className="h-5 w-4 flex-none" />
+              Untertitel (soon)
+            </li>
+          </ul>
+          <a href={agencyLink} target="_blank" rel="noopener noreferrer">
+            <Button className="mt-6 w-full" variant="outline" size="sm">
+              Jetzt Starten
+            </Button>
+          </a>
         </Card>
       </div>
 
-      <div className="text-center mt-8">
-        <p className="text-sm text-gray-600">
-          Brauchst du einfach nur mehr Credits?{' '}
-          <Link href="/dashboard" className="font-semibold text-purple-600 hover:text-purple-500">
-            Klicke hier →
-          </Link>
-        </p>
-      </div>
-
-      <div className="flex justify-center mt-8">
-        
+      {/* Enterprise Plan */}
+      <div className="mt-12">
+        <div className="rounded-lg border bg-gradient-to-r from-purple-50 via-white to-purple-50 p-6 max-w-5xl mx-auto">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="text-left">
+              <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
+                Enterprise
+                <span className="bg-purple-100 text-purple-600 text-xs px-3 py-1 rounded-full">
+                  Custom
+                </span>
+              </h3>
+              <p className="text-gray-600 text-sm mb-4">Brauchst du mehr als 25 Videos pro Monat?</p>
+              <ul className="space-y-2 mb-0 text-sm">
+                <li className="flex items-center gap-2">
+                  <Check className="h-5 w-4 flex-none text-purple-600" />
+                  <span>Eigene Menge an Video Sekunden</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <Check className="h-5 w-4 flex-none text-purple-600" />
+                  <span>Alle Premium Features und Extra Support</span>
+                </li>
+              </ul>
+            </div>
+            <div className="flex-shrink-0">
+              <a 
+                href="https://calendly.com/ai-ugcs/30min"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button className="whitespace-nowrap px-8">
+                  Book A Call
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

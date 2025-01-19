@@ -45,7 +45,7 @@ const items = [
     icon: Settings,
   },
   {
-    title: "Custom Avatars (soon)",
+    title: "Custom Avatare (bald)",
     url: "#",
     icon: Package,
   },
@@ -71,12 +71,13 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
         <SidebarContent>
             <SidebarHeader>
             <div className="flex flex-col items-center justify-center py-6">
-              <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center text-white mb-2">
-                <Sparkles className="h-5 w-5" />
-              </div>
+              <img 
+                src="/favicon.ico" 
+                alt="Ugcs.io Logo" 
+                className="w-10 h-10 mb-2"
+              />
               <span className="font-semibold text-lg">Ugcs.io</span>
             </div>
-
             </SidebarHeader>
           
 
