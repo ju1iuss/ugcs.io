@@ -36,14 +36,14 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
             <span className="text-purple-600 font-semibold">!</span>
           </div>
           <div>
-            <div className="font-medium">Wichtig: Die App ist in der Early Stage Phase.</div>
+            <div className="font-medium">Lade die Seite neu, falls keine Credits oder generierte Videos angezeigt werden.</div>
             <div className="text-sm text-gray-600">
-              Falls du schon Videos generiert hast aber diesen Screen bekommst,{' '}
+              Wichtig: Die App ist noch in der frühen Early Stage Phase und hat daher kleinere Bugs wie diesen. {' '}
               <button 
                 onClick={() => window.location.reload()}
                 className="text-purple-600 hover:text-purple-700 hover:underline font-medium"
               >
-                klick hier.
+                Klick hier.
               </button>
             </div>
           </div>
@@ -57,35 +57,35 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
               <VideoIcon className="h-6 w-6 text-blue-600" />
             </div>
           </div>
-          <h3 className="text-lg font-semibold mb-2">Ultra Realistic UGC Videos</h3>
+          <h3 className="text-lg font-semibold mb-2">Ultra Realistische UGC Videos</h3>
           <p className="text-gray-600 text-sm mb-4">
-            Create UGC videos promoting your product with your own script
+            Erstelle UGC Videos die dein Produkt bewerben mit deinem eigenen Script
           </p>
           <Button 
             onClick={onCreateClick}
             className="w-full"
           >
-            Create your first Video
+            Erstelle dein erstes Video
           </Button>
         </div>
 
         {/* Disabled Cards */}
         {[
           {
-            title: "UGC Videos V2 + Script Generator",
-            description: "Let AI generate your script and create mindblowing Ad videos with subtitles and editing.",
+            title: "Ugcs.io V2 + Script Generator",
+            description: "Erstelle noch bessere Ads mit deinem eigenen Script und Untertiteln.",
             icon: ImageIcon,
             colors: { bg: "bg-green-100/70", text: "text-green-600/70" }
           },
           {
-            title: "Let AI hold your brands products",
-            description: "Make even better Ads with AI holding your products, ultra realistic.",
+            title: "Eigene Avatare die dein Produkt halten",
+            description: "Erstelle noch bessere Ads mit Custom Avataren die dein Produkt halten.",
             icon: Users,
             colors: { bg: "bg-orange-100/70", text: "text-orange-600/70" }
           },
           {
-            title: "Auto Editing",
-            description: "Receive automatic editing of your videos, with subtitles, cuts, and more.",
+            title: "Auto-Editing",
+            description: "Erhalte automatisches Editing deiner Videos mit Untertiteln und mehr.",
             icon: Sparkles,
             colors: { bg: "bg-purple-100/70", text: "text-purple-600/70" }
           }
@@ -111,7 +111,7 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
       </div>
 
       <div className="mt-8 bg-purple-50 border border-purple-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <div className="h-8 w-8 bg-purple-100 rounded flex items-center justify-center gap-4">
             <span className="text-purple-600 font-semibold">S</span>
           </div>

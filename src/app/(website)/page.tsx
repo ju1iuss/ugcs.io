@@ -174,7 +174,7 @@ export default function Home() {
             />
           </div>
           <span className="text-xs text-gray-600">
-            Bereits <span className="font-medium text-gray-900">200+</span> zufriedene Nutzer
+            Bereits über <span className="font-medium text-gray-900">200+</span> Nutzer
           </span>
         </div>
 
@@ -263,7 +263,7 @@ export default function Home() {
       
 
       {/* Avatar Examples */}
-      <div className="relative pb-4">
+      <div id="examples" className="relative pb-4">
         <div className="grid grid-cols-5 gap-2 max-w-4xl mx-auto">
           {[
             {
@@ -731,7 +731,7 @@ export default function Home() {
           <div>
             <h4 className="font-semibold mb-4">Product</h4>
             <ul className="space-y-2 text-sm text-gray-600">
-              <li><Link href="/#demo">Demo</Link></li>
+              <li><Link href="/#examples">Demo</Link></li>
               <li><Link href="/#pricing">Pricing</Link></li>
             </ul>
           </div>

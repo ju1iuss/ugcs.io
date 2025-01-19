@@ -19,16 +19,16 @@ export default function PricingPage() {
   const urlParams = `?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}&client_reference_id=${user?.id}`;
 
   const starterLink = isYearly 
-    ? `https://buy.stripe.com/4gw8xW1X5frX31m3ci${urlParams}`
-    : `https://buy.stripe.com/4gw29y59h5Rn0Te8wA${urlParams}`;
+    ? `https://checkout.ugcs.io/b/4gw8xW1X5frX31m3ci${urlParams}`
+    : `https://checkout.ugcs.io/b/4gw29y59h5Rn0Te8wA${urlParams}`;
 
   const creatorLink = isYearly
-    ? `https://buy.stripe.com/dR615u59h2Fb45qbIN${urlParams}`
-    : `https://buy.stripe.com/3cs5lKbxF2FbbxS9AC${urlParams}`;
+    ? `https://checkout.ugcs.io/b/dR615u59h2Fb45qbIN${urlParams}`
+    : `https://checkout.ugcs.io/b/3cs5lKbxF2FbbxS9AC${urlParams}`;
 
   const agencyLink = isYearly
-    ? `https://buy.stripe.com/3cs7tSeJRa7D45q7sA${urlParams}`
-    : `https://buy.stripe.com/dR63dC6dl7ZvbxSaEL${urlParams}`;
+    ? `https://checkout.ugcs.io/b/3cs7tSeJRa7D45q7sA${urlParams}`
+    : `https://checkout.ugcs.io/b/dR63dC6dl7ZvbxSaEL${urlParams}`;
 
   const getVideoText = (seconds: number) => 
     isYearly ? `${seconds} Video Sekunden pro Monat` : `${seconds} Video Sekunden pro Monat`;
