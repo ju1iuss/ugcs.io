@@ -20,22 +20,22 @@ import TypingAnimation from "@/components/ui/typing-animation";
 
 const reviews = [
   {
-    name: "Michael Schmidt",
-    username: "Marketing Manager bei TechCorp",
-    body: "⭐️⭐️⭐️⭐️⭐️\nPerfekt für unsere Social Media Kampagnen! Die Videos sehen super professionell aus. 🚀",
-    img: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=faces",
+    name: "Lorenz Kopp",
+    username: "Recruiting Werbeanzeigen mit KI",
+    body: "⭐️⭐️⭐️⭐️⭐️\nPerfekt für unsere Ad-Kampagnen! Die Videos sehen super professionell aus. 🚀",
+    img: "https://api.altan.ai/platform/media/ac5d5d98-2159-453b-8312-4b951d572ffc?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
   },
   {
     name: "Sarah Weber",
     username: "Social Media Managerin",
-    body: "⭐️⭐️⭐️⭐️⭐️\nEin absoluter Game-Changer! Die KI-Avatare sind verblüffend natürlich. 🎯",
+    body: "⭐️⭐️⭐️⭐️⭐️\nEin absoluter Game-Changer! Die KI-Avatare sind verblüffend natürlich.",
     img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop&crop=faces",
   },
   {
-    name: "Thomas Hehren",
-    username: "Startup Gründer",
-    body: "⭐️⭐️⭐️⭐️⭐️\nEndlich mehrsprachige Videos ohne Aufwand! Top Service. 💡",
-    img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop&crop=faces",
+    name: "Jeremy Okoth",
+    username: "Influencer & Startup Gründer",
+    body: "⭐️⭐️⭐️⭐️⭐️\nEndlich mehrsprachige Videos ohne Aufwand! Top Service.",
+    img: "https://api.altan.ai/platform/media/517d3fec-8ec9-4fa3-b5bf-ca2d9591aefd?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
   },
   {
     name: "Lisa Wagner",
@@ -50,10 +50,10 @@ const reviews = [
     img: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop&crop=faces",
   },
   {
-    name: "Julia Bauer",
-    username: "Marketing Agentur",
-    body: "⭐️⭐️⭐️⭐️⭐️\nUnsere Conversion-Rates sind deutlich gestiegen. Klare Empfehlung! 🏆",
-    img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=faces",
+    name: "Hannes Kessel",
+    username: "Influencer & Marketing Agentur",
+    body: "⭐️⭐️⭐️⭐️⭐️\nUnsere Conversion-Rates sind deutlich gestiegen. Klare Empfehlung.",
+    img: "https://api.altan.ai/platform/media/d1abb7f2-28aa-4d80-81c1-cc87e551bf8f?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
   },
 ];
 
