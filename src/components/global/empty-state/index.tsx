@@ -24,10 +24,12 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
       
 
       <div className="text-center mb-12 flex flex-col items-center">
-        <div className="h-12 w-12 bg-black rounded-lg flex items-center justify-center mb-4">
-          <LinkIcon className="h-6 w-6 text-white" />
-        </div>
-        <h1 className="text-2xl font-semibold">Welcome to Ugcs.io</h1>
+      <img 
+                src="/favicon.ico" 
+                alt="Ugcs.io Logo" 
+                className="w-10 h-10 mb-4"
+              />
+        <h1 className="text-2xl font-semibold">Wilkommen bei Ugcs.io</h1>
       </div>
       
       <div className="mb-8 bg-purple-50 border border-purple-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
@@ -36,14 +38,14 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
             <span className="text-purple-600 font-semibold">!</span>
           </div>
           <div>
-            <div className="font-medium">Lade die Seite neu, falls keine Credits oder generierte Videos angezeigt werden.</div>
+            <div className="font-medium">Wichtig: Die App ist in der Early Stage Phase.</div>
             <div className="text-sm text-gray-600">
-              Wichtig: Die App ist noch in der frühen Early Stage Phase und hat daher kleinere Bugs wie diesen. {' '}
+            Falls keine generierten Videos angezeigt werden und die "Credits" Anzeige grau ist, {' '}
               <button 
                 onClick={() => window.location.reload()}
                 className="text-purple-600 hover:text-purple-700 hover:underline font-medium"
               >
-                Klick hier.
+                klick hier.
               </button>
             </div>
           </div>
@@ -110,25 +112,7 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
         ))}
       </div>
 
-      <div className="mt-8 bg-purple-50 border border-purple-100 rounded-lg p-4 flex items-center justify-between shadow-sm">
-        <div className="flex items-center gap-4">
-          <div className="h-8 w-8 bg-purple-100 rounded flex items-center justify-center gap-4">
-            <span className="text-purple-600 font-semibold">S</span>
-          </div>
-          <div>
-            <div className="font-medium">Du hast nicht mehr viele Credits</div>
-            <div className="text-sm text-gray-600">Hol dir mehr Credits um mehr Videos zu erstellen</div>
-          </div>
-        </div>
-        <a 
-          href="/pricing"
-          className="no-underline"
-        >
-          <Button variant="link" className="text-purple-600">
-            Jetzt Upgraden →
-          </Button>
-        </a>
-      </div>
+      
     </div>
   );
 } 
