@@ -122,7 +122,7 @@ export default function Home() {
             <span className="font-semibold">Ugcs.io</span>
           </div>
             
-          <nav className="flex space-x-8">
+          <nav className="flex items-center space-x-8">
             <Link 
               href="#examples" 
               className="text-gray-600 hover:text-gray-900 scroll-smooth"
@@ -143,6 +143,19 @@ export default function Home() {
             >
               Pricing
             </Link>
+            <div className="flex items-center space-x-4">
+              <Link 
+                href="/sign-in"
+                className="text-gray-600 hover:text-gray-900"
+              >
+                Einloggen
+              </Link>
+              <Link href="/sign-up">
+                <Button variant="default" className="bg-black hover:bg-gray-800 text-white">
+                  Registrieren
+                </Button>
+              </Link>
+            </div>
           </nav>
         </header>
       </div>
@@ -236,7 +249,7 @@ export default function Home() {
           Deutschlands realistischste KI-Avatar-Videos. So schnell und einfach war Content-Erstellung noch nie!
         </p>
         <div className="flex justify-center gap-4 mb-4">
-          <Link href="/dashboard">
+          <Link href="/sign-up">
             <Button 
               className="rounded-md text-md py-6 px-8 flex items-center gap-2"
               size="lg"
@@ -276,7 +289,7 @@ export default function Home() {
             },
             {
               id: 'hero3',
-              src: "https://api.altan.ai/platform/media/3aa1c4a1-5875-4bb0-84b0-8dec1794fc5c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              src: "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
             },
             {
               id: 'hero4',
