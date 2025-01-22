@@ -46,11 +46,11 @@ const avatars: Avatar[] = [
     src: 'https://api.altan.ai/platform/media/6eb32482-9037-4858-8abd-f2ce8d09df1f?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
     name: 'Noah'
   },
-  //{ 
-   // id: '7', 
-   // src: 'https://api.altan.ai/platform/media/f489404d-83aa-49fe-a185-eb2390be3373?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
-   // name: 'Matteo'
-  //},
+  { 
+    id: '7', 
+    src: 'https://api.altan.ai/platform/media/c0261830-094a-4e0f-8150-ab50c2289ada?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
+    name: 'Sofia'
+  },
 ]
 
 // The main component function that accepts our defined props

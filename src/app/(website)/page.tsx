@@ -297,7 +297,7 @@ export default function Home() {
             },
             {
               id: 'hero5',
-              src: "https://api.altan.ai/platform/media/f70e52f2-e59a-4e26-9cb7-0e3712308e33?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              src: "https://api.altan.ai/platform/media/868bd901-8642-4a40-8fca-90935258b625?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
             }
           ].map((video) => (
             <div key={video.id} className="relative aspect-[9/16] group">
