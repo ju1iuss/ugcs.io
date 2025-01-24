@@ -105,12 +105,60 @@ export default function Home() {
     video2: false,
     video3: false,
   });
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Define MobileMenu here to access the state
+  const MobileMenu = () => {
+    return (
+      <div className={`
+        absolute top-full left-0 right-0 bg-white border-b border-gray-200 
+        transition-all duration-200 ease-in-out z-50
+        ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
+      `}>
+        <div className="px-4 py-2 space-y-2">
+          <Link 
+            href="#examples"
+            className="block py-2 text-sm text-gray-600 hover:text-gray-900"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('examples')?.scrollIntoView({ behavior: 'smooth' });
+              setIsMobileMenuOpen(false);
+            }}
+          >
+            Produkt
+          </Link>
+          <Link 
+            href="#pricing"
+            className="block py-2 text-sm text-gray-600 hover:text-gray-900"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
+              setIsMobileMenuOpen(false);
+            }}
+          >
+            Pricing
+          </Link>
+          <Link 
+            href="/dashboard"
+            className="block py-2 text-sm text-gray-600 hover:text-gray-900"
+          >
+            Einloggen
+          </Link>
+          <Link href="/pricing" className="block py-2">
+            <Button variant="default" className="w-full text-sm bg-black hover:bg-gray-800 text-white">
+              Registrieren
+            </Button>
+          </Link>
+        </div>
+      </div>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-white max-w-7xl mx-auto px-4 scroll-smooth">
-      {/* Header */}
-      <div className="border-b border-gray-200 w-screen -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)]">
-        <header className="max-w-5xl mx-auto flex items-center justify-between py-4">
+      {/* Header - Make mobile responsive */}
+      <div className="border-b border-gray-200 w-screen -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)] relative">
+        <header className="max-w-5xl mx-auto flex items-center justify-between py-2 md:py-4">
           <div className="flex items-center space-x-2">
             <Image
               src="/favicon.ico"
@@ -122,7 +170,8 @@ export default function Home() {
             <span className="font-semibold">Ugcs.io</span>
           </div>
             
-          <nav className="flex items-center space-x-8">
+          {/* Hide nav items on mobile, show menu button instead */}
+          <nav className="hidden md:flex items-center space-x-8">
             <Link 
               href="#examples" 
               className="text-gray-600 hover:text-gray-900 scroll-smooth"
@@ -157,11 +206,39 @@ export default function Home() {
               </Link>
             </div>
           </nav>
+
+          {/* Mobile menu button */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="md:hidden"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          >
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="24" 
+              height="24" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+              className={`transition-transform duration-200 ${isMobileMenuOpen ? 'rotate-90' : ''}`}
+            >
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </Button>
         </header>
+        
+        {/* Mobile menu dropdown */}
+        <MobileMenu />
       </div>
 
-      {/* Hero Section */}
-      <section className="text-center pt-20 pb-12 max-w-4xl mx-auto">
+      {/* Hero Section - Adjust text sizes for mobile */}
+      <section className="text-center pt-12 md:pt-20 pb-8 md:pb-12 max-w-4xl mx-auto px-4">
         {/* Trusted by Module */}
         <div className="flex items-center justify-center gap-2 mb-8 bg-gray-50 w-fit mx-auto px-4 py-2 rounded-full border border-black/10">
           <div className="flex -space-x-1.5">
@@ -191,76 +268,86 @@ export default function Home() {
           </span>
         </div>
 
-        <h1 className="text-7xl font-semibold text-gray-900 mb-10 tracking-tighter flex flex-col items-center justify-center gap-2">
-          <div className="flex items-center gap-4">
-            Verwandle{' '}
-            <TypingAnimation 
-              className="text-7xl font-semibold text-purple-300 w-[160px]"
-              duration={100}
-              pauseDuration={1500}
-              deleteMode={true}
-            >
-              Text
-            </TypingAnimation>
-            {' '}in
-          </div>
-          <div className="flex items-center gap-4">
-            <span className="text-green-300">UGC</span>
-            {/* Stacked Videos Container */}
-            <div className="relative w-[50px] h-[89px] mx-6 self-center">
-              {/* Background Videos */}
-              <div className="absolute top-2 -left-2 w-[50px] h-[89px] rounded-lg overflow-hidden opacity-40">
-                <video
-                  className="w-full h-full object-cover"
-                  src="https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                />
-              </div>
-              <div className="absolute top-4 -left-4 w-[50px] h-[89px] rounded-lg overflow-hidden opacity-20">
-                <video
-                  className="w-full h-full object-cover"
-                  src="https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                />
-              </div>
-              {/* Main Video */}
-              <div className="relative w-[50px] h-[89px] rounded-lg overflow-hidden">
-                <video
-                  className="w-full h-full object-cover"
-                  src="https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                />
-              </div>
+        <h1 className="text-5xl md:text-7xl font-semibold text-gray-900 mb-6 md:mb-10 tracking-tighter flex flex-col items-center justify-center gap-1 md:gap-2">
+          {/* Mobile Layout */}
+          <div className="flex md:hidden flex-col items-center gap-2">
+            <span>Verwandle</span>
+            <div className="flex items-center gap-2">
+              <TypingAnimation 
+                className="text-5xl font-semibold text-purple-300 w-[160px]"
+                duration={100}
+                pauseDuration={1500}
+                deleteMode={true}
+              >
+                Text
+              </TypingAnimation>
+              <span>in</span>
             </div>
-            <span className="text-black">Videos</span>
+            <div className="flex items-center gap-2">
+              <span className="text-green-300">UGC</span>
+              <span className="text-black">Videos</span>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden md:flex flex-col items-center gap-4">
+            <div className="flex items-center gap-4 flex-wrap justify-center">
+              Verwandle{' '}
+              <TypingAnimation 
+                className="text-7xl font-semibold text-purple-300 w-[160px]"
+                duration={100}
+                pauseDuration={1500}
+                deleteMode={true}
+              >
+                Text
+              </TypingAnimation>
+              {' '}in
+            </div>
+            <div className="flex items-center gap-4 flex-wrap justify-center">
+              <span className="text-green-300">UGC</span>
+              {/* Stacked Videos Container - Only shown on desktop */}
+              <div className="relative w-[50px] h-[89px] mx-6 self-center ml-[38px]">
+                {/* Background Shadows - Replace videos with div containers */}
+                <div className="absolute top-4 -left-4 w-[50px] h-[89px] rounded-lg bg-gray-200">
+                  {/* Empty div for second shadow */}
+                </div>
+                <div className="absolute top-2 -left-2 w-[50px] h-[89px] rounded-lg bg-gray-100">
+                  {/* Empty div for first shadow */}
+                </div>
+                
+                {/* Main Video */}
+                <div className="relative w-[50px] h-[89px] rounded-lg overflow-hidden">
+                  <video
+                    className="w-full h-full object-cover"
+                    src="https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                </div>
+              </div>
+              <span className="text-black">Videos</span>
+            </div>
           </div>
         </h1>
         
-        <p className="text-md text-gray-800 mb-12">
+        <p className="text-sm md:text-md text-gray-800 mb-8 md:mb-12">
           Deutschlands realistischste KI-Avatar-Videos. So schnell und einfach war Content-Erstellung noch nie!
         </p>
-        <div className="flex justify-center gap-4 mb-4">
-          <Link href="/sign-up">
+        <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-4">
+          <Link href="/sign-up" className="w-full sm:w-auto">
             <Button 
-              className="rounded-md text-md py-6 px-8 flex items-center gap-2"
+              className="rounded-md text-sm md:text-md py-4 md:py-6 px-6 md:px-8 flex items-center gap-2 w-full sm:w-auto"
               size="lg"
             >
-              <Sparkles className="h-5 w-5" />
+              <Sparkles className="h-4 w-4 md:h-5 md:w-5" />
               Jetzt Starten
             </Button>
           </Link>
           <Button 
             variant="outline"
-            className="rounded-md text-md py-6 px-6"
+            className="rounded-md text-sm md:text-md py-4 md:py-6 px-4 md:px-6 w-full sm:w-auto"
             size="lg"
             onClick={() => setIsVideoOpen(true)}
           >
@@ -275,9 +362,9 @@ export default function Home() {
       </section>
       
 
-      {/* Avatar Examples */}
-      <div id="examples" className="relative pb-4">
-        <div className="grid grid-cols-5 gap-2 max-w-4xl mx-auto">
+      {/* Avatar Examples - Adjust grid for mobile */}
+      <div id="examples" className="relative pb-2 md:pb-4">
+        <div className="flex md:grid md:grid-cols-5 gap-1 md:gap-2 max-w-4xl mx-auto overflow-x-auto pb-4 md:pb-0">
           {[
             {
               id: 'hero1',
@@ -300,7 +387,7 @@ export default function Home() {
               src: "https://api.altan.ai/platform/media/87b85fae-2944-463c-9b9c-aa2f77bccd28?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
             }
           ].map((video) => (
-            <div key={video.id} className="relative aspect-[9/16] group">
+            <div key={video.id} className="relative aspect-[9/16] w-[120px] md:w-auto flex-shrink-0 group">
               <video 
                 className="w-full h-full object-cover rounded-lg"
                 src={video.src}
@@ -338,7 +425,7 @@ export default function Home() {
       </div>
 
       {/* Testimonials Section */}
-      <section className="py-8 overflow-hidden">
+      <section className="py-4 md:py-8 overflow-hidden">
         <div className="relative flex h-[500px] w-full max-w-5xl mx-auto flex-col items-center justify-center overflow-hidden">
           <Marquee className="[--duration:20s]" pauseOnHover>
             {firstRow.map((review) => (
@@ -355,11 +442,11 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Pricing Section */}
+      {/* Pricing Section - Stack cards on mobile */}
       <section id="pricing" className="px-4 max-w-6xl mx-auto text-center">
-        <div className="text-purple-600 mb-2">Pricing</div>
-        <h2 className="text-4xl font-bold mb-4">Wähle deinen Plan</h2>
-        <p className="text-gray-600 mb-8">
+        <div className="text-sm md:text-base text-purple-600 mb-2">Pricing</div>
+        <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Wähle deinen Plan</h2>
+        <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8">
           Einfacher & schneller Zahlungs Prozess. Keine versteckten Kosten.
         </p>
         
@@ -640,9 +727,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Licensed Creators Section */}
-      <section className="py-24 overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center gap-12">
+      {/* Licensed Creators Section - Stack on mobile */}
+      <section className="py-8 md:py-24 overflow-hidden">
+        <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center gap-8 md:gap-12">
           <div className="flex-1">
             <img
               src="https://api.altan.ai/platform/media/290d714a-01d3-4439-ae50-764db12b61fe?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
@@ -651,10 +738,10 @@ export default function Home() {
             />
           </div>
           <div className="flex-1 max-w-xl">
-            <h2 className="text-4xl font-bold mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">
               15+ lizenzierte Creator
             </h2>
-            <p className="text-gray-600 text-lg leading-relaxed">
+            <p className="text-sm md:text-lg text-gray-600 leading-relaxed">
               Erstelle Videos mit unseren Top-Tier Creators ohne dir Gedanken über Rechte machen zu müssen. Du besitzt den Content - keine zusätzlichen Gebühren, kein Stress, volle Eigentumsrechte garantiert.
             </p>
           </div>
@@ -726,9 +813,9 @@ export default function Home() {
         </Accordion>
       </section>
 
-      {/* Footer */}
+      {/* Footer - Adjust grid for mobile */}
       <footer className="px-6 py-12 border-t">
-        <div className="max-w-4xl mx-auto grid grid-cols-4 gap-8">
+        <div className="max-w-4xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-2 mb-4">
               <Image
@@ -769,9 +856,9 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Update Demo Video Dialog */}
+      {/* Update Demo Video Dialog - Make responsive */}
       <Dialog open={isVideoOpen} onOpenChange={setIsVideoOpen}>
-        <DialogContent className="max-w-4xl p-0 bg-black overflow-hidden">
+        <DialogContent className="max-w-[95vw] md:max-w-4xl p-0 bg-black overflow-hidden">
           <video
             className="w-full aspect-[4/3]"
             src="https://api.altan.ai/platform/media/73adf8a2-9382-4171-be25-18b306146388?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
