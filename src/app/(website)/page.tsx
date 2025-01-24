@@ -145,12 +145,12 @@ export default function Home() {
             </Link>
             <div className="flex items-center space-x-4">
               <Link 
-                href="/sign-in"
+                href="/dashboard"
                 className="text-gray-600 hover:text-gray-900"
               >
                 Einloggen
               </Link>
-              <Link href="/sign-up">
+              <Link href="/pricing">
                 <Button variant="default" className="bg-black hover:bg-gray-800 text-white">
                   Registrieren
                 </Button>
@@ -760,6 +760,7 @@ export default function Home() {
             <ul className="space-y-2 text-sm text-gray-600">
               <li><Link href="/privacy">Datenschutzerklärung</Link></li>
               <li><Link href="/terms">Nutzungsbedingungen</Link></li>
+              <li><Link href="/impressum">Impressum</Link></li>
             </ul>
           </div>
         </div>
