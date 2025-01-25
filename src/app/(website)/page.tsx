@@ -144,7 +144,7 @@ export default function Home() {
           >
             Einloggen
           </Link>
-          <Link href="/pricing" className="block py-2">
+          <Link href="/sign-up" className="block py-2">
             <Button variant="default" className="w-full text-sm bg-black hover:bg-gray-800 text-white">
               Registrieren
             </Button>
@@ -199,7 +199,7 @@ export default function Home() {
               >
                 Einloggen
               </Link>
-              <Link href="/pricing">
+              <Link href="/sign-up">
                 <Button variant="default" className="bg-black hover:bg-gray-800 text-white">
                   Registrieren
                 </Button>
@@ -311,7 +311,7 @@ export default function Home() {
                 <div className="absolute top-4 -left-4 w-[50px] h-[89px] rounded-lg bg-gray-200">
                   {/* Empty div for second shadow */}
                 </div>
-                <div className="absolute top-2 -left-2 w-[50px] h-[89px] rounded-lg bg-gray-100">
+                <div className="absolute top-2 -left-2 w-[50px] h-[89px] rounded-lg bg-gray-400">
                   {/* Empty div for first shadow */}
                 </div>
                 

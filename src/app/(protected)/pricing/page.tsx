@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { CreditDrawer } from "@/components/global/pricing/credit-drawer"
 import { useUser } from "@clerk/nextjs";
+import { getStripeUrlWithParams } from '@/lib/utils/url';
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
@@ -16,19 +17,31 @@ export default function PricingPage() {
   const creatorPrice = isYearly ? "39.17" : "49";
   const agencyPrice = isYearly ? "87.17" : "109";
 
-  const urlParams = `?prefilled_email=${encodeURIComponent(user?.emailAddresses[0]?.emailAddress || '')}&client_reference_id=${user?.id}`;
+  const getCheckoutUrl = (baseUrl: string) => {
+    return getStripeUrlWithParams(
+      baseUrl,
+      user?.emailAddresses[0]?.emailAddress,
+      user?.id
+    );
+  };
 
-  const starterLink = isYearly 
-    ? `https://checkout.ugcs.io/b/4gw8xW1X5frX31m3ci${urlParams}`
-    : `https://checkout.ugcs.io/b/4gw29y59h5Rn0Te8wA${urlParams}`;
+  const starterLink = getCheckoutUrl(
+    isYearly 
+      ? 'https://checkout.ugcs.io/b/4gw8xW1X5frX31m3ci'
+      : 'https://checkout.ugcs.io/b/4gw29y59h5Rn0Te8wA'
+  );
 
-  const creatorLink = isYearly
-    ? `https://checkout.ugcs.io/b/dR615u59h2Fb45qbIN${urlParams}`
-    : `https://checkout.ugcs.io/b/3cs5lKbxF2FbbxS9AC${urlParams}`;
+  const creatorLink = getCheckoutUrl(
+    isYearly
+      ? 'https://checkout.ugcs.io/b/dR615u59h2Fb45qbIN'
+      : 'https://checkout.ugcs.io/b/3cs5lKbxF2FbbxS9AC'
+  );
 
-  const agencyLink = isYearly
-    ? `https://checkout.ugcs.io/b/3cs7tSeJRa7D45q7sA${urlParams}`
-    : `https://checkout.ugcs.io/b/dR63dC6dl7ZvbxSaEL${urlParams}`;
+  const agencyLink = getCheckoutUrl(
+    isYearly
+      ? 'https://checkout.ugcs.io/b/3cs7tSeJRa7D45q7sA'
+      : 'https://checkout.ugcs.io/b/dR63dC6dl7ZvbxSaEL'
+  );
 
   const getVideoText = (seconds: number) => 
     isYearly ? `${seconds} Video Sekunden pro Monat` : `${seconds} Video Sekunden pro Monat`;

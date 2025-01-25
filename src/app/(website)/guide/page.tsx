@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import Image from 'next/image';
-import { PlayCircle } from 'lucide-react';
+import { PlayCircle, Download } from 'lucide-react';
 import {
   Accordion,
   AccordionContent,
@@ -30,24 +30,17 @@ export default function GuidePage() {
           Lerne Schritt für Schritt, wie du professionelle UGC Videos mit KI erstellst
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4">
-          <Link href="#content">
+          <Link 
+            href="https://api.altan.ai/platform/media/e363af3a-393a-404a-9a91-91128e2ac859?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button 
               size="lg" 
               className="w-full sm:w-auto bg-black hover:bg-gray-800 text-sm md:text-base py-4 md:py-6 px-6 md:px-8"
-              onClick={(e) => {
-                e.preventDefault();
-                const element = document.getElementById('content');
-                const offset = 100; // Adjust this value to control scroll distance
-                const elementPosition = element?.getBoundingClientRect().top ?? 0;
-                const offsetPosition = elementPosition + window.pageYOffset - offset;
-                
-                window.scrollTo({
-                  top: offsetPosition,
-                  behavior: "smooth"
-                });
-              }}
             >
-              Guide Lesen
+              <Download className="mr-2 h-4 w-4" />
+              Download PDF
             </Button>
           </Link>
           <Link href="https://www.loom.com/share/2a269098ea7042e49425b17bc7c6cf3b?sid=f142a92d-b7ed-46e7-b32c-7c84f9531ac7">
