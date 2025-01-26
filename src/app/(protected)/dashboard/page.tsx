@@ -15,6 +15,12 @@ import MorphingText from '@/components/ui/morphing-text';
 import { AnimatedText } from "@/components/ui/animated-text";
 import { Card } from "@/components/ui/card";
 
+// Add new type for error tracking
+interface PollingError {
+  videoId: number;
+  message: string;
+}
+
 export default function DashboardPage() {
   const { user, isLoaded } = useUser();
   const [videos, setVideos] = useState<Video[]>([]);
@@ -25,6 +31,8 @@ export default function DashboardPage() {
   const [progress, setProgress] = useState(0);
   const pollIntervals = useRef<{ [key: string]: NodeJS.Timeout }>({});
   const [loadingStep, setLoadingStep] = useState(0);
+  const [pollingErrors, setPollingErrors] = useState<Record<number, string>>({});
+  const pollingStartTimes = useRef<Record<string, number>>({});
 
   useEffect(() => {
     if (loading && isLoaded) {
@@ -112,8 +120,37 @@ export default function DashboardPage() {
     }
   };
 
+  const handlePollingError = async (videoId: number) => {
+    try {
+      // Send error to webhook
+      await fetch('https://api.altan.ai/galaxia/hook/z7iCFd', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: videoId })
+      });
+
+      // Update error state
+      setPollingErrors(prev => ({
+        ...prev,
+        [videoId]: "ERROR - Bitte ändere deinen Skript"
+      }));
+
+      // Clear polling interval
+      clearLoadingPolling(videoId);
+    } catch (error) {
+      console.error('Error handling polling timeout:', error);
+    }
+  };
+
   const pollLoadingStatus = async (videoId: number) => {
     try {
+      // Check if we've exceeded polling time limit (240 seconds)
+      const startTime = pollingStartTimes.current[`loading-${videoId}`];
+      if (startTime && Date.now() - startTime > 240000) {
+        await handlePollingError(videoId);
+        return;
+      }
+
       const response = await fetch('https://api.altan.ai/galaxia/hook/mdqQXB', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -157,16 +194,29 @@ export default function DashboardPage() {
       clearInterval(pollIntervals.current[`loading-${videoId}`]);
     }
     
-    pollIntervals.current[`loading-${videoId}`] = setInterval(() => {
-      pollLoadingStatus(videoId);
-    }, 5000);
+    // Record start time for this polling session
+    pollingStartTimes.current[`loading-${videoId}`] = Date.now();
+    
+    // Wait 90 seconds before starting to poll
+    setTimeout(() => {
+      pollIntervals.current[`loading-${videoId}`] = setInterval(() => {
+        pollLoadingStatus(videoId);
+      }, 10000); // Poll every 10 seconds
+    }, 90000); // Wait 90 seconds
   };
 
   const clearLoadingPolling = (videoId: number) => {
     if (pollIntervals.current[`loading-${videoId}`]) {
       clearInterval(pollIntervals.current[`loading-${videoId}`]);
-      delete pollIntervals.current[`loading-${videoId}`];
     }
+    // Clean up start time
+    delete pollingStartTimes.current[`loading-${videoId}`];
+    // Clean up error message if exists
+    setPollingErrors(prev => {
+      const newErrors = { ...prev };
+      delete newErrors[videoId];
+      return newErrors;
+    });
   };
 
   const handleAddVideo = (newVideo: Video) => {
@@ -314,6 +364,7 @@ export default function DashboardPage() {
           onRatingChange={handleRatingChange}
           onAddVideo={handleAddVideo}
           onDelete={handleDeleteVideo}
+          pollingErrors={pollingErrors}
         />
       </div>
     );

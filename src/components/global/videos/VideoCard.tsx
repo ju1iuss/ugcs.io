@@ -26,9 +26,10 @@ interface VideoCardProps {
   video: Video;
   onRatingChange?: (videoId: number, newRating: 'good' | 'bad' | null) => void;
   onDelete?: (videoId: number) => void;
+  errorMessage?: string;
 }
 
-export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
+export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: VideoCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -43,6 +44,10 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
   const [generationProgress, setGenerationProgress] = useState(0);
   const progressInterval = useRef<NodeJS.Timeout>();
   const isLoading = video.status === "Generating" || video.status === "Loading";
+  const hasError = errorMessage || video.status === "Error";
+  
+  // Get the error message to display
+  const displayError = errorMessage || (video.status === "Error" ? "ERROR - Bitte ändere deinen Skript" : null);
 
   // Reset animation after it plays
   useEffect(() => {
@@ -170,6 +175,16 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
   return (
     <div className="space-y-3">
       <div className="relative">
+        {/* Error message display - centered with white text */}
+        {displayError && (
+          <div className="absolute inset-0 z-40 flex items-center justify-center">
+            <p className="text-white text-center font-medium px-4">
+              <span className="text-red-500">ERROR</span> <br />
+              {"Bitte ändere deinen Skript"}
+            </p>
+          </div>
+        )}
+
         {/* Show loader for both Generating and Loading states */}
         {isLoading && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 rounded-lg z-30">
@@ -186,12 +201,14 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
           </div>
         )}
 
-        {/* Video Section - Enhanced shadows */}
+        {/* Video Section - Enhanced shadows and error state */}
         <div 
           className={cn(
             "relative aspect-[9/16] rounded-lg overflow-hidden bg-white dark:bg-gray-800",
             "shadow-xl",
-            isLoading && "brightness-75"
+            isLoading && "brightness-75",
+            hasError && "brightness-50", // Now checks for both error states
+            "transition-all duration-300"
           )}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
@@ -199,15 +216,18 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
           <video
             ref={videoRef}
             src={video.video_url || ''}
-            className="w-full h-full object-cover"
+            className={cn(
+              "w-full h-full object-cover",
+              hasError && "pointer-events-none" // Now checks for both error states
+            )}
             poster={video.thumbnail || undefined}
             onTimeUpdate={handleTimeUpdate}
             onEnded={() => setIsPlaying(false)}
             playsInline
           />
             
-          {/* Play/Pause Overlay */}
-          {isFinished && (
+          {/* Only show play/pause overlay if no error */}
+          {isFinished && !hasError && (
             <div className="absolute inset-0 flex items-center justify-center">
               {(!isPlaying || (isPlaying && isHovered)) && (
                 <button 
@@ -224,8 +244,8 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
             </div>
           )}
 
-          {/* Timeline Overlay - only show when playing */}
-          {isPlaying && (
+          {/* Timeline Overlay - only show when playing and no error */}
+          {isPlaying && !hasError && (
             <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/50 to-transparent">
               <div 
                 className="w-full h-1 bg-white/30 rounded cursor-pointer"
@@ -248,17 +268,17 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
         </div>
       </div>
 
-      {/* Actions Section - Outside of loading overlay */}
+      {/* Actions Section - Disable rating buttons when error exists */}
       <div className="flex items-center justify-between px-1">
         <div className="flex items-center gap-2">
           <button 
             onClick={() => handleRating('good')}
-            disabled={isRating}
+            disabled={!!(isRating || hasError)}
             className={cn(
               "transition-all duration-200 relative",
               "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
               currentRating === 'good' && "text-green-500 hover:text-green-600",
-              isRating && "opacity-50"
+              (isRating || hasError) && "opacity-50 cursor-not-allowed"
             )}
           >
             <ThumbsUp 
@@ -273,12 +293,12 @@ export function VideoCard({ video, onRatingChange, onDelete }: VideoCardProps) {
           </button>
           <button 
             onClick={() => handleRating('bad')}
-            disabled={isRating}
+            disabled={!!(isRating || hasError)}
             className={cn(
               "transition-all duration-200 relative",
               "text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
               currentRating === 'bad' && "text-red-500 hover:text-red-600",
-              isRating && "opacity-50"
+              (isRating || hasError) && "opacity-50 cursor-not-allowed"
             )}
           >
             <ThumbsDown 

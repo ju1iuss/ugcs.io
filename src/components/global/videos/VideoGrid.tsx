@@ -9,9 +9,10 @@ interface VideoGridProps {
   onRatingChange: (videoId: number, newRating: 'good' | 'bad' | null) => void;
   onAddVideo: (video: Video) => void;
   onDelete: (videoId: number) => void;
+  pollingErrors: Record<number, string>;
 }
 
-export function VideoGrid({ videos, onRatingChange, onAddVideo, onDelete }: VideoGridProps) {
+export function VideoGrid({ videos, onRatingChange, onAddVideo, onDelete, pollingErrors }: VideoGridProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -38,6 +39,7 @@ export function VideoGrid({ videos, onRatingChange, onAddVideo, onDelete }: Vide
                 video={video} 
                 onRatingChange={onRatingChange} // Pass onRatingChange to VideoCard
                 onDelete={onDelete} // Pass onDelete to VideoCard
+                errorMessage={pollingErrors[video.id]}  // Pass error message
               />
             </div>
           ))}
