@@ -76,6 +76,18 @@ export const avatars: Avatar[] = [
     name: 'Kim',
     style_id: '1'
   },
+  { 
+    id: '12', 
+    src: 'https://api.altan.ai/platform/media/62d873c7-999b-4f3e-82f9-107407224f8a?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
+    name: 'Christian',
+    style_id: '1'
+  },
+  { 
+    id: '13', 
+    src: 'https://api.altan.ai/platform/media/27c67f5c-186c-4da0-a8bf-bed10c71c52c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
+    name: 'Mara',
+    style_id: '1'
+  },
 ]
 
 // The main component function that accepts our defined props

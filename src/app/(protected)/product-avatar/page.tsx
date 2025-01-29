@@ -25,31 +25,14 @@ import {
 import { removeBackground } from '@/lib/api'
 import { ImageIcon } from 'lucide-react'
 import { MultiStepLoader } from "@/components/ui/multi-step-loader"
+import { avatars as avatarOptions } from '@/components/global/form/AvatarSelection'
 
-// Update avatar options with more entries and better descriptions
-const avatarOptions = [
-  {
-    id: '1',
-    src: 'https://api.altan.ai/platform/media/7edce52a-6886-4a48-b5cb-e332a56dfae3?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
-    alt: 'Professioneller Business Avatar',
-    name: 'Business Pro'
-  },
-  {
-    id: '2',
-    src: 'https://api.altan.ai/platform/media/b37669ed-3ea7-4756-9846-41d2fcfaee1e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
-    alt: 'Casual Style Avatar',
-    name: 'Casual Style'
-  },
-  // Adding 10 more avatars with placeholder images
-  ...Array.from({ length: 10 }, (_, i) => ({
-    id: `${i + 3}`,
-    src: i % 2 === 0 
-      ? 'https://api.altan.ai/platform/media/7edce52a-6886-4a48-b5cb-e332a56dfae3?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d'
-      : 'https://api.altan.ai/platform/media/b37669ed-3ea7-4756-9846-41d2fcfaee1e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
-    alt: `Style ${i + 3}`,
-    name: `Style ${i + 3}`
-  }))
-]
+interface Avatar {
+  id: string
+  src: string
+  name: string
+  style_id?: string
+}
 
 interface ProductOverlay {
   x: number
@@ -114,7 +97,7 @@ const processingStates = [
 ]
 
 export default function TestingPage() {
-  const [selectedAvatar, setSelectedAvatar] = useState(avatarOptions[0])
+  const [selectedAvatar, setSelectedAvatar] = useState<Avatar>(avatarOptions[0])
   const previewRef = useRef<HTMLDivElement>(null)
   const [productOverlay, setProductOverlay] = useState<ProductOverlay>({
     x: 0,
@@ -136,7 +119,7 @@ export default function TestingPage() {
 
   const [isRemovingBackground, setIsRemovingBackground] = useState(false)
 
-  const handleAvatarSelect = (avatar: typeof avatarOptions[0]) => {
+  const handleAvatarSelect = (avatar: Avatar) => {
     setSelectedAvatar(avatar)
   }
 
@@ -504,16 +487,13 @@ export default function TestingPage() {
     try {
       console.log('Starting image generation process...')
       setIsProcessing(true)
-      setCountdown(55) // Changed to 55 seconds
+      setCountdown(55)
 
-      // Start countdown
-      const timer = setInterval(() => {
+      // Start countdown timer
+      const countdownInterval = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
-            clearInterval(timer)
-            // Show variants immediately when countdown ends
-            setIsProcessing(false)
-            setShowVariants(true)
+            clearInterval(countdownInterval)
             return 0
           }
           return prev - 1
@@ -526,11 +506,12 @@ export default function TestingPage() {
         throw new Error('Failed to capture preview images')
       }
 
-      // Send initial request
+      console.log('Creating form data...')
       const formData = new FormData()
       formData.append('image', images.fullImage, 'combined-image.png')
       formData.append('mask', images.maskImage, 'mask-image.png')
-      formData.append('metadata', JSON.stringify({
+      
+      const metadata = {
         avatarId: selectedAvatar.id,
         overlay: {
           x: Math.round(productOverlay.x),
@@ -539,21 +520,32 @@ export default function TestingPage() {
           height: Math.round(productOverlay.height),
           originalImage: productOverlay.imageUrl
         }
-      }))
+      }
+      console.log('Metadata:', metadata)
+      formData.append('metadata', JSON.stringify(metadata))
 
-      const response = await fetch('/api/avatar-config', {
+      console.log('Sending request...')
+      const response = await fetch('/api/product-avatar/avatar-config', {
         method: 'POST',
         body: formData
       })
 
-      if (!response.ok) {
-        throw new Error('Failed to process image')
+      console.log('Response status:', response.status)
+      const responseText = await response.text()
+      console.log('Response text:', responseText)
+
+      let data
+      try {
+        data = JSON.parse(responseText)
+      } catch (e) {
+        console.error('Failed to parse response:', e)
+        throw new Error('Invalid response from server')
       }
 
-      // Wait for 55 seconds
-      await new Promise(resolve => setTimeout(resolve, 55000))
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to process image')
+      }
 
-      const data = await response.json()
       const variantData = data.data
 
       if (!variantData?.Variant_1 || !variantData?.Variant_2 || !variantData?.Variant_3) {
@@ -565,6 +557,11 @@ export default function TestingPage() {
         { url: variantData.Variant_2, id: '2' },
         { url: variantData.Variant_3, id: '3' }
       ])
+
+      // Clear interval and show variants immediately
+      clearInterval(countdownInterval)
+      setIsProcessing(false)
+      setShowVariants(true)
 
     } catch (error) {
       console.error('Process failed:', error)
@@ -643,7 +640,7 @@ export default function TestingPage() {
                   <div className="relative aspect-[9/16]">
                     <img
                       src={avatar.src}
-                      alt={avatar.alt}
+                      alt={`Avatar ${avatar.name}`}
                       className="w-full h-full object-cover"
                     />
                     {selectedAvatar.id === avatar.id && (
@@ -668,7 +665,7 @@ export default function TestingPage() {
           >
             <img
               src={selectedAvatar.src}
-              alt={selectedAvatar.alt}
+              alt={selectedAvatar.name}
               className="w-full h-full object-cover"
               crossOrigin="anonymous"
               loading="eager"

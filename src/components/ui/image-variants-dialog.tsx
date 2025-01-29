@@ -33,7 +33,7 @@ export function ImageVariantsDialog({
     try {
       setIsProcessing(true)
       await notifyAvatarCreation(selectedVariant.url, userId)
-      router.push('/avatar-processing')
+      router.push('/product-avatar/processing')
     } catch (error) {
       console.error('Error:', error)
       toast({

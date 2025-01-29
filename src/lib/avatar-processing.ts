@@ -1,20 +1,25 @@
 import { NextResponse } from 'next/server'
 
-export async function POST(request: Request) {
+export async function processAvatarConfig(formData: FormData) {
   try {
-    // Get the form data from the request
-    const formData = await request.formData()
+    console.log('Starting processAvatarConfig')
+    
     const imageFile = formData.get('image') as File
     const maskFile = formData.get('mask') as File
     const metadataStr = formData.get('metadata') as string
+    
+    console.log('Files received:', {
+      hasImageFile: !!imageFile,
+      hasMaskFile: !!maskFile,
+      hasMetadata: !!metadataStr
+    })
+
     const metadata = JSON.parse(metadataStr)
+    console.log('Parsed metadata:', metadata)
 
     // Validate the data
     if (!imageFile || !maskFile || !metadata) {
-      return NextResponse.json(
-        { success: false, message: 'Missing required fields' },
-        { status: 400 }
-      )
+      throw new Error('Missing required fields')
     }
 
     // Convert both files to base64
@@ -28,6 +33,7 @@ export async function POST(request: Request) {
       metadata: metadata
     }
 
+    console.log('Sending webhook request')
     // Send to the actual webhook
     const webhookResponse = await fetch('https://api.altan.ai/galaxia/hook/sz9XHK', {
       method: 'POST',
@@ -37,33 +43,18 @@ export async function POST(request: Request) {
       body: JSON.stringify(webhookPayload)
     })
 
-    // Don't try to parse JSON if the response isn't JSON
+    // Parse response
     const responseText = await webhookResponse.text()
-    let responseData
-    try {
-      responseData = JSON.parse(responseText)
-    } catch (e) {
-      responseData = { message: responseText }
-    }
-
+    console.log('Webhook response:', responseText)
+    
     if (!webhookResponse.ok) {
-      throw new Error(responseData.message || 'Webhook request failed')
+      throw new Error(`Webhook failed: ${responseText}`)
     }
 
-    return NextResponse.json({
-      success: true,
-      message: 'Image processed successfully',
-      data: responseData
-    })
-
+    const responseData = responseText ? JSON.parse(responseText) : null
+    return responseData
   } catch (error) {
-    console.error('Error processing request:', error)
-    return NextResponse.json(
-      { 
-        success: false, 
-        message: error instanceof Error ? error.message : 'Unknown error occurred'
-      },
-      { status: 500 }
-    )
+    console.error('Error in processAvatarConfig:', error)
+    throw error
   }
 } 
