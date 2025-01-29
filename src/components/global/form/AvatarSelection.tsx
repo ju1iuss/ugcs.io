@@ -85,7 +85,7 @@ export const avatars: Avatar[] = [
   { 
     id: '13', 
     src: 'https://api.altan.ai/platform/media/27c67f5c-186c-4da0-a8bf-bed10c71c52c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d',
-    name: 'Mara',
+    name: 'Luisa',
     style_id: '1'
   },
 ]

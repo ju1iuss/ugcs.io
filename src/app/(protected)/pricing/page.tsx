@@ -43,6 +43,10 @@ export default function PricingPage() {
       : 'https://checkout.ugcs.io/b/dR63dC6dl7ZvbxSaEL'
   );
 
+  const trialLink = getCheckoutUrl(
+    'https://checkout.ugcs.io/b/cN2aG41X51B71XiaEO'
+  );
+
   const getVideoText = (seconds: number) => 
     isYearly ? `${seconds} Video Sekunden pro Monat` : `${seconds} Video Sekunden pro Monat`;
 
@@ -90,6 +94,36 @@ export default function PricingPage() {
         </div>
       </div>
 
+      {/* New Trial Card */}
+      <div className="mb-12 max-w-3xl mx-auto px-4">
+        <Card className="relative p-6 bg-gradient-to-r from-purple-50 via-white to-purple-50">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="text-left">
+              <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
+                Trial Credits
+                <span className="bg-purple-100 text-purple-600 text-xs px-2 py-0.5 rounded-full">
+                  Einmalig
+                </span>
+              </h3>
+              <div className="flex items-baseline gap-1 text-purple-600 mb-2">
+                <span className="text-2xl font-bold">€6</span>
+                <span className="text-sm font-medium">einmalig</span>
+              </div>
+              <p className="text-sm text-gray-600">
+                30 Video Sekunden zum Testen
+              </p>
+            </div>
+            <div className="flex-shrink-0">
+              <a href={trialLink} target="_blank" rel="noopener noreferrer">
+                <Button className="whitespace-nowrap">
+                  Credits kaufen
+                </Button>
+              </a>
+            </div>
+          </div>
+        </Card>
+      </div>
+
       <div className="grid lg:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
         {/* Starter Plan */}
         <Card className="relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow">
@@ -119,7 +153,7 @@ export default function PricingPage() {
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              70 Video Sekunden (ca. 5 Videos)
+              120 Video Sekunden (ca. 8 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
@@ -168,7 +202,7 @@ export default function PricingPage() {
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              200 Video Sekunden (ca. 12 Videos)
+              300 Video Sekunden (ca. 15 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
@@ -222,7 +256,7 @@ export default function PricingPage() {
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              600 Video Sekunden (ca. 25 Videos)
+              800 Video Sekunden (ca. 35 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />

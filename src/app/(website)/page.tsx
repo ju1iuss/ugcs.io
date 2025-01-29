@@ -449,7 +449,37 @@ export default function Home() {
         <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8">
           Einfacher & schneller Zahlungs Prozess. Keine versteckten Kosten.
         </p>
-        
+
+        {/* New Trial Card */}
+        <div className="mb-12 max-w-3xl mx-auto px-4">
+          <Card className="relative p-6 bg-gradient-to-r from-purple-50 via-white to-purple-50">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="text-left">
+                <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
+                  Trial Credits
+                  <span className="bg-purple-100 text-purple-600 text-xs px-2 py-0.5 rounded-full">
+                    Einmalig
+                  </span>
+                </h3>
+                <div className="flex items-baseline gap-1 text-purple-600 mb-2">
+                  <span className="text-2xl font-bold">€6</span>
+                  <span className="text-sm font-medium">einmalig</span>
+                </div>
+                <p className="text-sm text-gray-600">
+                  30 Video Sekunden zum Testen
+                </p>
+              </div>
+              <div className="flex-shrink-0">
+                <Link href="/pricing">
+                  <Button className="whitespace-nowrap">
+                    Credits kaufen
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </Card>
+        </div>
+
         {/* Toggle Switch */}
         <div className="flex items-center justify-center gap-4 mb-8">
           <span className={`${isYearly ? 'text-gray-600' : 'text-gray-900'}`}>Monatlich</span>
@@ -498,7 +528,7 @@ export default function Home() {
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                70 Video Sekunden (ca. 5 Videos)
+                120 Video Sekunden (ca. 8 Videos)
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -532,7 +562,7 @@ export default function Home() {
               </li>
               
             </ul>
-            <Link href="https://ugcs.io/pricing">
+            <Link href="/pricing">
               <Button variant="outline" className="w-full">
                 Jetzt Starten
               </Button>
@@ -560,7 +590,7 @@ export default function Home() {
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                200 Video Sekunden (ca. 12 Videos)
+                300 Video Sekunden (ca. 15 Videos)
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -605,7 +635,7 @@ export default function Home() {
                 Untertitel (soon)
               </li>
             </ul>
-            <Link href="https://ugcs.io/pricing">
+            <Link href="/pricing">
               <Button className="w-full bg-purple-600 hover:bg-purple-700">
                 Jetzt Starten
               </Button>
@@ -630,7 +660,7 @@ export default function Home() {
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                600 Video Sekunden (ca. 25 Videos)
+                800 Video Sekunden (ca. 35 Videos)
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -675,7 +705,7 @@ export default function Home() {
                 Untertitel (soon)
               </li>
             </ul>
-            <Link href="https://ugcs.io/pricing">
+            <Link href="/pricing">
               <Button variant="outline" className="w-full">
                 Jetzt Starten
               </Button>
