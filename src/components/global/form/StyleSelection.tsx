@@ -22,6 +22,8 @@ const styles: Record<string, Style[]> = {
     { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/4d09ba97-a861-49b0-ae2f-f5c4f7ad18a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/5835ef98-11cd-4447-9e54-172f64754d10?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     { id: '3', avatarId: '1', src: 'https://api.altan.ai/platform/media/c3c23288-fb96-4436-b600-e43f867ff626?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '4', avatarId: '1', src: 'https://api.altan.ai/platform/media/ca70a5fd-852d-48d1-9ad0-84839f60d61f?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '5', avatarId: '1', src: 'https://api.altan.ai/platform/media/cc070b65-d0f5-4edb-b768-6bf65e6da880?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
   ],
   // Add styles for other avatars
   '2': [
@@ -33,6 +35,8 @@ const styles: Record<string, Style[]> = {
   '3': [
     { id: '1', avatarId: '1', src: 'https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     { id: '2', avatarId: '1', src: 'https://api.altan.ai/platform/media/d0900d55-45cb-438e-996f-3014eff93994?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '3', avatarId: '1', src: 'https://api.altan.ai/platform/media/c9335233-0421-4019-9a4c-7cf7b9ff7642?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
+    { id: '4', avatarId: '1', src: 'https://api.altan.ai/platform/media/ca7065d0-6c54-44f2-92d4-7e01c30c832a?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d' },
     
   ],
   '5': [

@@ -100,4 +100,49 @@ export async function deleteVideo(videoId: number): Promise<void> {
     console.error('Error deleting video:', error);
     throw error;
   }
+}
+
+export async function notifyAvatarCreation(variantUrl: string, userId: string) {
+  try {
+    const response = await fetch('https://api.altan.ai/galaxia/hook/J0i5VB', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        variantUrl,
+        userId
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to notify avatar creation')
+    }
+
+    return true
+  } catch (error) {
+    console.error('Error notifying avatar creation:', error)
+    return false
+  }
+}
+
+// Add this function to handle background removal
+export async function removeBackground(file: File): Promise<Blob> {
+  const formData = new FormData()
+  formData.append('image_file', file)
+  formData.append('size', 'auto')
+
+  const response = await fetch('https://api.remove.bg/v1.0/removebg', {
+    method: 'POST',
+    headers: {
+      'X-Api-Key': 'TXGokPbsWefV4e5UsWcA7q4w',
+    },
+    body: formData,
+  })
+
+  if (!response.ok) {
+    throw new Error('Failed to remove background')
+  }
+
+  return await response.blob()
 } 

@@ -8,7 +8,7 @@ import {
   DialogContent,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import AvatarSelection from './AvatarSelection'
+import AvatarSelection, { avatars } from './AvatarSelection'
 import StyleSelection from './StyleSelection'
 import ScriptInput from './ScriptInput'
 import { useAuth } from "@clerk/nextjs"
@@ -32,6 +32,10 @@ interface FormData {
 
 const TOTAL_STEPS = 3
 
+const getAvatarById = (id: string) => {
+  return avatars.find(avatar => avatar.id === id);
+}
+
 export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credits }: MultiStepFormProps) {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
@@ -50,17 +54,44 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credit
   ]
 
   const updateFormData = (field: keyof FormData, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }))
+    setFormData(prev => {
+      const newData = { ...prev, [field]: value };
+      
+      if (field === 'avatar') {
+        const selectedAvatar = getAvatarById(value);
+        if (selectedAvatar?.style_id) {
+          newData.style = selectedAvatar.style_id;
+        }
+      }
+      
+      return newData;
+    });
   }
 
-  const nextStep = () => setStep(prev => Math.min(prev + 1, TOTAL_STEPS))
-  const prevStep = () => {
-    if (step === 2) {
-      setFormData(prev => ({ ...prev, avatar: '', style: '' }))
-    } else if (step === 3) {
-      setFormData(prev => ({ ...prev, style: '', script: '' }))
+  const nextStep = () => {
+    const currentAvatar = getAvatarById(formData.avatar);
+    
+    if (step === 1 && currentAvatar?.style_id) {
+      setStep(3);
+    } else {
+      setStep(prev => Math.min(prev + 1, TOTAL_STEPS));
     }
-    setStep(prev => Math.max(prev - 1, 1))
+  }
+
+  const prevStep = () => {
+    const currentAvatar = getAvatarById(formData.avatar);
+    
+    if (step === 3 && currentAvatar?.style_id) {
+      setStep(1);
+      setFormData(prev => ({ ...prev, avatar: '', style: '', script: '' }));
+    } else {
+      if (step === 2) {
+        setFormData(prev => ({ ...prev, avatar: '', style: '' }));
+      } else if (step === 3) {
+        setFormData(prev => ({ ...prev, style: '', script: '' }));
+      }
+      setStep(prev => Math.max(prev - 1, 1));
+    }
   }
 
   const handleOpenChange = (open: boolean) => {
@@ -140,14 +171,20 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credit
                 ))}
               </div>
 
-              <ScrollArea className="h-[30vh] px-6">
+              <ScrollArea className={`${step === 1 ? 'h-[60vh]' : 'h-[30vh]'} px-6`}>
                 <div className="space-y-2">
                   {step === 1 && (
                     <AvatarSelection 
                       selectedAvatar={formData.avatar}
                       onSelect={(avatar) => {
-                        updateFormData('avatar', avatar)
-                        nextStep()
+                        updateFormData('avatar', avatar);
+                        const selectedAvatar = getAvatarById(avatar);
+                        if (selectedAvatar?.style_id) {
+                          updateFormData('style', selectedAvatar.style_id);
+                          setStep(3);
+                        } else {
+                          nextStep();
+                        }
                       }}
                     />
                   )}

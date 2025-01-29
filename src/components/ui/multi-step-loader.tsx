@@ -47,37 +47,36 @@ const LoaderCore = ({
   value?: number;
 }) => {
   return (
-    <div className="flex relative justify-start max-w-xl mx-auto flex-col mt-40">
+    <div className="flex relative justify-start max-w-xl mx-auto flex-col mt-20">
       {loadingStates.map((loadingState, index) => {
         const distance = Math.abs(index - value);
-        const opacity = Math.max(1 - distance * 0.2, 0); // Minimum opacity is 0, keep it 0.2 if you're sane.
+        const opacity = Math.max(1 - distance * 0.2, 0);
 
         return (
           <motion.div
             key={index}
-            className={cn("text-left flex gap-2 mb-4")}
-            initial={{ opacity: 0, y: -(value * 40) }}
-            animate={{ opacity: opacity, y: -(value * 40) }}
+            className={cn("text-left flex gap-3 mb-3")}
+            initial={{ opacity: 0, y: -(value * 30) }}
+            animate={{ opacity: opacity, y: -(value * 30) }}
             transition={{ duration: 0.5 }}
           >
             <div>
               {index > value && (
-                <CheckIcon className="text-black dark:text-white" />
+                <CheckIcon className="text-primary w-4 h-4" />
               )}
               {index <= value && (
                 <CheckFilled
                   className={cn(
-                    "text-black dark:text-white",
-                    value === index &&
-                      "text-black dark:text-lime-500 opacity-100"
+                    "text-primary w-4 h-4",
+                    value === index && "text-primary opacity-100"
                   )}
                 />
               )}
             </div>
             <span
               className={cn(
-                "text-black dark:text-white",
-                value === index && "text-black dark:text-lime-500 opacity-100"
+                "text-sm text-muted-foreground",
+                value === index && "text-primary opacity-100"
               )}
             >
               {loadingState.text}
@@ -94,11 +93,15 @@ export const MultiStepLoader = ({
   loading,
   duration = 2000,
   loop = true,
+  warning,
+  countdown,
 }: {
   loadingStates: LoadingState[];
   loading?: boolean;
   duration?: number;
   loop?: boolean;
+  warning?: string;
+  countdown?: number;
 }) => {
   const [currentState, setCurrentState] = useState(0);
 
@@ -123,22 +126,26 @@ export const MultiStepLoader = ({
     <AnimatePresence mode="wait">
       {loading && (
         <motion.div
-          initial={{
-            opacity: 0,
-          }}
-          animate={{
-            opacity: 1,
-          }}
-          exit={{
-            opacity: 0,
-          }}
-          className="w-full h-full fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="w-full h-full fixed inset-0 z-[100] flex items-center justify-center bg-background"
         >
-          <div className="h-96  relative">
+          <div className="h-72 relative flex flex-col items-center">
             <LoaderCore value={currentState} loadingStates={loadingStates} />
+            <div className="flex gap-2 mt-8">
+              {warning && (
+                <p className="text-sm text-muted-foreground bg-muted/50 px-4 py-2 rounded-full">
+                  ⚠️ {warning}
+                </p>
+              )}
+              {countdown !== undefined && (
+                <p className="text-sm text-muted-foreground bg-primary/10 px-4 py-2 rounded-full">
+                  ⏱️ {countdown}s
+                </p>
+              )}
+            </div>
           </div>
-
-          <div className="bg-gradient-to-t inset-x-0 z-20 bottom-0 bg-white dark:bg-black h-full absolute [mask-image:radial-gradient(900px_at_center,transparent_30%,white)]" />
         </motion.div>
       )}
     </AnimatePresence>
