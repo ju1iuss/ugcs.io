@@ -145,4 +145,89 @@ export async function removeBackground(file: File): Promise<Blob> {
   }
 
   return await response.blob()
+}
+
+// Update the fetchCommunityVideos function
+export async function fetchCommunityVideos() {
+  try {
+    console.log('Fetching community videos...');
+    
+    const response = await fetch('https://api.altan.ai/galaxia/hook/5t7GIU', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({}),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch community videos: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('Raw response:', data);
+    
+    if (!data['[2]']?.output) {
+      console.error('Invalid response format:', data);
+      throw new Error('Invalid response format');
+    }
+
+    // The output is already a string, no need to stringify it
+    const videos = JSON.parse(data['[2]'].output);
+    console.log('Parsed videos:', videos);
+    
+    const formattedVideos = videos.map((video: any) => ({
+      video_url: video.video_url,
+      user_id: `User ${video.user_id}`,
+      creation_time: video.created_time 
+        ? new Date(video.created_time).toLocaleDateString('de-DE')
+        : 'Kürzlich'
+    }));
+
+    console.log('Formatted videos:', formattedVideos);
+    return formattedVideos;
+
+  } catch (error) {
+    console.error('Detailed error in fetchCommunityVideos:', error);
+    // Return some mock data for testing
+    return [
+      {
+        video_url: "https://api.altan.ai/platform/media/3aa1c4a1-5875-4bb0-84b0-8dec1794fc5c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+        user_id: "User 14",
+        creation_time: "Kürzlich"
+      },
+      {
+        video_url: "https://api.altan.ai/platform/media/3aa1c4a1-5875-4bb0-84b0-8dec1794fc5c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+        user_id: "User 18",
+        creation_time: "31.01.2025"
+      }
+    ];
+  }
+}
+
+export async function generateAIScript(productInfo: string, brandInfo: string, theme: string, length: string) {
+  try {
+    const response = await fetch('https://api.altan.ai/galaxia/hook/MEGvbm', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        productInfo,
+        brandInfo,
+        theme,
+        length
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to generate script');
+    }
+
+    const data = await response.json();
+    return data.script || '';
+  } catch (error) {
+    console.error('Error generating script:', error);
+    throw error;
+  }
 } 

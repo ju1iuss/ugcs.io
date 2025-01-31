@@ -17,6 +17,7 @@ import {
 import Marquee from "@/components/ui/marquee";
 import { cn } from "@/lib/utils";
 import TypingAnimation from "@/components/ui/typing-animation";
+import { useAuth } from "@clerk/nextjs";
 
 const reviews = [
   {
@@ -106,6 +107,7 @@ export default function Home() {
     video3: false,
   });
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { userId } = useAuth();
 
   // Define MobileMenu here to access the state
   const MobileMenu = () => {
@@ -116,48 +118,56 @@ export default function Home() {
         ${isMobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}
       `}>
         <div className="px-4 py-2 space-y-2">
+          {userId ? (
           <Link 
-            href="#examples"
-            className="block py-2 text-sm text-gray-600 hover:text-gray-900"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('examples')?.scrollIntoView({ behavior: 'smooth' });
-              setIsMobileMenuOpen(false);
-            }}
-          >
-            Produkt
+              href="/dashboard"
+              className="block py-2"
+            >
+              <Button 
+                variant="default" 
+                className="w-full text-sm bg-black hover:bg-gray-800 text-white flex items-center gap-2 justify-center px-4 py-2"
+              >
+                <Sparkles className="h-4 w-4" />
+                Zum Dashboard
+                <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </Button>
           </Link>
-          <Link 
-            href="#pricing"
-            className="block py-2 text-sm text-gray-600 hover:text-gray-900"
-            onClick={(e) => {
-              e.preventDefault();
-              document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
-              setIsMobileMenuOpen(false);
-            }}
-          >
-            Pricing
-          </Link>
+          ) : (
+            <>
           <Link 
             href="/dashboard"
             className="block py-2 text-sm text-gray-600 hover:text-gray-900"
           >
             Einloggen
           </Link>
-          <Link href="/sign-up" className="block py-2">
-            <Button variant="default" className="w-full text-sm bg-black hover:bg-gray-800 text-white">
-              Registrieren
+              <Link 
+                href="/sign-up"
+                className="block py-2"
+              >
+                <Button 
+                  variant="default" 
+                  className="w-full text-sm bg-black hover:bg-gray-800 text-white flex items-center gap-2 justify-center px-4 py-2"
+                >
+                  <Sparkles className="h-4 w-4" />
+                  Video erstellen
             </Button>
           </Link>
+            </>
+          )}
         </div>
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-white max-w-7xl mx-auto px-4 scroll-smooth">
-      {/* Header - Make mobile responsive */}
-      <div className="border-b border-gray-200 w-screen -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)] relative">
+    
+      
+      <div className="min-h-screen max-w-7xl mx-auto px-4 scroll-smooth">
+      
+      {/* Header - Make sticky */}
+      <div className="border-b border-gray-200 w-screen -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)] sticky top-0 bg-white/60 backdrop-blur-sm z-50">
         <header className="max-w-5xl mx-auto flex items-center justify-between py-2 md:py-4">
           <div className="flex items-center space-x-2">
             <Image
@@ -174,36 +184,65 @@ export default function Home() {
           <nav className="hidden md:flex items-center space-x-8">
             <Link 
               href="#examples" 
-              className="text-gray-600 hover:text-gray-900 scroll-smooth"
+              className="text-sm text-gray-600 hover:text-gray-900 scroll-smooth"
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('examples')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              Produkt
+              Features
+            </Link>
+            <Link 
+              href="/beispiele" 
+              className="text-sm text-gray-600 hover:text-gray-900 scroll-smooth"
+              
+              
+            >
+              Beispiele
             </Link>
             <Link 
               href="#pricing" 
-              className="text-gray-600 hover:text-gray-900 scroll-smooth"
+              className="text-sm text-gray-600 hover:text-gray-900 scroll-smooth"
               onClick={(e) => {
                 e.preventDefault();
                 document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' });
               }}
             >
-              Pricing
+              Preise
             </Link>
             <div className="flex items-center space-x-4">
+              {userId ? (
+                <Link href="/dashboard">
+                  <Button 
+                    variant="default" 
+                    className="text-sm bg-black hover:bg-gray-800 text-white flex items-center gap-2 px-4 py-2"
+                  >
+                    <Sparkles className="h-4 w-4" />
+                    Zum Dashboard
+                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                      <path d="M5 12h14M12 5l7 7-7 7" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </Button>
+                </Link>
+              ) : (
+                <>
               <Link 
                 href="/dashboard"
-                className="text-gray-600 hover:text-gray-900"
+                    className="text-sm text-gray-600 hover:text-gray-900 border border-gray-200 rounded-md px-4 py-2"
               >
                 Einloggen
               </Link>
               <Link href="/sign-up">
-                <Button variant="default" className="bg-black hover:bg-gray-800 text-white">
-                  Registrieren
+                    <Button 
+                      variant="default" 
+                      className="text-sm bg-black hover:bg-gray-800 text-white flex items-center gap-2 px-4 py-2"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      Video erstellen
                 </Button>
               </Link>
+                </>
+              )}
             </div>
           </nav>
 
@@ -237,44 +276,26 @@ export default function Home() {
         <MobileMenu />
       </div>
 
-      {/* Hero Section - Adjust text sizes for mobile */}
+      {/* Hero Section - Adjust text sizes */}
       <section className="text-center pt-12 md:pt-20 pb-8 md:pb-12 max-w-4xl mx-auto px-4">
-        {/* Trusted by Module */}
-        <div className="flex items-center justify-center gap-2 mb-8 bg-gray-50 w-fit mx-auto px-4 py-2 rounded-full border border-black/10">
-          <div className="flex -space-x-1.5">
-            <img 
-              className="w-5 h-5 rounded-full border border-white"
-              src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=96&h=96&fit=crop&crop=faces" 
-              alt="avatar" 
-            />
-            <img 
-              className="w-5 h-5 rounded-full border border-white"
-              src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop&crop=faces" 
-              alt="avatar" 
-            />
-            <img 
-              className="w-5 h-5 rounded-full border border-white"
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=96&h=96&fit=crop&crop=faces" 
-              alt="avatar" 
-            />
-            <img 
-              className="w-5 h-5 rounded-full border border-white"
-              src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=96&h=96&fit=crop&crop=faces" 
-              alt="avatar" 
-            />
-          </div>
-          <span className="text-xs text-gray-600">
-            Bereits über <span className="font-medium text-gray-900">200+</span> Nutzer
+        {/* Replace Trusted by Module with new text */}
+        <div className="flex items-center justify-center gap-2 mb-8 bg-gradient-to-r from-purple-50 via-white to-purple-50 w-fit mx-auto px-4 py-2 rounded-full border border-black/10">
+          <span className="text-xs">
+            <span className="font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">#1</span>
+            <span className="text-gray-600"> realistischste </span>
+            <span className="font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">KI Avatare</span>
+            <span className="text-gray-600"> in Deutschland</span>
           </span>
         </div>
 
+        {/* Adjust hero text sizes */}
         <h1 className="text-5xl md:text-7xl font-semibold text-gray-900 mb-6 md:mb-10 tracking-tighter flex flex-col items-center justify-center gap-1 md:gap-2">
           {/* Mobile Layout */}
           <div className="flex md:hidden flex-col items-center gap-2">
             <span>Verwandle</span>
             <div className="flex items-center gap-2">
               <TypingAnimation 
-                className="text-5xl font-semibold text-purple-300 w-[160px]"
+                className="text-4xl font-semibold text-green-800 w-[140px]"
                 duration={100}
                 pauseDuration={1500}
                 deleteMode={true}
@@ -284,7 +305,7 @@ export default function Home() {
               <span>in</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-green-300">UGC</span>
+              <span className="text-purple-600">UGC</span>
               <span className="text-black">Videos</span>
             </div>
           </div>
@@ -294,7 +315,7 @@ export default function Home() {
             <div className="flex items-center gap-4 flex-wrap justify-center">
               Verwandle{' '}
               <TypingAnimation 
-                className="text-7xl font-semibold text-purple-300 w-[160px]"
+                className="text-6xl font-semibold text-purple-300 w-[160px]"
                 duration={100}
                 pauseDuration={1500}
                 deleteMode={true}
@@ -332,153 +353,472 @@ export default function Home() {
           </div>
         </h1>
         
-        <p className="text-sm md:text-md text-gray-800 mb-8 md:mb-12">
-          Deutschlands realistischste KI-Avatar-Videos. So schnell und einfach war Content-Erstellung noch nie!
+        <p className="text-sm md:text-md text-gray-600 mb-8 max-w-2xl mx-auto">
+          Deutschlands realistischste KI-Avatar-Videos für dein Marketing. Mit unserer KI erstellst du 
+          <br />
+          professionelle Videos in wenigen Minuten - ohne Equipment, ohne Vorkenntnisse.
         </p>
-        <div className="flex flex-col sm:flex-row justify-center gap-3 md:gap-4 mb-4">
-          <Link href="/sign-up" className="w-full sm:w-auto">
+
+        <div className="flex justify-center mb-8">
+          <Link href={userId ? "/dashboard" : "/sign-up"} className="w-full max-w-xs">
             <Button 
-              className="rounded-md text-sm md:text-md py-4 md:py-6 px-6 md:px-8 flex items-center gap-2 w-full sm:w-auto"
+              className="rounded-md text-base md:text-lg py-4 md:py-6 px-8 md:px-10 flex items-center gap-2 w-full bg-black hover:bg-gray-800 transition-all duration-300"
               size="lg"
             >
-              <Sparkles className="h-4 w-4 md:h-5 md:w-5" />
-              Jetzt Starten
+              <span>Jetzt Video erstellen</span>
+              <svg 
+                width="18" 
+                height="18" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                xmlns="http://www.w3.org/2000/svg"
+                className="ml-1"
+              >
+                <path 
+                  d="M5 12H19M19 12L12 5M19 12L12 19" 
+                  stroke="currentColor" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
             </Button>
           </Link>
-          <Button 
-            variant="outline"
-            className="rounded-md text-sm md:text-md py-4 md:py-6 px-4 md:px-6 w-full sm:w-auto"
-            size="lg"
-            onClick={() => setIsVideoOpen(true)}
-          >
-            Demo anschauen (20Sek)
-          </Button>
         </div>
-        <p className="text-xs text-gray-400">
-        Starte deinen Test – keine versteckten Kosten.
 
-        </p>
-        
+        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8 mb-4">
+          <div className="flex items-center gap-2">
+            <img
+              src="https://api.altan.ai/platform/media/0b054861-11ce-4c5c-98db-c9f80a353d72?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+              alt="Google Reviews"
+              className="w-6 h-6 object-contain"
+            />
+            <span className="font-medium text-sm">Google Reviews</span>
+            <span className="font-semibold text-sm">4.8</span>
+            <div className="flex">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <svg
+                  key={star}
+                  className="w-4 h-4 text-yellow-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+        </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <img
+              src="https://api.altan.ai/platform/media/da51f8c1-cc31-44c7-a452-169c7e7fd1c8?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+              alt="Trustpilot"
+              className="w-6 h-6 object-contain"
+            />
+            <span className="font-medium text-sm">Trustpilot</span>
+            <span className="font-semibold text-sm">4.7</span>
+            <div className="flex">
+              {[1, 2, 3, 4].map((star) => (
+                <svg
+                  key={star}
+                  className="w-4 h-4 text-[#00B67A]"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                </svg>
+              ))}
+              <svg
+                className="w-4 h-4 text-[#00B67A]"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" 
+                  opacity="0.5"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
       </section>
       
+      
 
-      {/* Avatar Examples - Adjust grid for mobile */}
-      <div id="examples" className="relative pb-2 md:pb-4">
-        <div className="flex md:grid md:grid-cols-5 gap-1 md:gap-2 max-w-4xl mx-auto overflow-x-auto pb-4 md:pb-0">
-          {[
-            {
-              id: 'hero1',
-              src: "https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-            },
-            {
-              id: 'hero2',
-              src: "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-            },
-            {
-              id: 'hero3',
-              src: "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-            },
-            {
-              id: 'hero4',
-              src: "https://storage.googleapis.com/nca-toolkit-bucket-julius/8911b01e-8b86-422a-8dd1-083ba5a92829_output_0.mp4",
-            },
-            {
-              id: 'hero5',
-              src: "https://api.altan.ai/platform/media/87b85fae-2944-463c-9b9c-aa2f77bccd28?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-            }
-          ].map((video) => (
-            <div key={video.id} className="relative aspect-[9/16] w-[120px] md:w-auto flex-shrink-0 group">
-              <video 
-                className="w-full h-full object-cover rounded-lg"
-                src={video.src}
-                playsInline
-                preload="metadata"
-                controls={playingVideos[video.id]}
-                onPlay={() => setPlayingVideos(prev => ({ ...prev, [video.id]: true }))}
-                onPause={() => setPlayingVideos(prev => ({ ...prev, [video.id]: false }))}
-                onEnded={() => setPlayingVideos(prev => ({ ...prev, [video.id]: false }))}
-              >
-                <source src={video.src} type="video/mp4" />
-              </video>
-              {!playingVideos[video.id] && (
-                <div 
-                  className="absolute inset-0 flex items-center justify-center bg-black/10 transition-colors cursor-pointer" 
-                  onClick={(e) => {
-                    const video = e.currentTarget.previousElementSibling as HTMLVideoElement;
-                    if (video.paused) {
-                      video.play();
-                    } else {
-                      video.pause();
-                    }
-                  }}
-                >
+      {/* Video example Section */}
+      <section className="py-2 md:py-4 overflow-hidden">
+        <div className="relative w-full">
+          <Marquee className="[--duration:30s]" pauseOnHover>
+            {[
+              "https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+            ].map((videoUrl, index) => (
+              <div key={index} className="mx-1">
+                <div className="relative w-[135px] h-[240px] rounded-xl overflow-hidden shadow-lg">
+                  <video
+                    className="w-full h-full object-cover"
+                    src={videoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                </div>
+              </div>
+            ))}
+          </Marquee>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-white"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-white"></div>
+        </div>
+      </section>
+      
+      
+      
+
+      {/* Community Videos Section */}
+      <section className="py-12 md:py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop" alt="" />
+                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop" alt="" />
+                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop" alt="" />
+                <div className="w-8 h-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center">
+                  <span className="text-xs text-gray-600">+42</span>
+                </div>
+              </div>
+              <div>
+                <h2 className="text-xl font-medium">
+                  Sieh was andere generieren
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Entdecke wie andere Nutzer KI-Videos für ihr Marketing erstellen
+                </p>
+              </div>
+            </div>
+            <Link href="/beispiele">
+              <Button variant="outline" size="sm">
+                Jetzt alle ansehen
+              </Button>
+            </Link>
+          </div>
+
+          {/* First row of videos */}
+          <div className="grid grid-cols-4 md:grid-cols-5 gap-3 mb-3">
+            {[
+              {
+                thumbnail: "https://api.altan.ai/platform/media/48e8ac65-73e3-482e-a480-c70b377cef2e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@sarah.marketing",
+                date: "vor 2 Std",
+                script: "Produktvorstellung"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/d13bbbd2-8482-42f6-b495-ee63f00c1ff2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@max_mueller",
+                date: "vor 3 Std",
+                script: "Erklärungsvideo"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@lisa.content",
+                date: "vor 3 Std",
+                script: "Social Media"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/79497d6b-bc52-4fc3-99df-9f38a2cc84a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@tom.digital",
+                date: "vor 4 Std",
+                script: "Produktdemo"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/0f079522-0501-44ff-81b4-f945ce53033c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@anna.design",
+                date: "vor 5 Std",
+                script: "Tutorial"
+              }
+            ].map((video, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                  <span>{video.username}</span>
+                  <span>{video.date}</span>
+                </div>
+                <Link href="/beispiele">
+                  <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-sm relative group">
+                    <img
+                      src={video.thumbnail}
+                      alt={`Video von ${video.username}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                      <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <svg 
+                          className="w-4 h-4" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor"
+                        >
+                          <path 
+                            d="M5 3l14 9-14 9V3z" 
+                            fill="currentColor" 
+                            strokeWidth="2" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded-full">
+                      {video.script}
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Second row with blur effect */}
+          <div className="relative">
+            <div className="grid grid-cols-4 md:grid-cols-5 gap-3">
+              {[
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/0f079522-0501-44ff-81b4-f945ce53033c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@david.coach",
+                  date: "vor 6 Std",
+                  script: "Coaching"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/62d873c7-999b-4f3e-82f9-107407224f8a?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@marie.social",
+                  date: "vor 7 Std",
+                  script: "Marketing"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/48e8ac65-73e3-482e-a480-c70b377cef2e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@peter.tech",
+                  date: "vor 8 Std",
+                  script: "Tutorial"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/d13bbbd2-8482-42f6-b495-ee63f00c1ff2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@julia.design",
+                  date: "vor 9 Std",
+                  script: "Produktdemo"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@max.content",
+                  date: "vor 10 Std",
+                  script: "Social Media"
+                }
+              ].map((video, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                    <span>{video.username}</span>
+                    <span>{video.date}</span>
+      </div>
+                  <Link href="/beispiele">
+                    <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-sm relative group">
+                      <img
+                        src={video.thumbnail}
+                        alt={`Video von ${video.username}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
                   <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform">
-                    <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                      <path d="M5 3l14 9-14 9V3z" fill="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          <svg 
+                            className="w-4 h-4" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor"
+                          >
+                            <path 
+                              d="M5 3l14 9-14 9V3z" 
+                              fill="currentColor" 
+                              strokeWidth="2" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"
+                            />
                     </svg>
                   </div>
                 </div>
-              )}
+                      <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded-full">
+                        {video.script}
+                      </div>
+                    </div>
+                  </Link>
             </div>
           ))}
         </div>
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+              <Link href="/beispiele">
+                <Button variant="outline" size="lg">
+                  Mehr Videos ansehen
+                </Button>
+              </Link>
       </div>
+          </div>
+        </div>
+      </section>
 
-      {/* Testimonials Section */}
+      
+
+
+      {/* Testimonial Section with moving cards */}
       <section className="py-4 md:py-8 overflow-hidden">
-        <div className="relative flex h-[500px] w-full max-w-5xl mx-auto flex-col items-center justify-center overflow-hidden">
-          <Marquee className="[--duration:20s]" pauseOnHover>
-            {firstRow.map((review) => (
-              <ReviewCard key={review.username} {...review} />
+        <div className="relative w-full">
+          <Marquee className="[--duration:40s]">
+            {[
+              {
+                name: "Hannes Kessel",
+                role: "Influencer, Marketing Agentur",
+                image: "https://api.altan.ai/platform/media/9e563482-68af-4a46-9e76-42af24259c14?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                quote: "Die KI-Videos haben unsere Social Media Strategie komplett verändert. Sehr beeindruckend.",
+                rating: 5,
+                video: "https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                layout: "video-right",
+                date: "vor 2 Tagen"
+              },
+              
+              {
+                name: "Lorenz Kopp",
+                role: "Gründer NextStepHR",
+                image: "https://api.altan.ai/platform/media/a6fef1a0-3116-4904-96d0-0c8c6faeb055?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                quote: "Perfekt für Ad Creatives auch im Recruiting Bereich. Deutlich günstiger als andere Tools und Freelancer.",
+                rating: 5,
+                layout: "quote-only",
+                date: "vor 1 Woche"
+              },
+              {
+                name: "Jeremy Okoth",
+                role: "Influencer & Startup Gründer",
+                image: "https://api.altan.ai/platform/media/de57a97a-5781-4e16-8264-ef14672fb54d?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                quote: "Bin sehr zufrieden mit dem Ergebnis. Ideal für unsere Ad Kampagnen.",
+                rating: 4,
+                video: "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                layout: "video-bottom",
+                date: "vor 3 Tagen"
+              },
+              {
+                name: "Marwin Anderer",
+                role: "Ecom Brand Owner",
+                image: "https://api.altan.ai/platform/media/604b1b48-a637-49b9-999a-4f640ebc3418?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                quote: "Ad Creatives für unsere Produkte sind jetzt in 10 Minuten fertig. hat uns sehr viel Zeit und Geld gespart!",
+                rating: 5,
+                video: "https://api.altan.ai/platform/media/4c87925e-8381-4440-879e-1ddbbb4a31fe?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                layout: "video-right",
+                date: "vor 2 Tagen"
+              },
+              {
+                name: "Svenja-Fröhlich",
+                role: "Leiterin Physiotherapien",
+                image: "https://api.altan.ai/platform/media/dc4033aa-c756-4125-8f24-18079079a766?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                quote: "Hat unser Content Game auf TikTok und Instagram komplett verändert! Ich wusste nicht wie wir Content auf Scale erstellen können, Ugcs hat uns gerettet.",
+                rating: 4,
+      
+                layout: "video-bottom",
+                date: "vor 1 Tag"
+              },
+              // Add more testimonials...
+            ].map((testimonial, index) => (
+              <div key={index} className="mx-2">
+                <div className={`bg-white rounded-xl p-4 shadow-sm ${
+                  testimonial.layout === 'quote-only' ? 'w-[280px]' : 'w-[320px]'
+                }`}>
+                  <div className="flex items-start gap-3 mb-2">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div>
+                      <h3 className="font-semibold text-gray-900 text-sm">{testimonial.name}</h3>
+                      <p className="text-xs text-gray-500">{testimonial.role}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 mb-3">
+                    <img 
+                      src="/trustpilot.svg" 
+                      alt="Trustpilot" 
+                      className="h-4"
+                    />
+                    <div className="flex gap-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <svg
+                          key={i}
+                          className={`w-3.5 h-3.5 ${i < testimonial.rating ? 'text-[#00b67a]' : 'text-gray-200'}`}
+                          fill="currentColor"
+                          viewBox="0 0 20 20"
+                        >
+                          <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                        </svg>
+                      ))}
+                      <span className="text-xs text-gray-500 ml-1">{testimonial.date}</span>
+                    </div>
+                  </div>
+
+                  {testimonial.layout === 'video-right' ? (
+                    <div className="flex gap-3">
+                      <blockquote className="text-gray-700 text-xs flex-1">
+                        "{testimonial.quote}"
+                      </blockquote>
+                      {testimonial.video && (
+                        <div className="w-24 aspect-[9/16] rounded-lg overflow-hidden flex-shrink-0">
+                          <video
+                            src={testimonial.video}
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                          />
+                        </div>
+                      )}
+                    </div>
+                  ) : testimonial.layout === 'video-bottom' ? (
+                    <>
+                      <blockquote className="text-gray-700 text-xs mb-3">
+                        "{testimonial.quote}"
+                      </blockquote>
+                      {testimonial.video && (
+                        <div className="aspect-[16/9] w-full rounded-lg overflow-hidden">
+                          <video
+                            src={testimonial.video}
+                            className="w-full h-full object-cover"
+                            autoPlay
+                            muted
+                            loop
+                            playsInline
+                          />
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <blockquote className="text-gray-700 text-xs">
+                      "{testimonial.quote}"
+                    </blockquote>
+                  )}
+                </div>
+              </div>
             ))}
           </Marquee>
-          <Marquee className="[--duration:20s]" pauseOnHover reverse>
-            {secondRow.map((review) => (
-              <ReviewCard key={review.username} {...review} />
-            ))}
-          </Marquee>
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-white"></div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-gradient-to-l from-white"></div>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/6 bg-gradient-to-r from-white"></div>
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/6 bg-gradient-to-l from-white"></div>
         </div>
       </section>
 
       {/* Pricing Section - Stack cards on mobile */}
       <section id="pricing" className="px-4 max-w-6xl mx-auto text-center">
-        <div className="text-sm md:text-base text-purple-600 mb-2">Pricing</div>
+        <div className="text-sm md:text-base text-purple-600 mb-2">Preise</div>
         <h2 className="text-3xl md:text-4xl font-bold mb-3 md:mb-4">Wähle deinen Plan</h2>
         <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8">
           Einfacher & schneller Zahlungs Prozess. Keine versteckten Kosten.
         </p>
-
-        {/* New Trial Card */}
-        <div className="mb-12 max-w-3xl mx-auto px-4">
-          <Card className="relative p-6 bg-gradient-to-r from-purple-50 via-white to-purple-50">
-            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="text-left">
-                <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
-                  Trial Credits
-                  <span className="bg-purple-100 text-purple-600 text-xs px-2 py-0.5 rounded-full">
-                    Einmalig
-                  </span>
-                </h3>
-                <div className="flex items-baseline gap-1 text-purple-600 mb-2">
-                  <span className="text-2xl font-bold">€6</span>
-                  <span className="text-sm font-medium">einmalig</span>
-                </div>
-                <p className="text-sm text-gray-600">
-                  30 Video Sekunden zum Testen
-                </p>
-              </div>
-              <div className="flex-shrink-0">
-                <Link href="/pricing">
-                  <Button className="whitespace-nowrap">
-                    Credits kaufen
-                  </Button>
-                </Link>
-              </div>
-            </div>
-          </Card>
-        </div>
 
         {/* Toggle Switch */}
         <div className="flex items-center justify-center gap-4 mb-8">
@@ -862,7 +1202,7 @@ export default function Home() {
             <h4 className="font-semibold mb-4">Product</h4>
             <ul className="space-y-2 text-sm text-gray-600">
               <li><Link href="/#examples">Demo</Link></li>
-              <li><Link href="/#pricing">Pricing</Link></li>
+              <li><Link href="/#pricing">Preise</Link></li>
             </ul>
           </div>
           <div>
@@ -904,5 +1244,7 @@ export default function Home() {
         </DialogContent>
       </Dialog>
     </div>
+    
+    
   );
 }

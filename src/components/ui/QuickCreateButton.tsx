@@ -14,7 +14,7 @@ export function QuickCreateButton({ onCreateClick, className }: QuickCreateButto
       className={cn(
         "w-full bg-black text-white rounded-full",
         "flex items-center justify-center gap-2",
-        "hover:scale-[1.01] active:scale-[0.98] transition-all duration-300 ease-in-out",
+        "hover:scale-[1.01] active:scale-[0.98] transition-all duration-400 ease-in-out",
         className
       )}
     >

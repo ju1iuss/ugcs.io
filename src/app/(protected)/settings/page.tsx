@@ -99,30 +99,23 @@ export default function SettingsPage() {
                   </CardContent>
                 </Card>
 
-                <Card className="mt-6">
-                  <CardHeader>
-                    <CardTitle>Dein Plan</CardTitle>
-                    <CardDescription>
-                      Verwalte deinen Plan und deine Zahlungsinformationen.
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-6">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <h3 className="font-medium">Aktueller Plan</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Du hast noch {credits} Credits übrig
-                        </p>
-                      </div>
-                      <Button 
-                        variant="default"
-                        onClick={() => window.location.href = 'https://billing.stripe.com/p/login/eVaaEF8mH2uz2l2288'}
-                      >
-                        Plan verwalten
-                      </Button>
+                <div className="mt-6 mb-4">
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-sm text-red-800">
+                        Du kannst dein Abonnement jederzeit in deinem Kundenkonto verwalten, ändern oder kündigen.
+                      </p>
                     </div>
-                  </CardContent>
-                </Card>
+                    <Button 
+                      variant="outline" 
+                      className="shrink-0 text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
+                      onClick={() => window.location.href = 'https://billing.stripe.com/p/login/eVaaEF8mH2uz2l2288'}
+                    >
+                      Abo verwalten
+                    </Button>
+                  </div>
+                </div>
+
               </TabsContent>
 
               <TabsContent value="notifications">

@@ -2,6 +2,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import TextGeneratorButton from "@/components/global/buttons/text-generator-button"
 
 interface ScriptInputProps {
   script: string
@@ -39,21 +40,26 @@ export default function ScriptInput({ script, onScriptChange, credits }: ScriptI
     <div className="w-full px-2">
       <div className="flex justify-between items-center mb-4 px-4">
         <h2 className="text-xl font-semibold pl-4">Skript eingeben</h2>
-        <Button onClick={handleExampleScript} size="sm" variant="outline" className="mr-4">
-          Vorlage benutzen
-        </Button>
+        <div className="flex gap-2 mr-4">
+          <TextGeneratorButton onScriptGenerated={onScriptChange} />
+          <Button onClick={handleExampleScript} size="sm" variant="outline">
+            Vorlage benutzen
+          </Button>
+        </div>
       </div>
 
-      <Textarea
-        id="script"
-        placeholder="Hier den gesprochenen Text eingeben (mindestens 8 Wörter)..."
-        value={script}
-        onChange={handleChange}
-        maxLength={maxChars}
-        className={`w-full h-40 text-lg ${
-          (!hasMinWords && script.length > 0) || (!hasEnoughCredits && hasMinWords) ? 'border-red-500 focus:border-red-500' : ''
-        }`}
-      />
+      <div className="relative">
+        <Textarea
+          id="script"
+          placeholder="Hier den gesprochenen Text eingeben (mindestens 8 Wörter)..."
+          value={script}
+          onChange={handleChange}
+          maxLength={maxChars}
+          className={`w-full h-40 text-lg ${
+            (!hasMinWords && script.length > 0) || (!hasEnoughCredits && hasMinWords) ? 'border-red-500 focus:border-red-500' : ''
+          }`}
+        />
+      </div>
       <div className="flex justify-between mt-2 text-xs">
         <div className="flex gap-4">
           <span className={`${(!hasMinWords && script.length > 0) ? 'text-red-500' : 'text-gray-500'}`}>

@@ -29,6 +29,34 @@ interface VideoCardProps {
   errorMessage?: string;
 }
 
+async function downloadVideo(url: string, filename: string = 'video.mp4') {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(blob);
+    
+    const link = document.createElement('a');
+    link.href = blobUrl;
+    link.download = filename;
+    
+    // Required for Firefox
+    document.body.appendChild(link);
+    
+    link.click();
+    
+    // Cleanup
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(blobUrl);
+    
+    return true;
+  } catch (error) {
+    console.error('Download failed:', error);
+    throw error;
+  }
+}
+
 export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: VideoCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -45,6 +73,7 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
   const progressInterval = useRef<NodeJS.Timeout>();
   const isLoading = video.status === "Generating" || video.status === "Loading";
   const hasError = errorMessage || video.status === "Error";
+  const [isDownloading, setIsDownloading] = useState(false);
   
   // Get the error message to display
   const displayError = errorMessage || (video.status === "Error" ? "ERROR - Bitte ändere deinen Skript" : null);
@@ -195,8 +224,8 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
               </span>
             </div>
             <p className="text-xs text-white italic text-center pt-2">
-              ca. 2-3 Minuten <br />
-              Du kriegst eine Mail <br /> wenn es fertig ist.
+              dauert ca. <br />
+              2-3 Minuten
             </p>
           </div>
         )}
@@ -336,38 +365,28 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
               
               <DropdownMenuItem
                 className="flex items-center gap-2 cursor-pointer"
-                disabled={!video.video_url}
+                disabled={!video.video_url || isDownloading}
                 onClick={async (e) => {
                   e.preventDefault();
                   if (!video.video_url) return;
-
+                  setIsDownloading(true);
                   try {
-                    // Fetch the video as a blob
-                    const response = await fetch(video.video_url);
-                    const blob = await response.blob();
-                    
-                    // Create a blob URL and trigger download
-                    const blobUrl = window.URL.createObjectURL(blob);
-                    const link = document.createElement('a');
-                    link.href = blobUrl;
-                    link.download = 'video.mp4';
-                    document.body.appendChild(link);
-                    link.click();
-                    
-                    // Cleanup
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(blobUrl);
-                    
+                    await downloadVideo(video.video_url, `video-${video.id}.mp4`);
                     toast.success("Download started");
                   } catch (error) {
-                    console.error('Download failed:', error);
                     toast.error("Download failed");
+                  } finally {
+                    setIsDownloading(false);
                   }
                 }}
               >
                 <div className="flex items-center gap-2 w-full">
-                  <Download className="w-4 h-4" />
-                  <span>Download</span>
+                  {isDownloading ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Download className="w-4 h-4" />
+                  )}
+                  <span>{isDownloading ? "Downloading..." : "Download"}</span>
                 </div>
               </DropdownMenuItem>
               

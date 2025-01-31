@@ -2,12 +2,14 @@
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Check, X } from "lucide-react";
+import { Check, X, AlertCircle } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { CreditDrawer } from "@/components/global/pricing/credit-drawer"
 import { useUser } from "@clerk/nextjs";
 import { getStripeUrlWithParams } from '@/lib/utils/url';
+import Marquee from "react-fast-marquee";
+import { NumberTicker } from "@/components/ui/number-ticker";
 
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
@@ -66,11 +68,47 @@ export default function PricingPage() {
         <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
           Wähle deinen Plan
         </p>
-        <p className="mx-auto mt-4 max-w-2xl text-base leading-7 text-gray-600">
-        Einfacher & schneller Zahlungs Prozess. Keine versteckten Kosten.
+        
 
 
-        </p>
+     
+
+        
+        <div className="flex items-center gap-2 mt-4 bg-gray-50 px-4 py-1.5 rounded-full shadow-sm border border-black-900 max-w-sm mx-auto">
+      <div className="flex -space-x-1.5 justify-center">
+        {[
+          "https://i.pravatar.cc/100?img=12",
+          "https://i.pravatar.cc/100?img=28",
+          "https://i.pravatar.cc/100?img=33",
+          "https://i.pravatar.cc/100?img=45",
+          "https://i.pravatar.cc/100?img=57",
+        ].map((avatar, i) => (
+          <img
+            key={i}
+            src={avatar}
+            alt=""
+            className="w-5 h-5 rounded-full border-[1.5px] border-white object-cover"
+          />
+        ))}
+      </div>
+      <div className="flex items-center gap-0.5">
+        {[1, 2, 3, 4, 5].map((i) => (
+          <svg key={i} className="w-3.5 h-3.5 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+          </svg>
+        ))}
+      </div>
+      <NumberTicker
+        value={4592}
+        decimalPlaces={0}
+      className="text-gray-700 text-xs font-medium"
+    />
+    <p className="text-gray-700 text-xs font-medium">Videos erstellt</p>
+  </div>
+
+
+
+
 
         {/* Billing Toggle */}
         <div className="mt-6 flex justify-center items-center gap-4">
@@ -94,35 +132,7 @@ export default function PricingPage() {
         </div>
       </div>
 
-      {/* New Trial Card */}
-      <div className="mb-12 max-w-3xl mx-auto px-4">
-        <Card className="relative p-6 bg-gradient-to-r from-purple-50 via-white to-purple-50">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="text-left">
-              <h3 className="text-lg font-semibold mb-1 flex items-center gap-2">
-                Trial Credits
-                <span className="bg-purple-100 text-purple-600 text-xs px-2 py-0.5 rounded-full">
-                  Einmalig
-                </span>
-              </h3>
-              <div className="flex items-baseline gap-1 text-purple-600 mb-2">
-                <span className="text-2xl font-bold">€6</span>
-                <span className="text-sm font-medium">einmalig</span>
-              </div>
-              <p className="text-sm text-gray-600">
-                30 Video Sekunden zum Testen
-              </p>
-            </div>
-            <div className="flex-shrink-0">
-              <a href={trialLink} target="_blank" rel="noopener noreferrer">
-                <Button className="whitespace-nowrap">
-                  Credits kaufen
-                </Button>
-              </a>
-            </div>
-          </div>
-        </Card>
-      </div>
+      
 
       <div className="grid lg:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
         {/* Starter Plan */}
@@ -131,6 +141,15 @@ export default function PricingPage() {
           {!isYearly && (
             <div className="absolute -top-3 right-4 bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
               34% Rabatt
+            </div>
+          )}
+          {/* Monthly Cancellation Pill - only show when not yearly */}
+          {!isYearly && (
+            <div className="mt-2 mb-4 flex items-center gap-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full text-xs w-fit">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Monatlich kündbar
             </div>
           )}
           <h3 className="text-base font-semibold leading-7">Starter</h3>
@@ -153,16 +172,13 @@ export default function PricingPage() {
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              120 Video Sekunden (ca. 8 Videos)
+              120 Video Sekunden (ca. 6 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Basis Avatare
             </li>
-            <li className="flex gap-x-3">
-              <Check className="h-5 w-4 flex-none text-purple-600" />
-              HD Videos
-            </li>
+            
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Verfügbar in 47 Sprachen
@@ -188,6 +204,15 @@ export default function PricingPage() {
           <div className="absolute -top-3 right-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm">
             Beliebt
           </div>
+          {/* Monthly Cancellation Pill - only show when not yearly */}
+          {!isYearly && (
+            <div className="mt-2 mb-4 flex items-center gap-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full text-xs w-fit">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Monatlich kündbar
+            </div>
+          )}
           <h3 className="text-base font-semibold leading-7">Creator</h3>
           <p className="text-sm leading-6 text-gray-600">Für Content Creator</p>
           <p className="mt-4 flex items-baseline gap-x-1">
@@ -202,16 +227,13 @@ export default function PricingPage() {
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              300 Video Sekunden (ca. 15 Videos)
+              300 Video Sekunden (ca. 20 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Alle Avatare (soon)
             </li>
-            <li className="flex gap-x-3">
-              <Check className="h-5 w-4 flex-none text-purple-600" />
-              HD Videos
-            </li>
+           
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Verfügbar in 47 Sprachen
@@ -242,6 +264,15 @@ export default function PricingPage() {
 
         {/* Agency Plan */}
         <Card className="relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow">
+          {/* Monthly Cancellation Pill - only show when not yearly */}
+          {!isYearly && (
+            <div className="mt-2 mb-4 flex items-center gap-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full text-xs w-fit">
+              <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              Monatlich kündbar
+            </div>
+          )}
           <h3 className="text-base font-semibold leading-7">Agentur</h3>
           <p className="text-sm leading-6 text-gray-600">Für Agenturen & Teams</p>
           <p className="mt-4 flex items-baseline gap-x-1">
@@ -256,16 +287,13 @@ export default function PricingPage() {
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              800 Video Sekunden (ca. 35 Videos)
+              800 Video Sekunden (ca. 50 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Alle Avatare (soon)
             </li>
-            <li className="flex gap-x-3">
-              <Check className="h-5 w-4 flex-none text-purple-600" />
-              HD Videos
-            </li>
+            
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Verfügbar in 47 Sprachen
@@ -295,42 +323,65 @@ export default function PricingPage() {
         </Card>
       </div>
 
-      {/* Enterprise Plan */}
-      <div className="mt-12">
-        <div className="rounded-lg border bg-gradient-to-r from-purple-50 via-white to-purple-50 p-6 max-w-5xl mx-auto">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="text-left">
-              <h3 className="text-xl font-semibold mb-2 flex items-center gap-2">
-                Enterprise
-                <span className="bg-purple-100 text-purple-600 text-xs px-3 py-1 rounded-full">
-                  Custom
-                </span>
-              </h3>
-              <p className="text-gray-600 text-sm mb-4">Brauchst du mehr als 25 Videos pro Monat?</p>
-              <ul className="space-y-2 mb-0 text-sm">
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-4 flex-none text-purple-600" />
-                  <span>Eigene Menge an Video Sekunden</span>
-                </li>
-                <li className="flex items-center gap-2">
-                  <Check className="h-5 w-4 flex-none text-purple-600" />
-                  <span>Alle Premium Features und Extra Support</span>
-                </li>
-              </ul>
-            </div>
-            <div className="flex-shrink-0">
-              <a 
-                href="https://calendly.com/ai-ugcs/30min"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <Button className="whitespace-nowrap px-8">
-                  Book A Call
-                </Button>
-              </a>
-            </div>
-          </div>
+
+      <section className="py-4 md:py-6 overflow-hidden mb-6 max-w-6xl mx-auto -mb-4">
+        <div className="relative w-full max-w-5xl mx-auto">
+          <div className="absolute inset-y-0 left-0 w-64 bg-gradient-to-r from-white via-white to-transparent z-10"></div>
+          <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-white via-white to-transparent z-10"></div>
+          <Marquee className="[--duration:40s] p-4" pauseOnHover>
+            {[
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+            ].map((videoUrl, index) => (
+              <div key={index} className="mx-1">
+                <div className="relative w-[70px] h-[124px] rounded-lg overflow-hidden shadow-lg">
+                  <video
+                    className="w-full h-full object-cover"
+                    src={videoUrl}
+                    autoPlay
+                    muted
+                    loop
+                    playsInline
+                  />
+                </div>
+              </div>
+            ))}
+          </Marquee>
         </div>
+      </section>
+
+      {/* Enterprise text with negative margin to pull it up */}
+      <div className="mt-0 text-center -mb-8">
+        <p className="text-sm text-gray-600">
+          Du brauchst mehr als 50 Videos im Monat?{" "}
+          <a 
+            href="https://calendly.com/ai-ugcs/30min" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="text-purple-600 hover:text-purple-700 font-medium underline underline-offset-2"
+          >
+            Lass uns sprechen!
+          </a>
+        </p>
       </div>
     </div>
   );
