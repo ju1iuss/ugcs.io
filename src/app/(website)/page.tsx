@@ -137,7 +137,7 @@ export default function Home() {
           ) : (
             <>
           <Link 
-            href="/dashboard"
+            href="/sign-in"
             className="block py-2 text-sm text-gray-600 hover:text-gray-900"
           >
             Einloggen
@@ -902,7 +902,7 @@ export default function Home() {
               </li>
               
             </ul>
-            <Link href="/pricing">
+            <Link href="/sign-up">
               <Button variant="outline" className="w-full">
                 Jetzt Starten
               </Button>
@@ -975,7 +975,7 @@ export default function Home() {
                 Untertitel (soon)
               </li>
             </ul>
-            <Link href="/pricing">
+            <Link href="/sign-up">
               <Button className="w-full bg-purple-600 hover:bg-purple-700">
                 Jetzt Starten
               </Button>
@@ -1045,7 +1045,7 @@ export default function Home() {
                 Untertitel (soon)
               </li>
             </ul>
-            <Link href="/pricing">
+            <Link href="/sign-up">
               <Button variant="outline" className="w-full">
                 Jetzt Starten
               </Button>
