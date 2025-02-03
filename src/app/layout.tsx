@@ -8,7 +8,7 @@ import Script from 'next/script'
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "UGC Videos - KI generiert",
+  title: "Ugcs.io: KI generierte Videos",
   description: "Deutschlands realistischste KI-Avatar-Videos. Einfacher, schneller und besser gehts nicht.",
 };
 
@@ -29,8 +29,37 @@ export default function RootLayout({
             data-cbid="162a8ef8-82f3-43af-b9b4-96156913b6e6"
             data-blockingmode="auto"
             type="text/javascript"
-            strategy="beforeInteractive" // Ensures Cookiebot loads before the page
+            strategy="beforeInteractive"
           />
+
+        {/* Microsoft Clarity Script */}
+        <Script id="microsoft-clarity" strategy="afterInteractive">
+          {`
+            (function(c,l,a,r,i,t,y){
+              c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+              t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+              y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "q4550srry7");
+
+            // Cookiebot integration
+            window.addEventListener('CookiebotOnAccept', function (e) {
+              if (Cookiebot.consent.statistics) {
+                if(typeof clarity === 'function') {
+                  clarity("consent");
+                }
+              }
+            });
+
+            window.addEventListener('CookiebotOnDecline', function (e) {
+              if (!Cookiebot.consent.statistics) {
+                if(typeof clarity === 'function') {
+                  clarity("consent", false);
+                }
+              }
+            });
+          `}
+        </Script>
+
         <Script id="tolt-stripe" strategy="afterInteractive">
           {`
             function updateButtonUrls() {

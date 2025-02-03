@@ -1093,7 +1093,7 @@ export default function Home() {
                   rel="noopener noreferrer"
                 >
                   <Button className="whitespace-nowrap px-8">
-                    Book A Call
+                    Details besprechen
                   </Button>
                 </a>
               </div>
