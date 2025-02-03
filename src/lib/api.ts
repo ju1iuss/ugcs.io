@@ -167,41 +167,42 @@ export async function fetchCommunityVideos() {
     const data = await response.json();
     console.log('Raw response:', data);
     
-    if (!data['[2]']?.output) {
-      console.error('Invalid response format:', data);
-      throw new Error('Invalid response format');
+    // Handle different possible response structures
+    let rawVideos;
+    if (data['[2]']?.output) {
+      rawVideos = JSON.parse(data['[2]'].output);
+    } else if (data.output) {
+      rawVideos = JSON.parse(data.output);
+    } else if (Array.isArray(data)) {
+      rawVideos = data;
+    } else {
+      console.error('Unexpected response format:', data);
+      return [];
     }
 
-    // The output is already a string, no need to stringify it
-    const videos = JSON.parse(data['[2]'].output);
-    console.log('Parsed videos:', videos);
+    if (!Array.isArray(rawVideos)) {
+      console.error('Videos data is not an array:', rawVideos);
+      return [];
+    }
+
+    console.log('Parsed videos:', rawVideos);
     
-    const formattedVideos = videos.map((video: any) => ({
+    const formattedVideos = rawVideos.map((video: any) => ({
       video_url: video.video_url,
-      user_id: `User ${video.user_id}`,
+      user_id: video.user_id ? `User ${video.user_id}` : 'Anonymous',
       creation_time: video.created_time 
         ? new Date(video.created_time).toLocaleDateString('de-DE')
-        : 'Kürzlich'
-    }));
+        : 'Kürzlich',
+      category: video.category || 'other',
+      title: video.title || ''
+    })).filter(video => video.video_url); // Only include videos with valid URLs
 
     console.log('Formatted videos:', formattedVideos);
     return formattedVideos;
 
   } catch (error) {
-    console.error('Detailed error in fetchCommunityVideos:', error);
-    // Return some mock data for testing
-    return [
-      {
-        video_url: "https://api.altan.ai/platform/media/3aa1c4a1-5875-4bb0-84b0-8dec1794fc5c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-        user_id: "User 14",
-        creation_time: "Kürzlich"
-      },
-      {
-        video_url: "https://api.altan.ai/platform/media/3aa1c4a1-5875-4bb0-84b0-8dec1794fc5c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-        user_id: "User 18",
-        creation_time: "31.01.2025"
-      }
-    ];
+    console.error('Error in fetchCommunityVideos:', error);
+    return []; // Return empty array instead of mock data
   }
 }
 

@@ -10,7 +10,7 @@ import { useUser } from "@clerk/nextjs";
 import { getStripeUrlWithParams } from '@/lib/utils/url';
 import Marquee from "react-fast-marquee";
 import { NumberTicker } from "@/components/ui/number-ticker";
-
+import Image from "next/image";
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
   const { user } = useUser();
@@ -330,37 +330,40 @@ export default function PricingPage() {
           <div className="absolute inset-y-0 right-0 w-64 bg-gradient-to-l from-white via-white to-transparent z-10"></div>
           <Marquee className="[--duration:40s] p-4" pauseOnHover>
             {[
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/d9ec32f7-893b-48a0-8ab9-cb557019ac0b?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/67ba118f-7010-4a59-9be6-b9ce2720baf5?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/ce894453-190d-4c67-b42a-ec2b22b0a546?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/c14bfaa0-b542-40c2-9b3e-7cbb29041740?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/d9ec32f7-893b-48a0-8ab9-cb557019ac0b?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/67ba118f-7010-4a59-9be6-b9ce2720baf5?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/ce894453-190d-4c67-b42a-ec2b22b0a546?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/c14bfaa0-b542-40c2-9b3e-7cbb29041740?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/d9ec32f7-893b-48a0-8ab9-cb557019ac0b?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/67ba118f-7010-4a59-9be6-b9ce2720baf5?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/ce894453-190d-4c67-b42a-ec2b22b0a546?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/c14bfaa0-b542-40c2-9b3e-7cbb29041740?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/d9ec32f7-893b-48a0-8ab9-cb557019ac0b?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/67ba118f-7010-4a59-9be6-b9ce2720baf5?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/ce894453-190d-4c67-b42a-ec2b22b0a546?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/c14bfaa0-b542-40c2-9b3e-7cbb29041740?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
             ].map((videoUrl, index) => (
               <div key={index} className="mx-1">
                 <div className="relative w-[70px] h-[124px] rounded-lg overflow-hidden shadow-lg">
-                  <video
+                  <Image
                     className="w-full h-full object-cover"
                     src={videoUrl}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
+                    alt={`Example ${index + 1}`}
+                    width={70}
+                    height={124}
+                    unoptimized
                   />
                 </div>
               </div>

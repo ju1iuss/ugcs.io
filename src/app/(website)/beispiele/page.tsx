@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Footer } from "@/components/footer";
 import { useAuth } from "@clerk/nextjs";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Check } from "lucide-react";
 import Image from "next/image";
 import { fetchCommunityVideos } from '@/lib/api';
 import {
@@ -15,12 +15,15 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { MoreVertical, Download, Share2 } from "lucide-react";
+import { MoreVertical, Download, Share2, Twitter, Facebook, Instagram, Copy } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface Video {
   video_url: string;
   user_id: string;
   creation_time: string;
+  category?: string;
+  title?: string;
 }
 
 export default function BeispielePage() {
@@ -30,6 +33,7 @@ export default function BeispielePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>("all");
   const [playingVideos, setPlayingVideos] = useState<{ [key: string]: boolean }>({});
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [copiedStates, setCopiedStates] = useState<{ [key: string]: boolean }>({});
 
   const categories = [
     { id: "all", name: "Alle Videos" },
@@ -43,10 +47,18 @@ export default function BeispielePage() {
   useEffect(() => {
     const loadVideos = async () => {
       try {
-        const videos = await fetchCommunityVideos();
-        setVideos(videos);
+        setLoading(true);
+        const fetchedVideos = await fetchCommunityVideos();
+        console.log('Fetched videos in page:', fetchedVideos);
+        if (Array.isArray(fetchedVideos) && fetchedVideos.length > 0) {
+          setVideos(fetchedVideos);
+        } else {
+          console.warn('No videos returned from API');
+          setVideos([]);
+        }
       } catch (error) {
         console.error('Error loading videos:', error);
+        setVideos([]);
       } finally {
         setLoading(false);
       }
@@ -65,7 +77,7 @@ export default function BeispielePage() {
 
   const filteredVideos = selectedCategory === "all" 
     ? videos 
-    : videos.filter(video => video.user_id.includes(selectedCategory));
+    : videos.filter(video => video.category === selectedCategory);
 
   const MobileMenu = () => {
     return (
@@ -224,47 +236,44 @@ export default function BeispielePage() {
   );
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gray-50">
       <Header />
-      <main>
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="flex flex-col items-center mb-12">
-            <div className="flex items-center gap-2 mb-4">
+      <main className="py-16">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="flex flex-col items-center mb-16 space-y-6">
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border">
               <div className="flex -space-x-2">
                 <img 
-                  className="w-8 h-8 rounded-full border-2 border-white" 
+                  className="w-6 h-6 rounded-full ring-2 ring-white" 
                   src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop" 
                   alt="" 
                 />
                 <img 
-                  className="w-8 h-8 rounded-full border-2 border-white" 
+                  className="w-6 h-6 rounded-full ring-2 ring-white" 
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop" 
-                  alt="" 
-                />
-                <img 
-                  className="w-8 h-8 rounded-full border-2 border-white" 
-                  src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop" 
                   alt="" 
                 />
               </div>
               <span className="text-sm text-gray-600">+859 aktive Nutzer</span>
             </div>
-            <h1 className="text-4xl font-bold mb-4">Community Videos</h1>
+            <h1 className="text-4xl font-bold text-gray-900">Community Videos</h1>
             <p className="text-gray-600 text-center max-w-2xl">
               Entdecke wie andere Nutzer KI-Videos für ihr Marketing erstellen und lass dich inspirieren
             </p>
           </div>
 
-          {/* Enhanced Category Filter */}
-          <div className="bg-gray-50 p-6 rounded-xl mb-12">
-            <h2 className="text-lg font-medium mb-4">Filter nach Kategorie</h2>
+          <div className="bg-white p-6 rounded-xl shadow-sm mb-12 border">
+            <h2 className="text-lg font-medium mb-4 text-gray-900">Filter nach Kategorie</h2>
             <div className="flex flex-wrap gap-2">
               {categories.map((category) => (
                 <Button
                   key={category.id}
                   variant={selectedCategory === category.id ? "default" : "outline"}
                   onClick={() => setSelectedCategory(category.id)}
-                  className="rounded-full"
+                  className={cn(
+                    "rounded-full",
+                    selectedCategory === category.id && "bg-gray-900 hover:bg-gray-800"
+                  )}
                 >
                   {category.name}
                 </Button>
@@ -272,44 +281,40 @@ export default function BeispielePage() {
             </div>
           </div>
 
-          {/* Stats Section */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-12">
+          <div className="grid grid-cols-3 gap-4 mb-12">
             {[
               { label: "Videos erstellt", value: "4.000+" },
               { label: "Aktive Nutzer", value: "859" },
               { label: "Zufriedene Kunden", value: "92%" },
             ].map((stat, index) => (
-              <div key={index} className="bg-gray-50 p-4 rounded-xl text-center">
-                <div className="font-bold text-xl">{stat.value}</div>
+              <div key={index} className="bg-white p-6 rounded-xl shadow-sm border text-center">
+                <div className="font-bold text-2xl text-gray-900">{stat.value}</div>
                 <div className="text-sm text-gray-600">{stat.label}</div>
               </div>
             ))}
           </div>
 
-          {/* Video Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
             {filteredVideos.length > 0 ? (
               filteredVideos.map((video, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                    <span>{video.user_id}</span>
-                    <span>{video.creation_time}</span>
-                  </div>
-                  <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-sm relative group">
-                    {video.video_url ? (
-                      <div className="relative">
-                        {/* Video Player */}
+                <div key={index} className="group bg-white rounded-xl shadow-sm border overflow-hidden">
+                  <div className="p-2">
+                    <div className="flex items-center justify-between text-xs text-gray-500 mb-2">
+                      <span className="font-medium">{video.user_id}</span>
+                      <span>{video.creation_time}</span>
+                    </div>
+                    <div className="aspect-[9/16] rounded-lg overflow-hidden bg-gray-100">
+                      {video.video_url ? (
                         <video
                           src={video.video_url}
                           className="w-full h-full object-cover"
                           playsInline
                           loop
-                          controls // Native controls for better UX
+                          controls
                           ref={(el) => {
                             if (el) {
                               el.addEventListener('play', () => {
                                 setPlayingVideos(prev => ({ ...prev, [index]: true }));
-                                // Pause other videos when this one starts playing
                                 document.querySelectorAll('video').forEach(v => {
                                   if (v !== el) v.pause();
                                 });
@@ -320,61 +325,78 @@ export default function BeispielePage() {
                             }
                           }}
                         />
-
-                        {/* Actions Dropdown */}
-                        <div className="absolute top-2 right-2 z-10">
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button
-                                variant="ghost"
-                                className="h-8 w-8 p-0 bg-black/20 hover:bg-black/40 text-white"
-                              >
-                                <MoreVertical className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuItem
-                                onClick={() => {
-                                  window.open(video.video_url, '_blank');
-                                }}
-                                className="cursor-pointer"
-                              >
-                                <Download className="mr-2 h-4 w-4" />
-                                <span>Download</span>
-                              </DropdownMenuItem>
-                              <DropdownMenuItem
-                                onClick={() => {
-                                  if (navigator.share) {
-                                    navigator.share({
-                                      title: `Video von ${video.user_id}`,
-                                      url: video.video_url
-                                    }).catch(console.error);
-                                  } else {
-                                    // Fallback to copying link
-                                    navigator.clipboard.writeText(video.video_url);
-                                    // You might want to add a toast notification here
-                                  }
-                                }}
-                                className="cursor-pointer"
-                              >
-                                <Share2 className="mr-2 h-4 w-4" />
-                                <span>Teilen</span>
-                              </DropdownMenuItem>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="text-sm text-gray-400">Video nicht verfügbar</span>
                         </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="px-2 py-2 border-t bg-gray-50/50">
+                    <div className="flex items-center justify-between">
+                      <div className="flex space-x-1">
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8 text-[#1DA1F2] hover:text-[#1DA1F2] hover:bg-[#1DA1F2]/10"
+                        >
+                          <Twitter className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8 text-[#4267B2] hover:text-[#4267B2] hover:bg-[#4267B2]/10"
+                        >
+                          <Facebook className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="h-8 w-8 text-[#E4405F] hover:text-[#E4405F] hover:bg-[#E4405F]/10"
+                        >
+                          <Instagram className="h-4 w-4" />
+                        </Button>
                       </div>
-                    ) : (
-                      <div className="w-full h-full bg-gray-100 flex items-center justify-center">
-                        <span className="text-sm text-gray-400">Video nicht verfügbar</span>
+                      <div className="flex space-x-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-gray-600 hover:text-gray-900"
+                          onClick={() => window.open(video.video_url, '_blank')}
+                        >
+                          <Download className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className={cn(
+                            "h-8 w-8 transition-all duration-200",
+                            copiedStates[index] 
+                              ? "text-green-600 bg-green-50" 
+                              : "text-gray-600 hover:text-gray-900"
+                          )}
+                          onClick={() => {
+                            navigator.clipboard.writeText(video.video_url);
+                            setCopiedStates(prev => ({ ...prev, [index]: true }));
+                            setTimeout(() => {
+                              setCopiedStates(prev => ({ ...prev, [index]: false }));
+                            }, 2000);
+                          }}
+                        >
+                          {copiedStates[index] ? (
+                            <Check className="h-4 w-4" />
+                          ) : (
+                            <Copy className="h-4 w-4" />
+                          )}
+                        </Button>
                       </div>
-                    )}
+                    </div>
                   </div>
                 </div>
               ))
             ) : (
-              <div className="col-span-full text-center text-gray-500 py-12">
-                Keine Videos gefunden
+              <div className="col-span-full text-center py-12">
+                <div className="text-gray-500">Keine Videos gefunden</div>
               </div>
             )}
           </div>

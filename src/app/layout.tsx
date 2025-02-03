@@ -21,12 +21,16 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <head>
-        <Script
-          async
-          src="https://cdn.tolt.io/tolt.js"
-          data-tolt="pk_ov6C9novegme6jPovu7z6UW8"
-          strategy="afterInteractive"
-        />
+      
+      {/* Cookiebot Script */}
+      <Script
+            id="Cookiebot"
+            src="https://consent.cookiebot.com/uc.js"
+            data-cbid="162a8ef8-82f3-43af-b9b4-96156913b6e6"
+            data-blockingmode="auto"
+            type="text/javascript"
+            strategy="beforeInteractive" // Ensures Cookiebot loads before the page
+          />
         <Script id="tolt-stripe" strategy="afterInteractive">
           {`
             function updateButtonUrls() {
@@ -54,7 +58,23 @@ export default function RootLayout({
           `}
         </Script>
       </head>
-      <body className={inter.className}>{children}</body>
+      <body className={inter.className}>
+        {/* Google Analytics Script */}
+        <Script
+  async
+  src="https://www.googletagmanager.com/gtag/js?id=G-HLKCF0GL9C"
+  data-cookieconsent="statistics"
+  strategy="afterInteractive"
+/>
+<Script id="google-analytics" strategy="afterInteractive" data-cookieconsent="statistics">
+  {`
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-HLKCF0GL9C');
+  `}
+</Script>
+        {children}</body>
       <Toaster />
     </html>
     </ClerkProvider>

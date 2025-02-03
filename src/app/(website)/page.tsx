@@ -18,6 +18,7 @@ import Marquee from "@/components/ui/marquee";
 import { cn } from "@/lib/utils";
 import TypingAnimation from "@/components/ui/typing-animation";
 import { useAuth } from "@clerk/nextjs";
+import Script from 'next/script';
 
 const reviews = [
   {
@@ -165,6 +166,7 @@ export default function Home() {
     
       
       <div className="min-h-screen max-w-7xl mx-auto px-4 scroll-smooth">
+      
       
       {/* Header - Make sticky */}
       <div className="border-b border-gray-200 w-screen -mx-[calc((100vw-100%)/2)] px-[calc((100vw-100%)/2)] sticky top-0 bg-white/60 backdrop-blur-sm z-50">
@@ -315,7 +317,7 @@ export default function Home() {
             <div className="flex items-center gap-4 flex-wrap justify-center">
               Verwandle{' '}
               <TypingAnimation 
-                className="text-6xl font-semibold text-purple-300 w-[160px]"
+                className="text-7xl font-semibold text-purple-400 w-[160px]"
                 duration={100}
                 pauseDuration={1500}
                 deleteMode={true}
@@ -325,7 +327,7 @@ export default function Home() {
               {' '}in
             </div>
             <div className="flex items-center gap-4 flex-wrap justify-center">
-              <span className="text-green-300">UGC</span>
+              <span className="text-green-400">UGC</span>
               {/* Stacked Videos Container - Only shown on desktop */}
               <div className="relative w-[50px] h-[89px] mx-6 self-center ml-[38px]">
                 {/* Background Shadows - Replace videos with div containers */}
@@ -338,13 +340,14 @@ export default function Home() {
                 
                 {/* Main Video */}
                 <div className="relative w-[50px] h-[89px] rounded-lg overflow-hidden">
-                  <video
+                  <Image
                     className="w-full h-full object-cover"
-                    src="https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
+                    src="https://api.altan.ai/platform/media/b61c5c1e-c4ff-4c5d-be18-7de70a2e6307?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d"
+                    alt="Video"
+                    width={50}
+                    height={89}
+                  
+                    
                   />
                 </div>
               </div>
@@ -449,23 +452,24 @@ export default function Home() {
         <div className="relative w-full">
           <Marquee className="[--duration:30s]" pauseOnHover>
             {[
-              "https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/69677eaa-d241-4ec0-8cb5-4895d0aa1c12?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/aa0e0606-1f65-429b-8570-5112d09b3981?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/693ae159-4e06-4a36-810f-218058b81395?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-              "https://api.altan.ai/platform/media/cd3a3884-d7e8-4e32-8947-d3901c1ad9a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-            ].map((videoUrl, index) => (
+              "https://api.altan.ai/platform/media/b61c5c1e-c4ff-4c5d-be18-7de70a2e6307?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/572ac408-1f34-4dda-a0ae-24a7591e1d3b?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/d9ec32f7-893b-48a0-8ab9-cb557019ac0b?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/67ba118f-7010-4a59-9be6-b9ce2720baf5?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/a38661be-2aad-46bb-9311-08cbcef91b1c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/ce894453-190d-4c67-b42a-ec2b22b0a546?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+              "https://api.altan.ai/platform/media/c14bfaa0-b542-40c2-9b3e-7cbb29041740?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+
+            ].map((gifUrl, index) => (
               <div key={index} className="mx-1">
                 <div className="relative w-[135px] h-[240px] rounded-xl overflow-hidden shadow-lg">
-                  <video
+                  <Image
+                    src={gifUrl}
+                    alt={`Example ${index + 1}`}
+                    width={135}
+                    height={240}
                     className="w-full h-full object-cover"
-                    src={videoUrl}
-                    autoPlay
-                    muted
-                    loop
-                    playsInline
+                    unoptimized // This is important for GIFs to animate
                   />
                 </div>
               </div>
@@ -679,7 +683,7 @@ export default function Home() {
                 image: "https://api.altan.ai/platform/media/9e563482-68af-4a46-9e76-42af24259c14?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
                 quote: "Die KI-Videos haben unsere Social Media Strategie komplett verändert. Sehr beeindruckend.",
                 rating: 5,
-                video: "https://api.altan.ai/platform/media/eaf1fc38-c7e1-4da8-b8eb-3a16a584ecf6?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                video: "https://api.altan.ai/platform/media/b61c5c1e-c4ff-4c5d-be18-7de70a2e6307?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
                 layout: "video-right",
                 date: "vor 2 Tagen"
               },
@@ -699,7 +703,7 @@ export default function Home() {
                 image: "https://api.altan.ai/platform/media/de57a97a-5781-4e16-8264-ef14672fb54d?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
                 quote: "Bin sehr zufrieden mit dem Ergebnis. Ideal für unsere Ad Kampagnen.",
                 rating: 4,
-                video: "https://api.altan.ai/platform/media/17af25f8-5f4c-4ceb-9262-38444b2f9906?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                video: "https://api.altan.ai/platform/media/ce894453-190d-4c67-b42a-ec2b22b0a546?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
                 layout: "video-bottom",
                 date: "vor 3 Tagen"
               },
@@ -709,7 +713,7 @@ export default function Home() {
                 image: "https://api.altan.ai/platform/media/604b1b48-a637-49b9-999a-4f640ebc3418?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
                 quote: "Ad Creatives für unsere Produkte sind jetzt in 10 Minuten fertig. hat uns sehr viel Zeit und Geld gespart!",
                 rating: 5,
-                video: "https://api.altan.ai/platform/media/4c87925e-8381-4440-879e-1ddbbb4a31fe?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                video: "https://api.altan.ai/platform/media/67ba118f-7010-4a59-9be6-b9ce2720baf5?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
                 layout: "video-right",
                 date: "vor 2 Tagen"
               },
@@ -769,14 +773,15 @@ export default function Home() {
                       </blockquote>
                       {testimonial.video && (
                         <div className="w-24 aspect-[9/16] rounded-lg overflow-hidden flex-shrink-0">
-                          <video
+                          <Image
                             src={testimonial.video}
                             className="w-full h-full object-cover"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
+                            alt={`${testimonial.name} video`}
+                            width={96}
+                            height={171}
+                            unoptimized
                           />
+                          
                         </div>
                       )}
                     </div>
@@ -787,13 +792,13 @@ export default function Home() {
                       </blockquote>
                       {testimonial.video && (
                         <div className="aspect-[16/9] w-full rounded-lg overflow-hidden">
-                          <video
+                          <Image
                             src={testimonial.video}
                             className="w-full h-full object-cover"
-                            autoPlay
-                            muted
-                            loop
-                            playsInline
+                            alt={`${testimonial.name} video`}
+                            width={320}
+                            height={180}
+                            unoptimized
                           />
                         </div>
                       )}

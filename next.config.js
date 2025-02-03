@@ -7,6 +7,7 @@ const nextConfig = {
         hostname: 'api.altan.ai',
       },
     ],
+    domains: ['api.altan.ai'],
   }
 };
 
