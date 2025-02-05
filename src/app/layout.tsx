@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import {  ClerkProvider} from '@clerk/nextjs'
+import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 import Script from 'next/script'
@@ -21,16 +21,24 @@ export default function RootLayout({
     <ClerkProvider>
     <html lang="en">
       <head>
+        {/* Google Tag Manager - placed first in head */}
+        <Script id="google-tag-manager" strategy="beforeInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer','GTM-KTH7KWFC');`}
+        </Script>
       
-      {/* Cookiebot Script */}
-      <Script
-            id="Cookiebot"
-            src="https://consent.cookiebot.com/uc.js"
-            data-cbid="162a8ef8-82f3-43af-b9b4-96156913b6e6"
-            data-blockingmode="auto"
-            type="text/javascript"
-            strategy="beforeInteractive"
-          />
+        {/* Cookiebot Script */}
+        <Script
+          id="Cookiebot"
+          src="https://consent.cookiebot.com/uc.js"
+          data-cbid="162a8ef8-82f3-43af-b9b4-96156913b6e6"
+          data-blockingmode="auto"
+          type="text/javascript"
+          strategy="beforeInteractive"
+        />
 
         {/* Microsoft Clarity Script */}
         <Script id="microsoft-clarity" strategy="afterInteractive">
@@ -103,8 +111,19 @@ export default function RootLayout({
         </Script>
       </head>
       <body className={inter.className}>
-        {children}</body>
-      <Toaster />
+        {/* Google Tag Manager (noscript) - immediately after body opening tag */}
+        <noscript>
+          <iframe 
+            src="https://www.googletagmanager.com/ns.html?id=GTM-KTH7KWFC"
+            height="0" 
+            width="0" 
+            style={{display: 'none', visibility: 'hidden'}}
+          ></iframe>
+        </noscript>
+        
+        {children}
+        <Toaster />
+      </body>
     </html>
     </ClerkProvider>
   );

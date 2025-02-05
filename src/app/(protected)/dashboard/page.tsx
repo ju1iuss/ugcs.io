@@ -73,7 +73,7 @@ export default function DashboardPage() {
       const isNewPurchase = window.location.hash === '#new';
       setShowThankYou(isNewPurchase);
       
-      // Only fire the conversion event if it's a new purchase
+      // Fire conversion tracking for completed purchase
       if (isNewPurchase && (window as any).gtag) {
         (window as any).gtag('event', 'conversion', {
           'send_to': 'AW-11382902307/DRE4CJqz0JkaEKOc5bMq'
