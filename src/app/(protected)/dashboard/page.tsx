@@ -14,6 +14,8 @@ import { Progress } from "@/components/ui/progress";
 import MorphingText from '@/components/ui/morphing-text';
 import { AnimatedText } from "@/components/ui/animated-text";
 import { Card } from "@/components/ui/card";
+import { useSearchParams, usePathname } from 'next/navigation';
+import { CheckCircle2 } from 'lucide-react';
 
 // Add new type for error tracking
 interface PollingError {
@@ -33,6 +35,8 @@ export default function DashboardPage() {
   const [loadingStep, setLoadingStep] = useState(0);
   const [pollingErrors, setPollingErrors] = useState<Record<number, string>>({});
   const pollingStartTimes = useRef<Record<string, number>>({});
+  const pathname = usePathname();
+  const [showThankYou, setShowThankYou] = useState(false);
 
   useEffect(() => {
     if (loading && isLoaded) {
@@ -66,6 +70,12 @@ export default function DashboardPage() {
       return () => clearTimeout(timer);
     }
   }, [loading, isLoaded]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setShowThankYou(window.location.hash === '#new');
+    }
+  }, []);
 
   const pollGeneratingStatus = async (correlationId: string) => {
     try {
@@ -305,6 +315,47 @@ export default function DashboardPage() {
     );
   };
 
+  const renderThankYouCard = () => {
+    if (!showThankYou) return null;
+
+    return (
+      <div className="p-4">
+        <Card className="relative overflow-hidden bg-gradient-to-r from-green-100 to-green-50 border-green-300">
+          <div className="p-3">
+            <div className="flex items-center space-x-3">
+              <div className="flex-shrink-0">
+                <span className="text-lg">✅</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-sm font-medium text-green-950">
+                  Vielen Dank für deinen Kauf! 🎉 Deine Credits wurden erfolgreich aktualisiert.
+                </h3>
+                <p className="text-xs text-green-800 mt-0.5">
+                  Support jederzeit unter{' '}
+                  <a 
+                    href="mailto:kontakt@ugcs.io" 
+                    className="font-medium hover:text-green-950 transition-colors"
+                  >
+                    kontakt@ugcs.io
+                  </a>
+                </p>
+              </div>
+              <button 
+                onClick={() => setShowThankYou(false)} 
+                className="flex-shrink-0 text-green-600 hover:text-green-800"
+              >
+                <span className="sr-only">Schließen</span>
+                <svg className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </Card>
+      </div>
+    );
+  };
+
   const renderContent = () => {
     if (loading || !isLoaded || !user) return (
       <div className="h-[50vh] flex flex-col items-center justify-center p-4">
@@ -326,6 +377,7 @@ export default function DashboardPage() {
     if (error) {
       return (
         <div className="p-4">
+          {renderThankYouCard()}
           <div className="text-red-500">{error}</div>
           <button onClick={() => window.location.reload()} className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
             Retry
@@ -335,11 +387,17 @@ export default function DashboardPage() {
     }
 
     if (videos.length === 0) {
-      return <EmptyState onCreateClick={() => setIsModalOpen(true)} />;
+      return (
+        <div>
+          {renderThankYouCard()}
+          <EmptyState onCreateClick={() => setIsModalOpen(true)} />
+        </div>
+      );
     }
 
     return (
       <div className="p-6 space-y-6">
+        {renderThankYouCard()}
         <Card className="relative overflow-hidden bg-purple-50/80 border border-purple-400 shadow-sm">
           <div className="relative z-10 p-4">
             <div className="space-y-1">
