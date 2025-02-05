@@ -7,15 +7,12 @@ import { fetchUserVideos } from '@/lib/api';
 import { Video } from '@/types/video';
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/global/app-sidebar";
-import { Button } from "@/components/ui/button";
 import { EmptyState } from '@/components/global/empty-state';
 import MultiStepForm from "@/components/global/form/MultiStepForm";
 import { Progress } from "@/components/ui/progress";
-import MorphingText from '@/components/ui/morphing-text';
 import { AnimatedText } from "@/components/ui/animated-text";
 import { Card } from "@/components/ui/card";
-import { useSearchParams, usePathname } from 'next/navigation';
-import { CheckCircle2 } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 // Add new type for error tracking
 interface PollingError {
@@ -73,7 +70,15 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setShowThankYou(window.location.hash === '#new');
+      const isNewPurchase = window.location.hash === '#new';
+      setShowThankYou(isNewPurchase);
+      
+      // Only fire the conversion event if it's a new purchase
+      if (isNewPurchase && (window as any).gtag) {
+        (window as any).gtag('event', 'conversion', {
+          'send_to': 'AW-11382902307/DRE4CJqz0JkaEKOc5bMq'
+        });
+      }
     }
   }, []);
 

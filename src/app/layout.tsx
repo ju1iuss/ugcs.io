@@ -86,23 +86,23 @@ export default function RootLayout({
             });
           `}
         </Script>
+
+        {/* Google Analytics Tag */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-HLKCF0GL9C"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-HLKCF0GL9C');
+          `}
+        </Script>
       </head>
       <body className={inter.className}>
-        {/* Google Analytics Script */}
-        <Script
-  async
-  src="https://www.googletagmanager.com/gtag/js?id=G-HLKCF0GL9C"
-  data-cookieconsent="statistics"
-  strategy="afterInteractive"
-/>
-<Script id="google-analytics" strategy="afterInteractive" data-cookieconsent="statistics">
-  {`
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-HLKCF0GL9C');
-  `}
-</Script>
         {children}</body>
       <Toaster />
     </html>
