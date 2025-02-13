@@ -299,13 +299,13 @@ export default function PricingPage() {
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Exportieren ohne Wasserzeichen
             </li>
-            <li className="flex gap-x-3 text-gray-400">
-              <Check className="h-5 w-4 flex-none" />
-              AI Skript Generation (soon)
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              AI Script Generation
             </li>
-            <li className="flex gap-x-3 text-gray-400">
-              <Check className="h-5 w-4 flex-none" />
-              Untertitel (soon)
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              Untertitel
             </li>
           </ul>
           {getPlanButton('creator', creatorLink)}
@@ -344,7 +344,7 @@ export default function PricingPage() {
           <ul role="list" className="mt-6 space-y-2 text-sm leading-6 text-gray-600">
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              800 Video Sekunden (ca. 50 Videos)
+              800 Video Sekunden (ca. 35 Videos)
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
@@ -360,15 +360,12 @@ export default function PricingPage() {
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              <div className="flex items-center gap-2">
-                Produkt Avatare
-                <Badge 
-                  variant="secondary" 
-                  className="bg-purple-100 text-purple-700 animate-pulse"
-                >
-                  Exklusiv
-                </Badge>
-              </div>
+              <span className="bg-amber-100 text-amber-700 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 font-medium">
+                <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <path d="M12 1l3.22 6.527 7.198.617-5.385 4.928 1.474 7.133L12 16.886l-6.507 3.319 1.474-7.133-5.385-4.928 7.198-.617L12 1z"/>
+                </svg>
+                Bis zu 3 Produkt Avatare
+              </span>
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
@@ -382,13 +379,13 @@ export default function PricingPage() {
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Exportieren ohne Wasserzeichen
             </li>
-            <li className="flex gap-x-3 text-gray-400">
-              <Check className="h-5 w-4 flex-none" />
-              AI Script Generation (soon)
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              AI Script Generation
             </li>
-            <li className="flex gap-x-3 text-gray-400">
-              <Check className="h-5 w-4 flex-none" />
-              Untertitel (soon)
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              Untertitel
             </li>
           </ul>
           {getPlanButton('agency', agencyLink)}

@@ -482,194 +482,54 @@ export default function Home() {
       
       
       
-
-      {/* Community Videos Section */}
-      <section className="py-12 md:py-16">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-4">
-              <div className="flex -space-x-3">
-                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop" alt="" />
-                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop" alt="" />
-                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop" alt="" />
-                <div className="w-8 h-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center">
-                  <span className="text-xs text-gray-600">+42</span>
-                </div>
-              </div>
-              <div>
-                <h2 className="text-xl font-medium">
-                  Sieh was andere generieren
-                </h2>
-                <p className="text-sm text-gray-500 mt-1">
-                  Entdecke wie andere Nutzer KI-Videos für ihr Marketing erstellen
-                </p>
-              </div>
-            </div>
-            <Link href="/beispiele">
-              <Button variant="outline" size="sm">
-                Jetzt alle ansehen
-              </Button>
-            </Link>
-          </div>
-
-          {/* First row of videos */}
-          <div className="grid grid-cols-4 md:grid-cols-5 gap-3 mb-3">
-            {[
-              {
-                thumbnail: "https://api.altan.ai/platform/media/48e8ac65-73e3-482e-a480-c70b377cef2e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                username: "@sarah.marketing",
-                date: "vor 2 Std",
-                script: "Produktvorstellung"
-              },
-              {
-                thumbnail: "https://api.altan.ai/platform/media/d13bbbd2-8482-42f6-b495-ee63f00c1ff2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                username: "@max_mueller",
-                date: "vor 3 Std",
-                script: "Erklärungsvideo"
-              },
-              {
-                thumbnail: "https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                username: "@lisa.content",
-                date: "vor 3 Std",
-                script: "Social Media"
-              },
-              {
-                thumbnail: "https://api.altan.ai/platform/media/79497d6b-bc52-4fc3-99df-9f38a2cc84a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                username: "@tom.digital",
-                date: "vor 4 Std",
-                script: "Produktdemo"
-              },
-              {
-                thumbnail: "https://api.altan.ai/platform/media/0f079522-0501-44ff-81b4-f945ce53033c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                username: "@anna.design",
-                date: "vor 5 Std",
-                script: "Tutorial"
-              }
-            ].map((video, index) => (
-              <div key={index} className="space-y-2">
-                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                  <span>{video.username}</span>
-                  <span>{video.date}</span>
-                </div>
-                <Link href="/beispiele">
-                  <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-sm relative group">
-                    <img
-                      src={video.thumbnail}
-                      alt={`Video von ${video.username}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                      <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform">
-                        <svg 
-                          className="w-4 h-4" 
-                          viewBox="0 0 24 24" 
-                          fill="none" 
-                          stroke="currentColor"
-                        >
-                          <path 
-                            d="M5 3l14 9-14 9V3z" 
-                            fill="currentColor" 
-                            strokeWidth="2" 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    </div>
-                    <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded-full">
-                      {video.script}
-                    </div>
-                  </div>
-                </Link>
-              </div>
-            ))}
-          </div>
-
-          {/* Second row with blur effect */}
-          <div className="relative">
-            <div className="grid grid-cols-4 md:grid-cols-5 gap-3">
-              {[
-                {
-                  thumbnail: "https://api.altan.ai/platform/media/0f079522-0501-44ff-81b4-f945ce53033c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                  username: "@david.coach",
-                  date: "vor 6 Std",
-                  script: "Coaching"
-                },
-                {
-                  thumbnail: "https://api.altan.ai/platform/media/62d873c7-999b-4f3e-82f9-107407224f8a?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                  username: "@marie.social",
-                  date: "vor 7 Std",
-                  script: "Marketing"
-                },
-                {
-                  thumbnail: "https://api.altan.ai/platform/media/48e8ac65-73e3-482e-a480-c70b377cef2e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                  username: "@peter.tech",
-                  date: "vor 8 Std",
-                  script: "Tutorial"
-                },
-                {
-                  thumbnail: "https://api.altan.ai/platform/media/d13bbbd2-8482-42f6-b495-ee63f00c1ff2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                  username: "@julia.design",
-                  date: "vor 9 Std",
-                  script: "Produktdemo"
-                },
-                {
-                  thumbnail: "https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
-                  username: "@max.content",
-                  date: "vor 10 Std",
-                  script: "Social Media"
-                }
-              ].map((video, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
-                    <span>{video.username}</span>
-                    <span>{video.date}</span>
-      </div>
-                  <Link href="/beispiele">
-                    <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-sm relative group">
-                      <img
-                        src={video.thumbnail}
-                        alt={`Video von ${video.username}`}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
-                  <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform">
-                          <svg 
-                            className="w-4 h-4" 
-                            viewBox="0 0 24 24" 
-                            fill="none" 
-                            stroke="currentColor"
-                          >
-                            <path 
-                              d="M5 3l14 9-14 9V3z" 
-                              fill="currentColor" 
-                              strokeWidth="2" 
-                              strokeLinecap="round" 
-                              strokeLinejoin="round"
-                            />
-                    </svg>
-                  </div>
-                </div>
-                      <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded-full">
-                        {video.script}
-                      </div>
-                    </div>
-                  </Link>
-            </div>
-          ))}
+      {/* Featured Video Section */}
+      <section className="py-12 md:py-20 max-w-6xl mx-auto px-4">
+        <div className="text-center mb-8">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Deutschlands realistischste KI-Avatar-Videos
+          </h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+            In weniger als 2 Minuten erstellst du professionelle Videos mit KI-Avataren und sparst Dir so nicht nur Zeit, sondern auch Geld.
+          </p>
         </div>
-            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
-              <Link href="/beispiele">
-                <Button variant="outline" size="lg">
-                  Mehr Videos ansehen
-                </Button>
-              </Link>
-      </div>
+        
+        <div className="relative rounded-2xl overflow-hidden shadow-2xl bg-white">
+          <div className="aspect-video w-full">
+            <iframe
+              src="https://www.loom.com/embed/12a8c3b00a1e4f74bcfe7fa0f38dc193?sid=aae79dac-7bc4-47d0-90f3-f30a90d882e7"
+              frameBorder="0"
+              allowFullScreen
+              className="w-full h-full"
+            ></iframe>
           </div>
+          <div className="absolute inset-0 pointer-events-none rounded-2xl border border-gray-200"></div>
+        </div>
+
+        <div className="mt-8 flex justify-center">
+          <Link href="/pricing">
+            <Button 
+              className="bg-black hover:bg-gray-800 text-white px-8 py-6 text-lg rounded-xl flex items-center gap-2"
+            >
+              Jetzt selbst ausprobieren
+              <svg 
+                className="w-5 h-5" 
+                viewBox="0 0 24 24" 
+                fill="none" 
+                stroke="currentColor"
+              >
+                <path 
+                  d="M5 12h14M12 5l7 7-7 7" 
+                  strokeWidth="2" 
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Button>
+          </Link>
         </div>
       </section>
 
-      
+
 
 
       {/* Testimonial Section with moving cards */}
@@ -907,9 +767,9 @@ export default function Home() {
               </li>
               
             </ul>
-            <Link href="/sign-up">
+            <Link href="/pricing">
               <Button variant="outline" className="w-full">
-                Jetzt Starten
+                Mehr erfahren
               </Button>
             </Link>
           </div>
@@ -967,22 +827,22 @@ export default function Home() {
                 </svg>
                 Exportieren ohne Wasserzeichen
               </li>
-              <li className="flex items-center gap-2 text-gray-400">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                AI Skript Generation (soon)
+                AI Script Generation
               </li>
-              <li className="flex items-center gap-2 text-gray-400">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Untertitel (soon)
+                Untertitel
               </li>
             </ul>
-            <Link href="/sign-up">
+            <Link href="/pricing">
               <Button className="w-full bg-purple-600 hover:bg-purple-700">
-                Jetzt Starten
+                Mehr erfahren
               </Button>
             </Link>
           </div>
@@ -1011,13 +871,11 @@ export default function Home() {
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Alle Avatare (soon)
-              </li>
-              <li className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-                HD Videos
+                <span className="bg-amber-100 text-amber-700 text-xs px-3 py-1.5 rounded-full flex items-center gap-2 font-medium">
+                  <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                    <path d="M12 1l3.22 6.527 7.198.617-5.385 4.928 1.474 7.133L12 16.886l-6.507 3.319 1.474-7.133-5.385-4.928 7.198-.617L12 1z"/>
+                  </svg>
+                </span>
               </li>
               <li className="flex items-center gap-2">
                 <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1037,22 +895,22 @@ export default function Home() {
                 </svg>
                 Exportieren ohne Wasserzeichen
               </li>
-              <li className="flex items-center gap-2 text-gray-400">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                AI Script Generation (soon)
+                AI Script Generation
               </li>
-              <li className="flex items-center gap-2 text-gray-400">
-                <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <li className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-purple-600" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                   <path d="M20 6L9 17l-5-5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                Untertitel (soon)
+                Untertitel
               </li>
             </ul>
-            <Link href="/sign-up">
+            <Link href="/pricing">
               <Button variant="outline" className="w-full">
-                Jetzt Starten
+                Mehr erfahren
               </Button>
             </Link>
           </div>
@@ -1102,6 +960,200 @@ export default function Home() {
         </div>
       </section>
 
+
+
+
+
+      {/* Community Videos Section */}
+      <section className="py-12 md:py-16">
+        <div className="max-w-6xl mx-auto px-4">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
+              <div className="flex -space-x-3">
+                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=96&h=96&fit=crop" alt="" />
+                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=96&h=96&fit=crop" alt="" />
+                <img className="w-8 h-8 rounded-full border-2 border-white" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop" alt="" />
+                <div className="w-8 h-8 rounded-full border-2 border-white bg-gray-100 flex items-center justify-center">
+                  <span className="text-xs text-gray-600">+42</span>
+                </div>
+              </div>
+              <div>
+                <h2 className="text-xl font-medium">
+                  Sieh was andere generieren
+                </h2>
+                <p className="text-sm text-gray-500 mt-1">
+                  Entdecke wie andere Nutzer KI-Videos für ihr Marketing erstellen
+                </p>
+              </div>
+            </div>
+            <Link href="/beispiele">
+              <Button variant="outline" size="sm">
+                Jetzt alle ansehen
+              </Button>
+            </Link>
+          </div>
+
+          {/* First row of videos */}
+          <div className="grid grid-cols-4 md:grid-cols-5 gap-3 mb-3">
+            {[
+              {
+                thumbnail: "https://api.altan.ai/platform/media/48e8ac65-73e3-482e-a480-c70b377cef2e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@sarah.marketing",
+                date: "vor 2 Std",
+                script: "Produktvorstellung"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/d13bbbd2-8482-42f6-b495-ee63f00c1ff2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@max_mueller",
+                date: "vor 3 Std",
+                script: "Erklärungsvideo"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@lisa.content",
+                date: "vor 3 Std",
+                script: "Social Media"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/79497d6b-bc52-4fc3-99df-9f38a2cc84a2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@tom.digital",
+                date: "vor 4 Std",
+                script: "Produktdemo"
+              },
+              {
+                thumbnail: "https://api.altan.ai/platform/media/0f079522-0501-44ff-81b4-f945ce53033c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                username: "@anna.design",
+                date: "vor 5 Std",
+                script: "Tutorial"
+              }
+            ].map((video, index) => (
+              <div key={index} className="space-y-2">
+                <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                  <span>{video.username}</span>
+                  <span>{video.date}</span>
+                </div>
+                <Link href="/beispiele">
+                  <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-sm relative group">
+                    <img
+                      src={video.thumbnail}
+                      alt={`Video von ${video.username}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                      <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform">
+                        <svg 
+                          className="w-4 h-4" 
+                          viewBox="0 0 24 24" 
+                          fill="none" 
+                          stroke="currentColor"
+                        >
+                          <path 
+                            d="M5 3l14 9-14 9V3z" 
+                            fill="currentColor" 
+                            strokeWidth="2" 
+                            strokeLinecap="round" 
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded-full">
+                      {video.script}
+                    </div>
+                  </div>
+                </Link>
+              </div>
+            ))}
+          </div>
+
+          {/* Second row with blur effect */}
+          <div className="relative">
+            <div className="grid grid-cols-4 md:grid-cols-5 gap-3">
+              {[
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/0f079522-0501-44ff-81b4-f945ce53033c?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@david.coach",
+                  date: "vor 6 Std",
+                  script: "Coaching"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/62d873c7-999b-4f3e-82f9-107407224f8a?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@marie.social",
+                  date: "vor 7 Std",
+                  script: "Marketing"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/48e8ac65-73e3-482e-a480-c70b377cef2e?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@peter.tech",
+                  date: "vor 8 Std",
+                  script: "Tutorial"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/d13bbbd2-8482-42f6-b495-ee63f00c1ff2?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@julia.design",
+                  date: "vor 9 Std",
+                  script: "Produktdemo"
+                },
+                {
+                  thumbnail: "https://api.altan.ai/platform/media/fb63ffb3-b63c-4f2e-8065-29b8ac017446?account_id=45531da9-2b5d-43dd-b788-74b6eb4a9b2d",
+                  username: "@max.content",
+                  date: "vor 10 Std",
+                  script: "Social Media"
+                }
+              ].map((video, index) => (
+                <div key={index} className="space-y-2">
+                  <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                    <span>{video.username}</span>
+                    <span>{video.date}</span>
+      </div>
+                  <Link href="/beispiele">
+                    <div className="aspect-[9/16] rounded-xl overflow-hidden shadow-sm relative group">
+                      <img
+                        src={video.thumbnail}
+                        alt={`Video von ${video.username}`}
+                        className="w-full h-full object-cover"
+                      />
+                      <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                  <div className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-105 transition-transform">
+                          <svg 
+                            className="w-4 h-4" 
+                            viewBox="0 0 24 24" 
+                            fill="none" 
+                            stroke="currentColor"
+                          >
+                            <path 
+                              d="M5 3l14 9-14 9V3z" 
+                              fill="currentColor" 
+                              strokeWidth="2" 
+                              strokeLinecap="round" 
+                              strokeLinejoin="round"
+                            />
+                    </svg>
+                  </div>
+                </div>
+                      <div className="absolute bottom-2 right-2 text-xs text-white bg-black/50 px-2 py-1 rounded-full">
+                        {video.script}
+                      </div>
+                    </div>
+                  </Link>
+            </div>
+          ))}
+        </div>
+            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm flex items-center justify-center">
+              <Link href="/beispiele">
+                <Button variant="outline" size="lg">
+                  Mehr Videos ansehen
+                </Button>
+              </Link>
+      </div>
+          </div>
+        </div>
+      </section>
+
+      
+
+
+      
       {/* Licensed Creators Section - Stack on mobile */}
       <section className="py-8 md:py-24 overflow-hidden">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center gap-8 md:gap-12">
@@ -1112,9 +1164,9 @@ export default function Home() {
               className="w-full rounded-2xl shadow-lg"
             />
           </div>
-          <div className="flex-1 max-w-xl">
+          <div className="flex-1 maxw-xl">
             <h2 className="text-3xl md:text-4xl font-bold mb-4 md:mb-6">
-              15+ lizenzierte Creator
+              Wöchentlich neue Creator
             </h2>
             <p className="text-sm md:text-lg text-gray-600 leading-relaxed">
               Erstelle Videos mit unseren Top-Tier Creators ohne dir Gedanken über Rechte machen zu müssen. Du besitzt den Content - keine zusätzlichen Gebühren, kein Stress, volle Eigentumsrechte garantiert.
