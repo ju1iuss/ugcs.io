@@ -368,7 +368,7 @@ export default function Home() {
               className="rounded-md text-base md:text-lg py-4 md:py-6 px-8 md:px-10 flex items-center gap-2 w-full bg-black hover:bg-gray-800 transition-all duration-300"
               size="lg"
             >
-              <span>Jetzt Video erstellen</span>
+              <span>Jetzt Kostenlos Testen</span>
               <svg 
                 width="18" 
                 height="18" 
