@@ -16,12 +16,14 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Loader2 } from "lucide-react"
 import { Video } from '@/types/video';
 import { MultiStepLoader } from "@/components/ui/multi-step-loader";
+import { useUserData } from "@/contexts/UserDataContext";
 
 interface MultiStepFormProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
   onAddVideo?: (video: Video) => void
   credits: number | string
+  refetchData?: () => Promise<void>
 }
 
 interface FormData {
@@ -36,7 +38,7 @@ const getAvatarById = (id: string) => {
   return avatars.find(avatar => avatar.id === id);
 }
 
-export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credits }: MultiStepFormProps) {
+export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credits, refetchData }: MultiStepFormProps) {
   const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
     avatar: '',
@@ -46,6 +48,7 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credit
   const { userId } = useAuth()
   const [isGenerating, setIsGenerating] = useState(false)
   const [showLoader, setShowLoader] = useState(false)
+  const { addVideo } = useUserData();
 
   const loadingStates = [
     { text: "Video wird generiert..." },
@@ -117,9 +120,13 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credit
       last_modified_time: new Date().toISOString(),
       last_modified_by: userId,
       rating: null,
-      correlationId
+      correlationId,
+      script: formData.script,
+      avatar_id: formData.avatar,
+      style_id: formData.style
     };
 
+    addVideo(tempVideo);
     onAddVideo?.(tempVideo);
 
     const payload = {
@@ -142,10 +149,12 @@ export default function MultiStepForm({ isOpen, onOpenChange, onAddVideo, credit
       if (!response.ok) throw new Error('Failed to generate');
 
       await new Promise(resolve => setTimeout(resolve, 3000));
+      await refetchData?.();
 
       setStep(1);
       setFormData({ avatar: '', style: '', script: '' });
       onOpenChange(false);
+
     } catch (error) {
       console.error('Error generating:', error);
     } finally {

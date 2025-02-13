@@ -11,9 +11,15 @@ import { getStripeUrlWithParams } from '@/lib/utils/url';
 import Marquee from "react-fast-marquee";
 import { NumberTicker } from "@/components/ui/number-ticker";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { useRouter } from 'next/navigation';
+import { Badge } from "@/components/ui/badge";
+
 export default function PricingPage() {
   const [isYearly, setIsYearly] = useState(false);
   const { user } = useUser();
+  const currentPlan = user?.publicMetadata?.plan as string || 'free';
+  const router = useRouter();
 
   const starterPrice = isYearly ? "15.17" : "19";
   const creatorPrice = isYearly ? "39.17" : "49";
@@ -52,15 +58,53 @@ export default function PricingPage() {
   const getVideoText = (seconds: number) => 
     isYearly ? `${seconds} Video Sekunden pro Monat` : `${seconds} Video Sekunden pro Monat`;
 
+  const getPlanButton = (planName: string, href: string) => {
+    if (currentPlan === planName) {
+      return (
+        <Button 
+          className="mt-6 w-full cursor-default" 
+          variant="outline" 
+          size="sm"
+          disabled
+        >
+          <Check className="mr-2 h-4 w-4" />
+          Aktiv
+        </Button>
+      );
+    }
+
+    // Show upgrade buttons only if the plan is higher than current plan
+    const planHierarchy = { free: 0, starter: 1, creator: 2, agency: 3 };
+    const isUpgrade = planHierarchy[planName as keyof typeof planHierarchy] > planHierarchy[currentPlan as keyof typeof planHierarchy];
+
+    if (!isUpgrade) {
+      return null;
+    }
+
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer">
+        <Button 
+          className="mt-6 w-full" 
+          variant={planName === 'creator' ? 'default' : 'outline'}
+          size="sm"
+        >
+          Upgraden
+        </Button>
+      </a>
+    );
+  };
+
   return (
     <div className="py-8 px-4 relative">
       {/* Close Button */}
       <div className="absolute right-4 top-4">
-        <Link href="/dashboard">
-          <Button variant="ghost" size="icon">
-            <X className="h-6 w-6" />
-          </Button>
-        </Link>
+        <Button 
+          variant="ghost" 
+          size="icon"
+          onClick={() => router.back()}
+        >
+          <X className="h-6 w-6" />
+        </Button>
       </div>
 
       <div className="text-center mb-8">
@@ -136,11 +180,13 @@ export default function PricingPage() {
 
       <div className="grid lg:grid-cols-3 gap-6 max-w-5xl mx-auto px-4">
         {/* Starter Plan */}
-        <Card className="relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow">
-          {/* Sale Badge */}
-          {!isYearly && (
-            <div className="absolute -top-3 right-4 bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm font-medium">
-              34% Rabatt
+        <Card className={cn(
+          "relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow",
+          currentPlan === 'starter' && "border-2 border-purple-600"
+        )}>
+          {currentPlan === 'starter' && (
+            <div className="absolute -top-3 right-4 bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
+              Aktiv
             </div>
           )}
           {/* Monthly Cancellation Pill - only show when not yearly */}
@@ -192,18 +238,25 @@ export default function PricingPage() {
               Exportieren ohne Wasserzeichen
             </li>
           </ul>
-          <a href={starterLink} target="_blank" rel="noopener noreferrer">
-            <Button className="mt-6 w-full" variant="outline" size="sm">
-              Jetzt Starten
-            </Button>
-          </a>
+          {getPlanButton('starter', starterLink)}
         </Card>
 
         {/* Creator Plan */}
-        <Card className="relative p-6 border-2 border-purple-600 bg-white hover:shadow-lg transition-shadow">
-          <div className="absolute -top-3 right-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm">
-            Beliebt
-          </div>
+        <Card className={cn(
+          "relative p-6 hover:shadow-lg transition-shadow",
+          currentPlan === 'creator' 
+            ? "border-2 border-purple-600 bg-white" 
+            : "ring-1 ring-gray-200"
+        )}>
+          {currentPlan === 'creator' ? (
+            <div className="absolute -top-3 right-4 bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
+              Aktiv
+            </div>
+          ) : (
+            <div className="absolute -top-3 right-4 bg-purple-100 text-purple-600 px-3 py-1 rounded-full text-sm">
+              Beliebt
+            </div>
+          )}
           {/* Monthly Cancellation Pill - only show when not yearly */}
           {!isYearly && (
             <div className="mt-2 mb-4 flex items-center gap-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full text-xs w-fit">
@@ -255,15 +308,19 @@ export default function PricingPage() {
               Untertitel (soon)
             </li>
           </ul>
-          <a href={creatorLink} target="_blank" rel="noopener noreferrer">
-            <Button className="mt-6 w-full bg-purple-600 hover:bg-purple-700" size="sm">
-              Jetzt Starten
-            </Button>
-          </a>
+          {getPlanButton('creator', creatorLink)}
         </Card>
 
         {/* Agency Plan */}
-        <Card className="relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow">
+        <Card className={cn(
+          "relative p-6 ring-1 ring-gray-200 hover:shadow-lg transition-shadow",
+          currentPlan === 'agency' && "border-2 border-purple-600"
+        )}>
+          {currentPlan === 'agency' && (
+            <div className="absolute -top-3 right-4 bg-green-100 text-green-600 px-3 py-1 rounded-full text-sm">
+              Aktiv
+            </div>
+          )}
           {/* Monthly Cancellation Pill - only show when not yearly */}
           {!isYearly && (
             <div className="mt-2 mb-4 flex items-center gap-1.5 bg-amber-50 text-amber-700 px-2.5 py-1 rounded-full text-xs w-fit">
@@ -291,9 +348,28 @@ export default function PricingPage() {
             </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
-              Alle Avatare (soon)
+              <div className="flex items-center gap-2">
+                Custom Avatare
+                <Badge 
+                  variant="secondary" 
+                  className="bg-purple-100 text-purple-700 animate-pulse"
+                >
+                  Exklusiv
+                </Badge>
+              </div>
             </li>
-            
+            <li className="flex gap-x-3">
+              <Check className="h-5 w-4 flex-none text-purple-600" />
+              <div className="flex items-center gap-2">
+                Produkt Avatare
+                <Badge 
+                  variant="secondary" 
+                  className="bg-purple-100 text-purple-700 animate-pulse"
+                >
+                  Exklusiv
+                </Badge>
+              </div>
+            </li>
             <li className="flex gap-x-3">
               <Check className="h-5 w-4 flex-none text-purple-600" />
               Verfügbar in 47 Sprachen
@@ -315,11 +391,7 @@ export default function PricingPage() {
               Untertitel (soon)
             </li>
           </ul>
-          <a href={agencyLink} target="_blank" rel="noopener noreferrer">
-            <Button className="mt-6 w-full" variant="outline" size="sm">
-              Jetzt Starten
-            </Button>
-          </a>
+          {getPlanButton('agency', agencyLink)}
         </Card>
       </div>
 

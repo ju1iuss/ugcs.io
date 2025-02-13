@@ -138,13 +138,13 @@ export default function Home() {
           ) : (
             <>
           <Link 
-            href="/sign-in"
+            href="/home"
             className="block py-2 text-sm text-gray-600 hover:text-gray-900"
           >
             Einloggen
           </Link>
               <Link 
-                href="/sign-up"
+                href="/home"
                 className="block py-2"
               >
                 <Button 
@@ -363,7 +363,7 @@ export default function Home() {
         </p>
 
         <div className="flex justify-center mb-8">
-          <Link href={userId ? "/dashboard" : "/sign-up"} className="w-full max-w-xs">
+          <Link href={userId ? "/home" : "/home"} className="w-full max-w-xs">
             <Button 
               className="rounded-md text-base md:text-lg py-4 md:py-6 px-8 md:px-10 flex items-center gap-2 w-full bg-black hover:bg-gray-800 transition-all duration-300"
               size="lg"

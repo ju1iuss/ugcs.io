@@ -4,12 +4,63 @@ import { ClerkProvider } from '@clerk/nextjs'
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster"
 import Script from 'next/script'
+import { UserDataProvider } from '@/contexts/UserDataContext';
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Ugcs.io: KI generierte Videos",
-  description: "Deutschlands realistischste KI-Avatar-Videos. Einfacher, schneller und besser gehts nicht.",
+  metadataBase: new URL('https://ugcs.io'),
+  title: {
+    default: "Ugcs.io: KI generierte Videos | Deutschlands realistischste KI-Avatar-Videos",
+    template: "%s | Ugcs.io"
+  },
+  description: "Erstellen Sie professionelle KI-Avatar-Videos in Minuten. Deutschlands realistischste KI-generierte Videos für Marketing, UGC und Social Media. Einfach, schnell und effizient.",
+  keywords: ["KI Videos", "AI Avatar", "UGC Content", "Content Creation", "Marketing Videos", "KI Marketing", "Video Production", "AI Content"],
+  authors: [{ name: "Ugcs.io Team" }],
+  creator: "Ugcs.io",
+  publisher: "Ugcs.io",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  openGraph: {
+    type: 'website',
+    locale: 'de_DE',
+    url: 'https://ugcs.io',
+    siteName: 'Ugcs.io',
+    title: 'Ugcs.io: KI generierte Videos | Deutschlands realistischste KI-Avatar-Videos',
+    description: 'Erstellen Sie professionelle KI-Avatar-Videos in Minuten. Deutschlands realistischste KI-generierte Videos für Marketing, UGC und Social Media.',
+    images: [
+      {
+        url: 'https://ugcs.io/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'Ugcs.io KI Video Platform',
+      }
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Ugcs.io: KI generierte Videos',
+    description: 'Deutschlands realistischste KI-Avatar-Videos für Marketing und Social Media',
+    images: ['https://ugcs.io/twitter-image.jpg'],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    google: 'your-google-site-verification',
+    yandex: 'your-yandex-verification',
+  },
 };
 
 export default function RootLayout({
@@ -19,7 +70,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-    <html lang="en">
+    <html lang="de" dir="ltr">
       <head>
         {/* Google Tag Manager - placed first in head */}
         <Script id="google-tag-manager" strategy="beforeInteractive">
@@ -109,6 +160,19 @@ export default function RootLayout({
             gtag('config', 'G-HLKCF0GL9C');
           `}
         </Script>
+
+        {/* Add canonical URL */}
+        <link rel="canonical" href="https://ugcs.io" />
+        
+        {/* Add favicon tags */}
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+        <link rel="manifest" href="/site.webmanifest" />
+        
+        {/* Add alternate language versions if you have them */}
+        <link rel="alternate" href="https://ugcs.io" hrefLang="de-DE" />
+        <link rel="alternate" href="https://ugcs.io" hrefLang="x-default" />
       </head>
       <body className={inter.className}>
         {/* Google Tag Manager (noscript) - immediately after body opening tag */}
@@ -121,7 +185,9 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         
-        {children}
+        <UserDataProvider>
+          {children}
+        </UserDataProvider>
         <Toaster />
       </body>
     </html>

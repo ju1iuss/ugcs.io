@@ -7,7 +7,8 @@ const isProtectedRoute = (req: Request) => {
          url.pathname.startsWith('/api/payment') || 
          url.pathname.startsWith('/callback') ||
          url.pathname.startsWith('/api/product-avatar') ||
-         url.pathname.startsWith('/pricing');
+         url.pathname.startsWith('/pricing') ||
+         url.pathname.startsWith('/home');
 };
 
 export default clerkMiddleware((auth, req) => {
@@ -23,6 +24,7 @@ export const config = {
   matcher: [
     // Protected routes
     '/dashboard/:path*',
+    '/home/:path*',
     '/contact/:path*',
     '/pricing/:path*',
     '/pricing',

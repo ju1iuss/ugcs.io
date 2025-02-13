@@ -3,8 +3,9 @@
 import { QuickCreateButton } from "@/components/ui/QuickCreateButton";
 import { useState } from "react";
 import MultiStepForm from "@/components/global/form/MultiStepForm";
-import { Calendar, Home, Inbox, Search, Settings, ChevronUp, ChevronDown, Sparkles, Package, Star, X, LogOut, Copy, Gift, Check } from "lucide-react";
+import { Calendar, Home, Inbox, Search, Settings, ChevronUp, ChevronDown, Sparkles, Package, Star, X, LogOut, Copy, Gift, Check, MessageSquare, UserCircle, Crown, Plus } from "lucide-react";
 import Credits from "@/components/global/credits";
+import { FeedbackFish } from '@feedback-fish/react';
 
 import {
     useSidebar,
@@ -40,23 +41,36 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import confetti from 'canvas-confetti';
+import { Badge } from "@/components/ui/badge";
+import { useUserData } from "@/contexts/UserDataContext";
 
 const items = [
   {
     title: "Dashboard",
-    url: "/dashboard",
+    url: "/home",
     icon: Home,
   },
   {
-    title: "Einstellungen",
-    url: "/settings",
-    icon: Settings,
+    title: "Alle Videos",
+    url: "/dashboard",
+    icon: Package,
+  },
+  {
+    title: "Avatar erstellen",
+    url: "/avatar",
+    icon: UserCircle,
+  },
+  {
+    title: "Skript Generator",
+    url: "/script",
+    icon: MessageSquare,
+    requiresPro: true,
   },
 ];
 
 interface AppSidebarProps {
-  credits?: number | string;
   onAddVideo?: (video: Video) => void;
+  userTier?: string;
 }
 
 const StarRating = () => (
@@ -86,7 +100,43 @@ const TrustpilotStars = () => (
 
 const ACTIVE_USERS = "1.200+";
 
-export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
+const getUpgradeButton = (plan: string) => {
+  switch(plan) {
+    case 'agency':
+      return null;
+    case 'creator':
+      return (
+        <Link href="/pricing">
+          <DropdownMenuItem className="flex items-center gap-2 py-2">
+            <span className="text-sm font-medium text-purple-600 hover:text-purple-700">
+              Upgrade to Agency
+            </span>
+          </DropdownMenuItem>
+        </Link>
+      );
+    case 'starter':
+      return (
+        <Link href="/pricing">
+          <DropdownMenuItem className="flex items-center gap-2 py-2">
+            <span className="text-sm font-medium text-purple-600 hover:text-purple-700">
+              Upgrade to Creator
+            </span>
+          </DropdownMenuItem>
+        </Link>
+      );
+    default: // 'free' or undefined
+      return (
+        <Link href="/pricing">
+          <DropdownMenuItem className="flex items-center gap-2 py-2 text-gray-600 hover:text-gray-900">
+            <Sparkles className="h-4 w-4" />
+            <span className="text-sm">Upgrade to Pro</span>
+          </DropdownMenuItem>
+        </Link>
+      );
+  }
+};
+
+export function AppSidebar({ onAddVideo, userTier = 'free' }: AppSidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -96,6 +146,7 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
   const { signOut } = useClerk();
   const { user } = useUser();
   const [isCopied, setIsCopied] = useState(false);
+  const { credits, refetchData } = useUserData();
 
   // Ensure credits is never negative and is always a number
   const displayCredits = Math.max(0, Number(credits) || 0);
@@ -151,26 +202,32 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
             <SidebarGroupLabel className="px-6">App</SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu className="px-2">
-                {items.map((item) => (
-                  <Link
-                    key={item.url}
-                    href={item.url}
-                    className={cn(
-                      "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
-                      pathname === item.url ? "bg-gray-200 text-gray-900" : "hover:bg-gray-100"
-                    )}
-                  >
-                    <item.icon className={cn(
-                      "h-4 w-4",
-                      pathname === item.url && "text-foreground"
-                    )} />
-                    <span className={cn(
-                      pathname === item.url && "font-medium"
-                    )}>
-                      {item.title}
-                    </span>
-                  </Link>
-                ))}
+                {items.map((item) => {
+                  if (item.requiresPro && user?.publicMetadata?.tier === 'free') {
+                    return null;
+                  }
+
+                  return (
+                    <Link
+                      key={item.url}
+                      href={item.url}
+                      className={cn(
+                        "flex items-center gap-3 rounded-lg px-3 py-2 text-gray-500 transition-all hover:text-gray-900",
+                        pathname === item.url ? "bg-gray-200 text-gray-900" : "hover:bg-gray-100"
+                      )}
+                    >
+                      <item.icon className={cn(
+                        "h-4 w-4",
+                        pathname === item.url && "text-foreground"
+                      )} />
+                      <span className={cn(
+                        pathname === item.url && "font-medium"
+                      )}>
+                        {item.title}
+                      </span>
+                    </Link>
+                  );
+                })}
               </SidebarMenu>
             </SidebarGroupContent>
           </SidebarGroup>
@@ -200,14 +257,53 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
           </SidebarGroup>
         </SidebarContent>
         <SidebarFooter> 
-          <div className="px-4 space-y-3">
-            <Credits credits={displayCredits} />
-            <p className="text-xs text-gray-500 text-center italic">
-        1 Credit = 1 Video Sekunde
-      </p>
-      <div className="flex justify-center">
-        
-      </div>
+          <div className="px-4 space-y-2">
+            <FeedbackFish 
+              projectId="a853f1ad81e2d7" 
+              userId={user?.primaryEmailAddress?.emailAddress}
+            >
+              <button
+                className={cn(
+                  "w-full flex items-center gap-3 rounded-lg px-3 py-1.5 text-gray-500 transition-all hover:text-gray-900 hover:bg-gray-100 text-sm"
+                )}
+              >
+                <MessageSquare className="h-3.5 w-3.5" />
+                <span>Support</span>
+              </button>
+            </FeedbackFish>
+
+            <Link
+              href="/settings"
+              className={cn(
+                "flex items-center gap-3 rounded-lg px-3 py-1.5 text-gray-500 transition-all hover:text-gray-900 hover:bg-gray-100",
+                pathname === '/settings' ? "bg-gray-200 text-gray-900" : ""
+              )}
+            >
+              <Settings className={cn(
+                "h-3.5 w-3.5",
+                pathname === '/settings' && "text-foreground"
+              )} />
+              <span className={cn(
+                "text-sm",
+                pathname === '/settings' && "font-medium"
+              )}>
+                Einstellungen
+              </span>
+            </Link>
+
+            <div className="px-4 py-3">
+              <Button 
+                variant="outline"
+                className="w-full justify-between bg-white hover:bg-gray-50"
+                onClick={() => router.push('/pricing')}
+              >
+                <span className="font-medium">{credits} Credits</span>
+                <Plus className="w-4 h-4 text-purple-600" />
+              </Button>
+              <p className="text-xs text-muted-foreground mt-1.5 text-center">
+                1 Credit = 1 Video Sekunde
+              </p>
+            </div>
             
             <DropdownMenu open={isProfileOpen} onOpenChange={setIsProfileOpen}>
               <DropdownMenuTrigger asChild>
@@ -244,26 +340,22 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
                 className="w-56"
                 sideOffset={8}
               >
-                <Link href="/pricing">
-                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
-                    <span className="text-sm">Auf Pro upgraden</span>
+                {getUpgradeButton(user?.publicMetadata?.plan as string)}
+                {user?.publicMetadata?.plan === 'agency' && (
+                  <DropdownMenuItem className="flex items-center gap-2 py-2 text-yellow-600">
+                    <Crown className="h-4 w-4" />
+                    <span className="text-xs font-medium">Agency Plan</span>
                   </DropdownMenuItem>
-                </Link>
-                <Link href="/settings">
-                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
-                    <span className="text-sm">Konto</span>
-                  </DropdownMenuItem>
-                </Link>
-                <Link href="/settings">
-                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
+                )}
+                <a 
+                  href="https://billing.stripe.com/p/login/eVaaEF8mH2uz2l2288" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                >
+                  <DropdownMenuItem className="flex items-center gap-2 py-2">
                     <span className="text-sm">Abrechnung</span>
                   </DropdownMenuItem>
-                </Link>
-                <Link href="/settings">
-                  <DropdownMenuItem className="flex items-center gap-2 py-2.5">
-                    <span className="text-sm">Benachrichtigungen</span>
-                  </DropdownMenuItem>
-                </Link>
+                </a>
               </DropdownMenuContent>
             </DropdownMenu>
 
@@ -469,9 +561,10 @@ export function AppSidebar({ credits = 0, onAddVideo }: AppSidebarProps) {
 
       <MultiStepForm 
         isOpen={isModalOpen} 
-        credits={credits}
+        credits={parseInt(credits)}
         onOpenChange={setIsModalOpen}
         onAddVideo={onAddVideo}
+        refetchData={refetchData}
       />
     </>
   );

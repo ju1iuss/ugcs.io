@@ -13,6 +13,11 @@ import { Progress } from "@/components/ui/progress";
 import { AnimatedText } from "@/components/ui/animated-text";
 import { Card } from "@/components/ui/card";
 import { usePathname } from 'next/navigation';
+import { Badge } from "@/components/ui/badge";
+import { ArrowRight } from "lucide-react";
+import { useUserData } from '@/contexts/UserDataContext';
+import Link from 'next/link';
+import { Crown } from "lucide-react";
 
 // Add new type for error tracking
 interface PollingError {
@@ -20,53 +25,44 @@ interface PollingError {
   message: string;
 }
 
+function LoadingState() {
+  return (
+    <div className="h-[50vh] flex flex-col items-center justify-center p-4">
+      <h2 className="text-xl font-semibold text-gray-700 mb-4">
+        <AnimatedText text="Lade deine Videos..." />
+      </h2>
+      <div className="w-full max-w-xl animate-fade-in">
+        <Progress value={66} className="h-1" />
+      </div>
+    </div>
+  );
+}
+
+function ErrorState({ error }: { error: string }) {
+  return (
+    <div className="p-4">
+      <div className="text-red-500">{error}</div>
+      <button 
+        onClick={() => window.location.reload()} 
+        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        Erneut versuchen
+      </button>
+    </div>
+  );
+}
+
 export default function DashboardPage() {
-  const { user, isLoaded } = useUser();
-  const [videos, setVideos] = useState<Video[]>([]);
-  const [credits, setCredits] = useState<string>("0");
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { videos, credits, loading, error, refetchData } = useUserData();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const pollIntervals = useRef<{ [key: string]: NodeJS.Timeout }>({});
-  const [loadingStep, setLoadingStep] = useState(0);
-  const [pollingErrors, setPollingErrors] = useState<Record<number, string>>({});
-  const pollingStartTimes = useRef<Record<string, number>>({});
+  const { user, isLoaded } = useUser();
+  const [pollingErrors, setPollingErrors] = useState<PollingError[]>([]);
   const pathname = usePathname();
   const [showThankYou, setShowThankYou] = useState(false);
-
-  useEffect(() => {
-    if (loading && isLoaded) {
-      setLoadingStep(0);
-      const steps = [
-        setTimeout(() => setLoadingStep(1), 1000),
-        setTimeout(() => setLoadingStep(2), 2000),
-      ];
-
-      return () => steps.forEach(clearTimeout);
-    }
-  }, [loading, isLoaded]);
-
-  useEffect(() => {
-    if (loading && isLoaded) {
-      setProgress(0);
-      const timer = setTimeout(() => {
-        const interval = setInterval(() => {
-          setProgress(prev => {
-            if (prev >= 100) {
-              clearInterval(interval);
-              return 100;
-            }
-            return prev + 2;
-          });
-        }, 40);
-
-        return () => clearInterval(interval);
-      }, 100);
-
-      return () => clearTimeout(timer);
-    }
-  }, [loading, isLoaded]);
+  
+  // Add these refs
+  const pollIntervals = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const pollingStartTimes = useRef<{ [key: string]: number }>({});
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -93,41 +89,24 @@ export default function DashboardPage() {
       });
       
       const data = await response.json();
-      console.log('Received data:', data);
       
       if (data.video) {
         const videoData = typeof data.video === 'string' 
           ? JSON.parse(data.video) 
           : data.video;
 
-        console.log('Parsed video data:', videoData);
+        // Update video in state with new data
+        refetchData();
 
+        // If status changes to "Loading", start loading polling
+        if (videoData.status === "Loading") {
+          startLoadingPolling(Number(videoData.id));
+        }
+
+        // Clear the interval if we got a valid response
         if (pollIntervals.current[correlationId]) {
           clearInterval(pollIntervals.current[correlationId]);
           delete pollIntervals.current[correlationId];
-        }
-
-        setVideos(currentVideos => {
-          return currentVideos.map(video => {
-            if (video.correlationId === correlationId) {
-              const updatedVideo = {
-                ...video,
-                id: Number(videoData.id),
-                status: videoData.status,
-                thumbnail: videoData.thumbnail,
-                video_url: videoData.video_url,
-                created_time: videoData.created_time,
-                last_modified_time: videoData.last_modified_time
-              };
-              console.log('Updating video:', updatedVideo);
-              return updatedVideo;
-            }
-            return video;
-          });
-        });
-
-        if (videoData.status === "Loading") {
-          startLoadingPolling(Number(videoData.id));
         }
       }
     } catch (error) {
@@ -145,10 +124,7 @@ export default function DashboardPage() {
       });
 
       // Update error state
-      setPollingErrors(prev => ({
-        ...prev,
-        [videoId]: "ERROR - Bitte ändere deinen Skript"
-      }));
+      setPollingErrors(prev => [...prev, { videoId, message: "ERROR - Bitte ändere deinen Skript" }]);
 
       // Clear polling interval
       clearLoadingPolling(videoId);
@@ -175,13 +151,7 @@ export default function DashboardPage() {
       const data = await response.json();
       
       if (data.video) {
-        setVideos(currentVideos => 
-          currentVideos.map(video => 
-            video.id === videoId 
-              ? { ...video, ...data.video }
-              : video
-          )
-        );
+        refetchData();
 
         if (data.video.status === "Finished") {
           clearLoadingPolling(videoId);
@@ -197,11 +167,10 @@ export default function DashboardPage() {
       clearInterval(pollIntervals.current[correlationId]);
     }
     
+    // Just call once after 5 seconds delay
     setTimeout(() => {
-      pollIntervals.current[correlationId] = setInterval(() => {
-        pollGeneratingStatus(correlationId);
-      }, 5000);
-    }, 5000); //WIP Change time to delay first polling function
+      pollGeneratingStatus(correlationId);
+    }, 5000);
   };
 
   const startLoadingPolling = (videoId: number) => {
@@ -227,20 +196,12 @@ export default function DashboardPage() {
     // Clean up start time
     delete pollingStartTimes.current[`loading-${videoId}`];
     // Clean up error message if exists
-    setPollingErrors(prev => {
-      const newErrors = { ...prev };
-      delete newErrors[videoId];
-      return newErrors;
-    });
+    setPollingErrors(prev => prev.filter(error => error.videoId !== videoId));
   };
 
-  const handleAddVideo = (newVideo: Video) => {
-    setVideos(prev => [newVideo, ...prev]);
-    
-    if (newVideo.correlationId) {
-      startGeneratingPolling(newVideo.correlationId);
-    }
-    setIsModalOpen(false);
+  const handleAddVideo = async (video: Video) => {
+    // ... video handling logic
+    await refetchData(); // Refetch data after adding video
   };
 
   const startPollingVideos = (records: Video[]) => {
@@ -261,64 +222,6 @@ export default function DashboardPage() {
       Object.values(pollIntervals.current).forEach(clearInterval);
     };
   }, []);
-
-  useEffect(() => {
-    async function loadVideos() {
-      if (!isLoaded || !user?.id) {
-        console.log('Dashboard: User not loaded or no ID', { isLoaded, userId: user?.id });
-        return;
-      }
-      
-      try {
-        setLoading(true);
-        console.log('Dashboard: Fetching user videos and credits...');
-        const response = await fetchUserVideos(user.id);
-        console.log('Dashboard: Raw API Response:', response);
-
-        // Direct access since the response is flat
-        const creditsValue = response.credits;
-        console.log('Dashboard: Extracted credits value:', creditsValue);
-        
-        const videos = response.records || [];
-        console.log('Dashboard: Extracted videos:', videos);
-
-        const sortedVideos = videos
-          .filter(video => video.status !== "Not submitted")
-          .sort((a, b) => new Date(b.created_time).getTime() - new Date(a.created_time).getTime());
-        
-        setVideos(sortedVideos);
-        setCredits(creditsValue?.toString() || "0");
-        console.log('Dashboard: Credits set to:', creditsValue);
-        
-        startPollingVideos(sortedVideos);
-        
-      } catch (err) {
-        console.error('Dashboard: Error fetching data:', err);
-        const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-        setError(`Failed to load videos: ${errorMessage}`);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    loadVideos();
-  }, [user?.id, isLoaded]);
-
-  const handleRatingChange = (videoId: number, newRating: 'good' | 'bad' | null) => {
-    setVideos(currentVideos => 
-      currentVideos.map(video => 
-        video.id === videoId 
-          ? { ...video, rating: newRating }
-          : video
-      )
-    );
-  };
-
-  const handleDeleteVideo = (videoId: number) => {
-    setVideos(currentVideos => 
-      currentVideos.filter(video => video.id !== videoId)
-    );
-  };
 
   const renderThankYouCard = () => {
     if (!showThankYou) return null;
@@ -361,41 +264,131 @@ export default function DashboardPage() {
     );
   };
 
+  const renderWelcomeCard = () => {
+    const plan = user?.publicMetadata?.plan as string;
+
+    switch(plan) {
+      case 'free':
+        return (
+          <Card className="bg-white border-purple-100/50">
+            <div className="p-6 flex items-center justify-between">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <h2 className="text-lg font-medium text-gray-900">
+                    Willkommen bei UGCS
+                  </h2>
+                  <Badge 
+                    variant="secondary" 
+                    className="bg-purple-50 text-purple-700"
+                  >
+                    Free
+                  </Badge>
+                  <Badge 
+                    variant="secondary" 
+                    className="bg-amber-50 text-amber-700 animate-pulse"
+                  >
+                    Limited Time
+                  </Badge>
+                </div>
+                <div className="space-y-1.5">
+                  <div className="flex items-center gap-2">
+                    <Badge 
+                      variant="outline" 
+                      className="px-2.5 py-0.5 border-purple-100/50"
+                    >
+                      {credits} Test Credits Available
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      1 Credit = 1 Second
+                    </span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Teste jetzt kostenlos! Upgrade für unbegrenzte Video-Erstellung & Downloads
+                  </p>
+                </div>
+              </div>
+              <button
+                onClick={() => window.location.href = '/pricing'}
+                className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-purple-600 text-white hover:bg-purple-700 h-9 px-4 py-2"
+              >
+                Upgrade to Pro
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </button>
+            </div>
+          </Card>
+        );
+      case 'starter':
+        return (
+          <Card className="bg-white border-purple-100/50 p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h2 className="text-base font-medium">Starter Plan</h2>
+                <p className="text-sm text-gray-500">Upgrade to Creator for more features</p>
+              </div>
+              <Link href="/pricing">
+                <button className="text-sm font-medium bg-gradient-to-r from-purple-600 to-blue-500 text-transparent bg-clip-text">
+                  Upgrade to Creator
+                </button>
+              </Link>
+            </div>
+          </Card>
+        );
+      case 'creator':
+        return (
+          <Card className="bg-white border-purple-100/50 p-4">
+            <div className="flex items-center justify-between">
+              <div className="space-y-1">
+                <h2 className="text-base font-medium">Creator Plan</h2>
+                <p className="text-sm text-gray-500">Upgrade to Agency for team features</p>
+              </div>
+              <Link href="/pricing">
+                <button className="text-sm font-medium bg-gradient-to-r from-purple-600 to-blue-500 text-transparent bg-clip-text">
+                  Upgrade to Agency
+                </button>
+              </Link>
+            </div>
+          </Card>
+        );
+      case 'agency':
+        return (
+          <Card className="bg-white border-purple-100/50 p-4">
+            <div className="flex items-center gap-2">
+              <Crown className="h-4 w-4 text-yellow-500" />
+              <h2 className="text-base font-medium">Agency Plan</h2>
+            </div>
+          </Card>
+        );
+      default:
+        return null;
+    }
+  };
+
   const renderContent = () => {
-    if (loading || !isLoaded || !user) return (
-      <div className="h-[50vh] flex flex-col items-center justify-center p-4">
-        <h2 className="text-xl font-semibold text-gray-700 mb-4">
-          <AnimatedText 
-            text={
-              loadingStep === 0 ? "Sammeln deiner Videos..." :
-              loadingStep === 1 ? "Zusammenstellen des Layouts..." :
-              "Erstellen deines Dashboards..."
-            }
-          />
-        </h2>
-        <div className="w-full max-w-xl animate-fade-in">
-          <Progress value={progress} className="h-1" />
-        </div>
-      </div>
-    );
+    if (loading || !isLoaded || !user) {
+      return <LoadingState />;
+    }
 
     if (error) {
-      return (
-        <div className="p-4">
-          {renderThankYouCard()}
-          <div className="text-red-500">{error}</div>
-          <button onClick={() => window.location.reload()} className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
-            Retry
-          </button>
-        </div>
-      );
+      return <ErrorState error={error} />;
     }
+
+    const plan = user?.publicMetadata?.plan as string;
 
     if (videos.length === 0) {
       return (
-        <div>
+        <div className="p-6 space-y-6">
           {renderThankYouCard()}
-          <EmptyState onCreateClick={() => setIsModalOpen(true)} />
+          {renderWelcomeCard()}
+          <VideoGrid 
+            videos={[]}
+            onAddVideo={handleAddVideo}
+            pollingErrors={pollingErrors}
+            userTier={plan || 'free'}
+            refetchData={refetchData}
+          />
+          <div className="text-center text-sm text-gray-500">
+            Noch keine Videos erstellt. Starte jetzt mit deinem ersten Video!
+          </div>
         </div>
       );
     }
@@ -403,31 +396,35 @@ export default function DashboardPage() {
     return (
       <div className="p-6 space-y-6">
         {renderThankYouCard()}
-        <Card className="relative overflow-hidden bg-purple-50/80 border border-purple-400 shadow-sm">
-          <div className="relative z-10 p-4">
-            <div className="space-y-1">
-              <h1 className="text-lg font-medium text-gray-900">
-                Willkommen zurück, {user.firstName || 'Creator'}!
-              </h1>
-              <p className="text-sm text-gray-900">
-                Du hast <span className="font-medium text-purple-700">{credits} Credits</span> verfügbar
-              </p>
+        {renderWelcomeCard()}
+        {plan !== 'free' && (
+          <div className="flex items-center justify-between bg-white/50 backdrop-blur-sm rounded-lg px-6 py-3 border border-purple-100/50">
+            <div className="flex items-center gap-4">
+              <h2 className="text-base font-medium text-gray-900">
+                {user.firstName ? `Welcome back, ${user.firstName}` : 'Welcome back'}
+              </h2>
+              <div className="h-4 w-px bg-gray-200" />
+              <div className="flex items-center gap-2">
+                <Badge 
+                  variant="secondary" 
+                  className="px-2.5 py-0.5 bg-purple-50 text-purple-700 font-medium border border-purple-100/50"
+                >
+                  {credits} Credits Available
+                </Badge>
+                <span className="text-xs text-gray-500">
+                  1 Credit = 1 Second
+                </span>
+              </div>
             </div>
           </div>
-          <div 
-            className="absolute inset-0 bg-gradient-to-r from-purple-100/50 via-purple-50/25 to-transparent" 
-            style={{ 
-              maskImage: 'radial-gradient(circle at 100% 100%, transparent 25%, black 75%)'
-            }} 
-          />
-        </Card>
+        )}
 
         <VideoGrid 
           videos={videos}
-          onRatingChange={handleRatingChange}
           onAddVideo={handleAddVideo}
-          onDelete={handleDeleteVideo}
           pollingErrors={pollingErrors}
+          userTier={plan || 'free'}
+          refetchData={refetchData}
         />
       </div>
     );
@@ -436,7 +433,7 @@ export default function DashboardPage() {
   return (
     <div className="flex min-h-screen bg-[#f3f5f8]">
       <SidebarProvider>
-        <AppSidebar credits={credits} onAddVideo={handleAddVideo} />
+        <AppSidebar onAddVideo={handleAddVideo} />
         <main className="flex-1 overflow-x-hidden">
           {renderContent()}
         </main>

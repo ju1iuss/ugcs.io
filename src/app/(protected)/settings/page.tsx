@@ -12,6 +12,67 @@ import { useState, useEffect } from "react";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/global/app-sidebar";
 import { fetchUserVideos } from '@/lib/api';
+import { Crown, Sparkles, Package } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Check } from "lucide-react";
+import { useRouter } from 'next/navigation';
+
+const getPlanDetails = (plan: string) => {
+  switch(plan) {
+    case 'agency':
+      return {
+        name: 'Agency Plan',
+        icon: Crown,
+        color: 'bg-gradient-to-r from-yellow-500 to-amber-500',
+        textColor: 'text-amber-700',
+        bgColor: 'bg-amber-50',
+        borderColor: 'border-amber-200',
+        description: 'Du nutzt alle Premium Features mit 800 Video Sekunden pro Monat.',
+        features: ['Unbegrenzte KI-Avatare', 'Alle Premium Features', 'Priority Support'],
+        buttonText: 'Abo verwalten',
+        showManageText: true
+      };
+    case 'creator':
+      return {
+        name: 'Creator Plan',
+        icon: Sparkles,
+        color: 'bg-gradient-to-r from-purple-500 to-blue-500',
+        textColor: 'text-purple-700',
+        bgColor: 'bg-purple-50',
+        borderColor: 'border-purple-200',
+        description: 'Du nutzt erweiterte Features mit 300 Video Sekunden pro Monat.',
+        features: ['Erweiterte Avatare', 'Alle Features', 'Email Support'],
+        buttonText: 'Abo verwalten',
+        showManageText: true
+      };
+    case 'starter':
+      return {
+        name: 'Starter Plan',
+        icon: Package,
+        color: 'bg-gradient-to-r from-blue-500 to-cyan-500',
+        textColor: 'text-blue-700',
+        bgColor: 'bg-blue-50',
+        borderColor: 'border-blue-200',
+        description: 'Du nutzt die Basis-Features mit 120 Video Sekunden pro Monat.',
+        features: ['Basis Avatare', 'Basis Features', 'Community Support'],
+        buttonText: 'Abo verwalten',
+        showManageText: true
+      };
+    default:
+      return {
+        name: 'Free Plan',
+        icon: Package,
+        color: 'bg-gradient-to-r from-purple-600 to-blue-600',
+        textColor: 'text-gray-700',
+        bgColor: 'bg-gray-50',
+        borderColor: 'border-purple-500',
+        description: 'Du nutzt aktuell die kostenlose Version.',
+        features: ['Begrenzte Features', 'Community Support'],
+        buttonText: 'Jetzt Pro holen',
+        showManageText: false
+      };
+  }
+};
 
 export default function SettingsPage() {
   const { user, isLoaded } = useUser();
@@ -21,6 +82,7 @@ export default function SettingsPage() {
     security: true,
   });
   const [credits, setCredits] = useState<string>("0");
+  const router = useRouter();
 
   useEffect(() => {
     async function loadCredits() {
@@ -37,10 +99,13 @@ export default function SettingsPage() {
     loadCredits();
   }, [user?.id, isLoaded]);
 
+  const planInfo = getPlanDetails(user?.publicMetadata?.plan as string || 'free');
+  const PlanIcon = planInfo.icon;
+
   return (
     <div className="flex min-h-screen bg-[#f3f5f8]">
       <SidebarProvider>
-        <AppSidebar credits={credits} />
+        <AppSidebar />
         <main className="flex-1 overflow-x-hidden p-6">
           <div className="max-w-[90rem] mx-auto space-y-8">
             <h1 className="text-3xl font-bold mb-8">Einstellungen</h1>
@@ -99,22 +164,57 @@ export default function SettingsPage() {
                   </CardContent>
                 </Card>
 
-                <div className="mt-6 mb-4">
-                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-2">
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm text-red-800">
-                        Du kannst dein Abonnement jederzeit in deinem Kundenkonto verwalten, ändern oder kündigen.
-                      </p>
+                <Card className={cn("mt-6", planInfo.bgColor, planInfo.borderColor)}>
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="space-y-1">
+                        <CardTitle className="flex items-center gap-2">
+                          <div className={cn("p-2 rounded-lg", planInfo.color)}>
+                            <PlanIcon className="h-5 w-5 text-white" />
+                          </div>
+                          <span>{planInfo.name}</span>
+                        </CardTitle>
+                        <CardDescription className={planInfo.textColor}>
+                          {planInfo.description}
+                        </CardDescription>
+                      </div>
+                      {planInfo.showManageText ? (
+                        <Button 
+                          variant="outline"
+                          className="shrink-0"
+                          onClick={() => window.location.href = 'https://billing.stripe.com/p/login/eVaaEF8mH2uz2l2288'}
+                        >
+                          {planInfo.buttonText}
+                        </Button>
+                      ) : (
+                        <Button 
+                          variant="default"
+                          className="shrink-0 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0"
+                          onClick={() => router.push('/pricing')}
+                        >
+                          {planInfo.buttonText}
+                        </Button>
+                      )}
                     </div>
-                    <Button 
-                      variant="outline" 
-                      className="shrink-0 text-red-600 hover:text-red-700 border-red-200 hover:bg-red-50"
-                      onClick={() => window.location.href = 'https://billing.stripe.com/p/login/eVaaEF8mH2uz2l2288'}
-                    >
-                      Abo verwalten
-                    </Button>
-                  </div>
-                </div>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid gap-2">
+                      {planInfo.features.map((feature, index) => (
+                        <div key={index} className="flex items-center gap-2">
+                          <Check className={cn("h-4 w-4", planInfo.textColor)} />
+                          <span className="text-sm text-gray-600">{feature}</span>
+                        </div>
+                      ))}
+                    </div>
+                    {planInfo.showManageText && (
+                      <div className="mt-4 pt-4 border-t">
+                        <p className="text-sm text-gray-600">
+                          Du kannst dein Abonnement jederzeit in deinem Kundenkonto verwalten, ändern oder kündigen.
+                        </p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
 
               </TabsContent>
 

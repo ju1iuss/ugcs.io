@@ -4,6 +4,7 @@ import { ImageIcon, LinkIcon, Sparkles, Users, VideoIcon, ArrowRightIcon } from 
 import Marquee from "react-fast-marquee"
 import { NumberTicker } from "@/components/ui/number-ticker";
 import Image from "next/image";
+import Link from "next/link";
 
 interface EmptyStateProps {
   onCreateClick: () => void;
@@ -95,61 +96,68 @@ export function EmptyState({ onCreateClick }: EmptyStateProps) {
       </section>
       
       <div className="grid md:grid-cols-2 gap-6">
-        <div className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-200">
-          <div className="mb-4">
-            <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <VideoIcon className="h-6 w-6 text-blue-600" />
-            </div>
-          </div>
-          <h3 className="text-lg font-semibold mb-2">Ultra Realistische UGC Videos</h3>
-          <p className="text-gray-600 text-sm mb-4">
-            Erstelle UGC Videos die dein Produkt bewerben mit deinem eigenen Script
-          </p>
-          <Button 
-            onClick={onCreateClick}
-            className="w-full"
-          >
-            Erstelle dein erstes Video <ArrowRightIcon />
-          </Button>
-        </div>
-
-        {/* Disabled Cards */}
         {[
           {
-            title: "Ugcs.io V2 + Script Generator",
-            description: "Erstelle noch bessere Ads mit deinem eigenen Script und Untertiteln.",
-            icon: ImageIcon,
-            colors: { bg: "bg-green-100/70", text: "text-green-600/70" }
+            title: "Ultra Realistische UGC Videos",
+            description: "Erstelle UGC Videos die dein Produkt bewerben mit deinem eigenen Script",
+            icon: VideoIcon,
+            colors: { bg: "bg-blue-100", text: "text-blue-600" },
+            action: onCreateClick,
+            buttonText: "Erstelle dein erstes Video"
           },
           {
             title: "Eigene Avatare die dein Produkt halten",
             description: "Erstelle noch bessere Ads mit Custom Avataren die dein Produkt halten.",
             icon: Users,
-            colors: { bg: "bg-orange-100/70", text: "text-orange-600/70" }
+            colors: { bg: "bg-orange-100", text: "text-orange-600" },
+            href: "/avatar",
+            buttonText: "Zu den Avataren"
           },
           {
-            title: "Auto-Editing",
-            description: "Erhalte automatisches Editing deiner Videos mit Untertiteln und mehr.",
+            title: "Script Generator",
+            description: "Erstelle noch bessere Ads mit dem KI Script Generator.",
             icon: Sparkles,
-            colors: { bg: "bg-purple-100/70", text: "text-purple-600/70" }
+            colors: { bg: "bg-purple-100", text: "text-purple-600" },
+            href: "/script",
+            buttonText: "Zum Generator"
+          },
+          {
+            title: "See all videos",
+            description: "Siehe alle deine erstellten Videos in der Übersicht.",
+            icon: ImageIcon,
+            colors: { bg: "bg-green-100", text: "text-green-600" },
+            href: "/dashboard",
+            buttonText: "Zur Übersicht"
           }
         ].map((card, index) => (
           <div 
             key={index} 
-            className="bg-white/80 backdrop-blur-sm rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-200 opacity-60"
+            className="bg-white rounded-xl p-6 shadow-md hover:shadow-lg transition-all duration-200"
           >
             <div className="mb-4">
               <div className={`h-10 w-10 ${card.colors.bg} rounded-full flex items-center justify-center`}>
                 <card.icon className={`h-6 w-6 ${card.colors.text}`} />
               </div>
             </div>
-            <h3 className="text-lg font-semibold mb-2 text-gray-700">{card.title}</h3>
-            <p className="text-gray-500 text-sm mb-4">
+            <h3 className="text-lg font-semibold mb-2">{card.title}</h3>
+            <p className="text-gray-600 text-sm mb-4">
               {card.description}
             </p>
-            <div className="flex items-center justify-end">
-              <span className="text-xs text-gray-400 italic">Available Soon</span>
-            </div>
+            {card.href ? (
+              <Link href={card.href}>
+                <Button className="w-full" variant="outline">
+                  {card.buttonText} <ArrowRightIcon className="ml-2" />
+                </Button>
+              </Link>
+            ) : (
+              <Button 
+                onClick={card.action}
+                className="w-full"
+                variant="outline"
+              >
+                {card.buttonText} <ArrowRightIcon className="ml-2" />
+              </Button>
+            )}
           </div>
         ))}
       </div>

@@ -3,16 +3,20 @@ import { VideoCard } from './VideoCard';
 import { ChevronDown } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
+import { useUser } from '@clerk/nextjs';
+import { PollingError } from '@/types/pollingError';
 
 interface VideoGridProps {
   videos: Video[];
-  onRatingChange: (videoId: number, newRating: 'good' | 'bad' | null) => void;
-  onAddVideo: (video: Video) => void;
-  onDelete: (videoId: number) => void;
-  pollingErrors: Record<number, string>;
+  onRatingChange?: (videoId: number, newRating: 'good' | 'bad' | null) => void;
+  onAddVideo?: (video: Video) => void;
+  onDelete?: (videoId: number) => void;
+  pollingErrors: PollingError[];
+  userTier?: string;
+  refetchData?: () => Promise<void>;
 }
 
-export function VideoGrid({ videos, onRatingChange, onAddVideo, onDelete, pollingErrors }: VideoGridProps) {
+export function VideoGrid({ videos, onRatingChange, onAddVideo, onDelete, pollingErrors, userTier = 'free', refetchData }: VideoGridProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   return (
@@ -37,9 +41,11 @@ export function VideoGrid({ videos, onRatingChange, onAddVideo, onDelete, pollin
             <div key={video.id} className="flex-none w-[160px]"> {/* Fixed width for 9:16 ratio */}
               <VideoCard 
                 video={video} 
-                onRatingChange={onRatingChange} // Pass onRatingChange to VideoCard
-                onDelete={onDelete} // Pass onDelete to VideoCard
-                errorMessage={pollingErrors[video.id]}  // Pass error message
+                onRatingChange={onRatingChange}
+                onDelete={onDelete}
+                errorMessage={pollingErrors.find(e => e.videoId === video.id)?.message}
+                userTier={userTier}
+                refetchData={refetchData}
               />
             </div>
           ))}

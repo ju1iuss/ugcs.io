@@ -1,7 +1,7 @@
 import { Video } from '@/types/video';
-import { Play, ThumbsUp, ThumbsDown, Download, Copy, Pause, Share, MoreVertical, Trash, Loader2 } from 'lucide-react';
+import { Play, ThumbsUp, ThumbsDown, Download, Copy, Pause, Share, MoreVertical, Trash, Loader2, Menu } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
-import { updateVideoRating, deleteVideo } from '@/lib/api';
+import { updateVideoRating, deleteVideo, downloadVideoFile } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import {
   DropdownMenu,
@@ -21,33 +21,31 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { useUserData } from '@/contexts/UserDataContext';
 
 interface VideoCardProps {
   video: Video;
   onRatingChange?: (videoId: number, newRating: 'good' | 'bad' | null) => void;
   onDelete?: (videoId: number) => void;
   errorMessage?: string;
+  userTier?: string;
+  refetchData?: () => Promise<void>;
 }
 
 async function downloadVideo(url: string, filename: string = 'video.mp4') {
   try {
-    const response = await fetch(url);
-    if (!response.ok) throw new Error('Network response was not ok');
-    
-    const blob = await response.blob();
+    const blob = await downloadVideoFile(url);
     const blobUrl = window.URL.createObjectURL(blob);
     
     const link = document.createElement('a');
     link.href = blobUrl;
     link.download = filename;
     
-    // Required for Firefox
     document.body.appendChild(link);
-    
     link.click();
-    
-    // Cleanup
     document.body.removeChild(link);
+    
     window.URL.revokeObjectURL(blobUrl);
     
     return true;
@@ -57,7 +55,7 @@ async function downloadVideo(url: string, filename: string = 'video.mp4') {
   }
 }
 
-export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: VideoCardProps) {
+export function VideoCard({ video, onRatingChange, onDelete, errorMessage, userTier = 'free', refetchData }: VideoCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
@@ -66,7 +64,9 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
   const videoRef = useRef<HTMLVideoElement>(null);
   const isGenerating = video.status === "Generating";
   const isFinished = video.status === "Finished";
-  const [currentRating, setCurrentRating] = useState<'good' | 'bad' | null>(video.rating);
+  const [currentRating, setCurrentRating] = useState<'good' | 'bad' | null>(
+    (video.rating as 'good' | 'bad' | null)
+  );
   const [isRating, setIsRating] = useState(false);
   const [copySuccess, setCopySuccess] = useState(false);
   const [generationProgress, setGenerationProgress] = useState(0);
@@ -74,10 +74,14 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
   const isLoading = video.status === "Generating" || video.status === "Loading";
   const hasError = errorMessage || video.status === "Error";
   const [isDownloading, setIsDownloading] = useState(false);
+  const isPaidTier = userTier !== 'free';
   
   // Get the error message to display
   const displayError = errorMessage || (video.status === "Error" ? "ERROR - Bitte ändere deinen Skript" : null);
 
+  // Add context
+  const { removeVideo } = useUserData();
+  
   // Reset animation after it plays
   useEffect(() => {
     if (showAnimation) {
@@ -190,14 +194,30 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
 
   const handleDelete = async () => {
     try {
-      // Call onDelete first for immediate UI update
-      onDelete?.(video.id);
+      console.log('Deleting video:', video.id);
+      removeVideo(video.id);
+      console.log('Removed from UI');
       
-      // Then make the API call
-      await deleteVideo(video.id);
+      // Call both webhooks in parallel
+      await Promise.all([
+        // First webhook
+        fetch('https://api.altan.ai/galaxia/hook/z7iCFd', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: video.id })
+        }),
+        // Second webhook
+        fetch('https://api.altan.ai/galaxia/hook/TSIqS9', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id: video.id })
+        })
+      ]);
+
+      toast.success('Video gelöscht');
     } catch (error) {
-      console.error('Failed to delete video:', error);
-      // Optionally: You could add logic here to revert the UI change if the API call fails
+      console.error('Error deleting video:', error);
+      toast.error('Fehler beim Löschen des Videos');
     }
   };
 
@@ -219,9 +239,7 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/40 rounded-lg z-30">
             <div className="flex flex-col items-center gap-2">
               <Loader2 className="w-8 h-8 text-white animate-spin" />
-              <span className="text-sm font-medium text-white">
-                {generationProgress}%
-              </span>
+              
             </div>
             <p className="text-xs text-white italic text-center pt-2">
               dauert ca. <br />
@@ -346,27 +364,40 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
         {!isLoading && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">
-                <MoreVertical className="w-5 h-5" />
+              <button 
+                className="h-8 w-8 flex items-center justify-center rounded-full bg-gray-50 hover:bg-gray-100 text-gray-500 hover:text-gray-700 transition-colors border border-gray-200"
+                aria-label="Video options"
+              >
+                <MoreVertical className="w-4 h-4" />
               </button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
+              {/* Copy Link - Pro only */}
               <DropdownMenuItem
-                className={cn(
-                  "flex items-center gap-2 cursor-pointer",
-                  copySuccess && "text-green-600"
-                )}
+                className="flex items-center gap-2 cursor-pointer relative"
+                disabled={!video.video_url || !isPaidTier}
                 onClick={handleCopyUrl}
-                disabled={!video.video_url}
               >
-                <Copy className={cn("w-4 h-4", copySuccess && "animate-ping-once")} />
-                <span>{copySuccess ? "Copied!" : "Copy Link"}</span>
+                <div className="flex items-center gap-2 w-full">
+                  <Copy className="w-4 h-4" />
+                  <span>{copySuccess ? "Copied!" : "Copy Link"}</span>
+                  {!isPaidTier && (
+                    <Badge 
+                      variant="secondary" 
+                      className="ml-auto bg-purple-100 text-purple-800 hover:bg-purple-100"
+                    >
+                      Pro
+                    </Badge>
+                  )}
+                </div>
               </DropdownMenuItem>
               
+              {/* Download - Pro only */}
               <DropdownMenuItem
-                className="flex items-center gap-2 cursor-pointer"
-                disabled={!video.video_url || isDownloading}
+                className="flex items-center gap-2 cursor-pointer relative"
+                disabled={!video.video_url || isDownloading || !isPaidTier}
                 onClick={async (e) => {
+                  if (!isPaidTier) return;
                   e.preventDefault();
                   if (!video.video_url) return;
                   setIsDownloading(true);
@@ -387,29 +418,41 @@ export function VideoCard({ video, onRatingChange, onDelete, errorMessage }: Vid
                     <Download className="w-4 h-4" />
                   )}
                   <span>{isDownloading ? "Downloading..." : "Download"}</span>
+                  {!isPaidTier && (
+                    <Badge 
+                      variant="secondary" 
+                      className="ml-auto bg-purple-100 text-purple-800 hover:bg-purple-100"
+                    >
+                      Pro
+                    </Badge>
+                  )}
                 </div>
               </DropdownMenuItem>
               
-              <DropdownMenuItem
-                className="flex items-center gap-2 cursor-pointer"
-                onClick={() => {
-                  if (video.video_url) {
-                    navigator.share({
-                      title: 'Share Video',
-                      url: video.video_url
-                    });
-                  }
-                }}
-                disabled={!video.video_url}
-              >
-                <Share className="w-4 h-4" />
-                <span>Share</span>
-              </DropdownMenuItem>
+              {/* Share - Only show for paid users */}
+              {isPaidTier && (
+                <DropdownMenuItem
+                  className="flex items-center gap-2 cursor-pointer"
+                  onClick={() => {
+                    if (video.video_url) {
+                      navigator.share({
+                        title: 'Share Video',
+                        url: video.video_url
+                      });
+                    }
+                  }}
+                  disabled={!video.video_url}
+                >
+                  <Share className="w-4 h-4" />
+                  <span>Share</span>
+                </DropdownMenuItem>
+              )}
               
+              {/* Delete option - always available */}
               <AlertDialog>
                 <DropdownMenuItem
                   className="flex items-center gap-2 cursor-pointer text-red-600 focus:text-red-600"
-                  onSelect={(e) => e.preventDefault()} // Prevent closing dropdown on trigger click
+                  onSelect={(e) => e.preventDefault()}
                 >
                   <AlertDialogTrigger className="flex items-center gap-2 w-full">
                     <Trash className="w-4 h-4" />

@@ -1,27 +1,26 @@
-import { VideoResponse } from '@/types/video';
+import { VideoResponse, ApiResponse } from '@/types/video';
+
+interface Video {
+  video_url: string;
+  user_id: string;
+  creation_time: string;
+  category?: string;
+  title?: string;
+}
+
+const ALTAN_API_KEY = "f11d02464ceb157a48b69f8ca6c9600d18b5da83c73a194c12fb0472f4fe4abc";
+const ALTAN_TABLE_ID = "e3ed7fa2-19b8-48e5-a51c-6309cd24b0ac";
+const BASE_URL = "https://api.altan.ai";
 
 export async function fetchUserVideos(userId: string): Promise<VideoResponse> {
   try {
-    console.log('Making API request with userId:', userId);
-    
-    // Add timeout promise
-    const timeoutPromise = new Promise((_, reject) => {
-      setTimeout(() => reject(new Error('Request timeout')), 4000); // 4 second timeout
+    const response = await fetch(`https://api.altan.ai/galaxia/hook/kS4dIT`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId }),
     });
-
-    const fetchPromise = fetch(
-      `https://api.altan.ai/galaxia/hook/kS4dIT`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId })
-      }
-    );
-
-    // Race between timeout and fetch
-    const response = await Promise.race([fetchPromise, timeoutPromise]) as Response;
 
     if (!response.ok) {
       console.error('Response not OK:', response.status, response.statusText);
@@ -29,31 +28,26 @@ export async function fetchUserVideos(userId: string): Promise<VideoResponse> {
     }
 
     const data = await response.json();
+    console.log('Raw API response:', data);
     
-    console.log('Raw data:', data);
+    // Handle both nested and flat response structures
+    const videos = data['[2]']?.videos || data.videos || [];
+    const credits = data['[2]']?.credits || data.credits || '0';
+    console.log('Extracted videos:', videos);
+    console.log('Extracted credits:', credits);
     
-    if (!data) {
-      return { total: 0, records: [], credits: "0" };
-    }
-
-    // Extract videos and credits from the response
-    const videos = data['[2]']?.videos || data[2]?.videos || data?.videos || [];
-    const credits = data['[2]']?.credits || data[2]?.credits || data?.credits || "0";
-    
-    // Return empty array if no videos found instead of throwing error
-    const result = {
-      total: videos?.length || 0,
-      records: videos || [],
-      credits: credits
+    return {
+      videos,
+      credits,
+      total: videos.length
     };
-
-    console.log('Processed response:', result);
-    return result;
-    
   } catch (error) {
     console.error('Detailed error in fetchUserVideos:', error);
-    // Return empty state instead of throwing
-    return { total: 0, records: [], credits: "0" };
+    return {
+      videos: [],
+      credits: '0',
+      total: 0
+    };
   }
 }
 
@@ -148,61 +142,54 @@ export async function removeBackground(file: File): Promise<Blob> {
 }
 
 // Update the fetchCommunityVideos function
-export async function fetchCommunityVideos() {
+export async function fetchCommunityVideos(): Promise<Video[]> {
   try {
-    console.log('Fetching community videos...');
+    const url = `${BASE_URL}/table/${ALTAN_TABLE_ID}/record/query`;
+    console.log('Attempting to fetch from URL:', url);
     
-    const response = await fetch('https://api.altan.ai/galaxia/hook/5t7GIU', {
+    const requestBody = {
+      filters: [],
+      sort: [
+        { field: "created_time", direction: "desc" }
+      ],
+      fields: ["video_url", "user_id", "creation_time"],
+      limit: 20,
+      page_token: null
+    };
+    console.log('Request body:', requestBody);
+
+    const response = await fetch(url, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${ALTAN_API_KEY}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({}),
+      body: JSON.stringify(requestBody)
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch community videos: ${response.status}`);
+      const errorText = await response.text();
+      console.error('Full response details:', {
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries()),
+        body: errorText
+      });
+      throw new Error(`API call failed: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     const data = await response.json();
-    console.log('Raw response:', data);
+    console.log('API Response data:', data);
     
-    // Handle different possible response structures
-    let rawVideos;
-    if (data['[2]']?.output) {
-      rawVideos = JSON.parse(data['[2]'].output);
-    } else if (data.output) {
-      rawVideos = JSON.parse(data.output);
-    } else if (Array.isArray(data)) {
-      rawVideos = data;
-    } else {
-      console.error('Unexpected response format:', data);
-      return [];
-    }
-
-    if (!Array.isArray(rawVideos)) {
-      console.error('Videos data is not an array:', rawVideos);
-      return [];
-    }
-
-    console.log('Parsed videos:', rawVideos);
-    
-    const formattedVideos = rawVideos.map((video: any) => ({
-      video_url: video.video_url,
-      user_id: video.user_id ? `User ${video.user_id}` : 'Anonymous',
-      creation_time: video.created_time 
-        ? new Date(video.created_time).toLocaleDateString('de-DE')
-        : 'Kürzlich',
-      category: video.category || 'other',
-      title: video.title || ''
-    })).filter(video => video.video_url); // Only include videos with valid URLs
-
-    console.log('Formatted videos:', formattedVideos);
-    return formattedVideos;
+    return data.records.map((record: any) => ({
+      video_url: record.fields.video_url,
+      user_id: record.fields.user_id,
+      creation_time: record.fields.creation_time,
+    }));
 
   } catch (error) {
-    console.error('Error in fetchCommunityVideos:', error);
-    return []; // Return empty array instead of mock data
+    console.error('Error fetching videos from Altan:', error);
+    throw error;
   }
 }
 
@@ -229,6 +216,28 @@ export async function generateAIScript(productInfo: string, brandInfo: string, t
     return data.script || '';
   } catch (error) {
     console.error('Error generating script:', error);
+    throw error;
+  }
+}
+
+export async function downloadVideoFile(url: string) {
+  try {
+    const response = await fetch('https://api.altan.ai/galaxia/hook/downloadVideo', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ url })
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to download video');
+    }
+
+    const blob = await response.blob();
+    return blob;
+  } catch (error) {
+    console.error('Error downloading video:', error);
     throw error;
   }
 } 
