@@ -35,12 +35,22 @@ interface VideoCardProps {
 
 async function downloadVideo(url: string, filename: string = 'video.mp4') {
   try {
-    const blob = await downloadVideoFile(url);
-    const blobUrl = window.URL.createObjectURL(blob);
+    const response = await fetch(url);
+    const contentType = response.headers.get('content-type');
+    
+    // Ensure we're dealing with video content
+    if (!contentType?.includes('video/')) {
+      throw new Error('Invalid content type');
+    }
+    
+    const blob = await response.blob();
+    const blobUrl = window.URL.createObjectURL(
+      new Blob([blob], { type: 'video/mp4' })
+    );
     
     const link = document.createElement('a');
     link.href = blobUrl;
-    link.download = filename;
+    link.download = filename.endsWith('.mp4') ? filename : `${filename}.mp4`;
     
     document.body.appendChild(link);
     link.click();

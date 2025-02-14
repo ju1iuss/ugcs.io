@@ -144,27 +144,11 @@ export async function removeBackground(file: File): Promise<Blob> {
 // Update the fetchCommunityVideos function
 export async function fetchCommunityVideos(): Promise<Video[]> {
   try {
-    const url = `${BASE_URL}/table/${ALTAN_TABLE_ID}/record/query`;
-    console.log('Attempting to fetch from URL:', url);
-    
-    const requestBody = {
-      filters: [],
-      sort: [
-        { field: "created_time", direction: "desc" }
-      ],
-      fields: ["video_url", "user_id", "creation_time"],
-      limit: 20,
-      page_token: null
-    };
-    console.log('Request body:', requestBody);
-
-    const response = await fetch(url, {
+    const response = await fetch('/api/community-videos', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${ALTAN_API_KEY}`,
         'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody)
+      }
     });
 
     if (!response.ok) {
@@ -172,7 +156,6 @@ export async function fetchCommunityVideos(): Promise<Video[]> {
       console.error('Full response details:', {
         status: response.status,
         statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
         body: errorText
       });
       throw new Error(`API call failed: ${response.status} ${response.statusText} - ${errorText}`);
@@ -180,15 +163,40 @@ export async function fetchCommunityVideos(): Promise<Video[]> {
 
     const data = await response.json();
     console.log('API Response data:', data);
-    
-    return data.records.map((record: any) => ({
-      video_url: record.fields.video_url,
-      user_id: record.fields.user_id,
-      creation_time: record.fields.creation_time,
-    }));
+    console.log('First record structure:', data.records[0]);
+
+    // Handle the correct response structure
+    if (data.records && Array.isArray(data.records)) {
+      return data.records.map((record: any) => {
+        console.log('Processing record:', record);
+        if (!record || !record.video_url) {
+          console.warn('Invalid record structure:', record);
+          return {
+            video_url: '',
+            user_id: '',
+            creation_time: ''
+          };
+        }
+        return {
+          video_url: record.video_url || '',
+          user_id: record.user_id || '',
+          creation_time: record.creation_time || ''
+        };
+      }).filter((video: Video) => video.video_url !== ''); // Filter out invalid records
+    }
+
+    console.warn('Unexpected response structure:', data);
+    return [];
 
   } catch (error) {
     console.error('Error fetching videos from Altan:', error);
+    if (error instanceof Error) {
+      console.error('Error details:', {
+        name: error.name,
+        message: error.message,
+        stack: error.stack
+      });
+    }
     throw error;
   }
 }
@@ -220,24 +228,13 @@ export async function generateAIScript(productInfo: string, brandInfo: string, t
   }
 }
 
-export async function downloadVideoFile(url: string) {
-  try {
-    const response = await fetch('https://api.altan.ai/galaxia/hook/downloadVideo', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ url })
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to download video');
-    }
-
-    const blob = await response.blob();
-    return blob;
-  } catch (error) {
-    console.error('Error downloading video:', error);
-    throw error;
+export async function downloadVideoFile(url: string): Promise<Blob> {
+  const response = await fetch(url);
+  
+  if (!response.ok) {
+    throw new Error('Network response was not ok');
   }
+
+  const blob = await response.blob();
+  return new Blob([blob], { type: 'video/mp4' });
 } 
